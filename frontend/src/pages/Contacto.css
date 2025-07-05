@@ -1,0 +1,87 @@
+/* --------- FORMULARIO DE CONTACTO --------- */
+#formulario {
+  background-color: #00338d;
+  color: white;
+  border-radius: 20px;
+  opacity: 0;
+  transition: opacity 1s ease;
+  padding: 2rem 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  font-family: 'Segoe UI', sans-serif;  /* MISMA FUENTE */
+  font-size: calc(1rem + 0.3vw);        /* LETRA GRANDECITA */
+  font-weight: 500;
+}
+
+#formulario.visible {
+  opacity: 1;
+}
+
+#formulario .form-group {
+  margin-bottom: 1.5rem;
+}
+
+#formulario .form-group label {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+  font-size: 1.1rem;
+}
+
+#formulario input,
+#formulario textarea {
+  width: 100%;
+  padding: 12px 18px;
+  font-size: 1.05rem;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: 500;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: #ffffff;
+  color: #001152;
+  transition: box-shadow 0.3s;
+}
+
+#formulario input:focus,
+#formulario textarea:focus {
+  box-shadow: 0 0 5px #ffd700;
+}
+
+#formulario button {
+  background-color: #FFD700;
+  color: #001152;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 30px;
+  font-weight: bold;
+  font-size: 1.05rem;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+#formulario button:hover {
+  background-color: white;
+  color: #001152;
+  transform: scale(1.05);
+}
+
+#mensajeEnviado {
+  color: #00ff00;
+  font-weight: bold;
+  margin-top: 10px;
+  text-align: center;
+  font-size: 1.05rem;
+}
+
+/* --------- RESPONSIVO --------- */
+@media (max-width: 768px) {
+  #formulario {
+    padding: 1.5rem 1.2rem;
+  }
+
+  #formulario button {
+    width: 100%;
+  }
+}
