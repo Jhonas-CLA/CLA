@@ -1,0 +1,29 @@
+.hero-section {
+  background: linear-gradient(to bottom, #002147, #006494);
+  color: white;
+  text-align: center;
+  padding: 80px 20px 40px;
+  position: relative;
+}
+
+.hero-content h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.hero-content span {
+  color: #00f2ff;
+}
+
+.torres-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.torre {
+  height: 120px;
+  opacity: 0.8;
+}

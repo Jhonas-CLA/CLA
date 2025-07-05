@@ -1,0 +1,147 @@
+body {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.titulo-principal {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #007bff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subtitulo {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #555;
+}
+
+.titulo-seccion {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.texto {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+/* ===== Botones personalizados ===== */
+.btn-yellow {
+  background-color: #FFD700;
+  color: #001152;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 24px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-darkblue {
+  background-color: #001152;
+  color: #FFD700;
+  border-radius: 30px;
+  font-weight: bold;
+  font-size: 1rem;
+  padding: 8px 24px;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+.btn-yellow:hover,
+.btn-darkblue:hover {
+  background-color: white;
+  color: #001152;
+  transform: scale(1.05);
+}
+
+/* ===== Secciones ===== */
+.seccion {
+  padding: 80px 20px;
+}
+
+.seccion-mision {
+  background-color: #001152;
+  color: white;
+}
+
+.seccion-gerente {
+  background-color: #001152;
+  text-align: center;
+  color: white;
+}
+
+.seccion-vision {
+  background-color: #ffffff;
+}
+
+/* ===== Imagenes redondas animadas ===== */
+.rounded-circle {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 5px solid white;
+  transition: transform 0.3s ease;
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .titulo-principal {
+    font-size: 2.2rem;
+  }
+
+  .titulo-seccion {
+    font-size: 2rem;
+  }
+
+  .texto {
+    font-size: 1.1rem;
+  }
+
+  .rounded-circle {
+    width: 160px !important;
+    height: 160px !important;
+  }
+
+  .btn-yellow,
+  .btn-darkblue {
+    font-size: 0.9rem;
+    padding: 6px 20px;
+  }
+
+  .seccion-vision .text-end {
+    text-align: center !important;
+  }
+
+  .seccion-vision .col-lg-6,
+  .seccion-vision .col-lg-5 {
+    text-align: center !important;
+  }
+}
+
+/* ===== Layout en pantallas grandes ===== */
+@media (min-width: 992px) {
+  .seccion-mision .col-lg-5,
+  .seccion-vision .col-lg-5 {
+    max-width: 35%;
+  }
+
+  .seccion-vision .col-lg-6 {
+    text-align: right;
+  }
+
+  .seccion-gerente .col-md-6 {
+    max-width: 520px;
+  }
+}
