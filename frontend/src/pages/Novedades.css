@@ -1,0 +1,93 @@
+/* Imagen superior de la tarjeta */
+.card-img-top {
+  height: 220px;
+  object-fit: cover;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  transition: transform 0.3s ease;
+}
+
+.card-img-top:hover {
+  transform: scale(1.03);
+}
+
+/* Título principal de la sección */
+.titulo-noticias {
+  color: #001152;
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-align: center;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Botón "Ver más" */
+.btn-ver-mas {
+  background-color: #1e3a8a;
+  color: white;
+  border-radius: 10px;
+  padding: 12px 26px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.btn-ver-mas:hover {
+  background-color: #3b82f6;
+  transform: scale(1.08);
+  color: white;
+}
+
+/* Tarjeta en sí */
+.card {
+  border: none;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Modo oscuro */
+body.dark-mode .card {
+  background-color: #1c1c1c;
+  color: white;
+  box-shadow: 0px 2px 0px rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .titulo-noticias {
+  color: #FFD700;
+}
+
+body.dark-mode .btn-ver-mas {
+  background-color: #FFD700;
+  color: #001152;
+}
+
+body.dark-mode .btn-ver-mas:hover {
+  background-color: #fff;
+  color: #001152;
+}
+
+/* Responsive ajustes */
+@media (max-width: 768px) {
+  .titulo-noticias {
+    font-size: 2.2rem;
+  }
+
+  .card-img-top {
+    height: 180px;
+  }
+
+  .btn-ver-mas {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+  }
+}
