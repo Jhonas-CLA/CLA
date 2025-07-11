@@ -2,51 +2,57 @@ body {
   font-family: 'Segoe UI', sans-serif;
 }
 
+/* ===== Títulos ===== */
 .titulo-principal {
-  font-size: 3rem;
-  font-weight: bold;
+  font-size: 2.8rem;
+  font-weight: 700;
   color: #007bff;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+  margin-top: 5%;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  margin-bottom: 10px;
 }
 
 .subtitulo {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: 500;
   color: #555;
+  margin-bottom: 40px;
+  text-align: center;
 }
 
 .titulo-seccion {
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
 }
 
+/* ===== Texto ===== */
 .texto {
-  font-size: 1.2rem;
-  font-weight: bold;
+  font-size: 1.05rem;
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: justify;
 }
 
-/* ===== Botones personalizados ===== */
-.btn-yellow {
-  background-color: #FFD700;
-  color: #001152;
+/* ===== Botones ===== */
+.btn-yellow,
+.btn-darkblue {
   border-radius: 30px;
-  font-weight: bold;
-  font-size: 1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
   padding: 8px 24px;
   border: none;
   transition: all 0.3s ease;
+}
+
+.btn-yellow {
+  background-color: #FFD700;
+  color: #001152;
 }
 
 .btn-darkblue {
   background-color: #001152;
   color: #FFD700;
-  border-radius: 30px;
-  font-weight: bold;
-  font-size: 1rem;
-  padding: 8px 24px;
-  border: none;
-  transition: all 0.3s ease;
 }
 
 .btn-yellow:hover,
@@ -56,9 +62,11 @@ body {
   transform: scale(1.05);
 }
 
-/* ===== Secciones ===== */
-.seccion {
-  padding: 80px 20px;
+/* ===== Secciones generales ===== */
+.seccion-mision,
+.seccion-vision,
+.seccion-gerente {
+  padding: 70px 20px;
 }
 
 .seccion-mision {
@@ -66,17 +74,46 @@ body {
   color: white;
 }
 
-.seccion-gerente {
-  background-color: #001152;
-  text-align: center;
-  color: white;
-}
-
 .seccion-vision {
   background-color: #ffffff;
+  color: black;
 }
 
-/* ===== Imagenes redondas animadas ===== */
+.seccion-vision .texto {
+  text-align: justify;
+}
+
+.seccion-gerente {
+  background-color: #001152;
+  color: white;
+  text-align: center;
+}
+
+.seccion-gerente .row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.seccion-gerente .col-md-4,
+.seccion-gerente .col-md-6 {
+  max-width: 100%;
+  padding: 10px 0;
+}
+
+.seccion-gerente .titulo-seccion {
+  margin-top: 20px;
+}
+
+.seccion-gerente .texto {
+  text-align: center;
+}
+
+.seccion-gerente .btn {
+  margin-top: 20px;
+}
+
+/* ===== Imágenes animadas ===== */
 .rounded-circle {
   width: 200px;
   height: 200px;
@@ -98,50 +135,57 @@ body {
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .titulo-principal {
-    font-size: 2.2rem;
-  }
-
-  .titulo-seccion {
     font-size: 2rem;
   }
 
+  .titulo-seccion {
+    font-size: 1.7rem;
+  }
+
   .texto {
-    font-size: 1.1rem;
+    font-size: 1rem;
   }
 
   .rounded-circle {
-    width: 160px !important;
-    height: 160px !important;
+    width: 150px !important;
+    height: 150px !important;
   }
 
   .btn-yellow,
   .btn-darkblue {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     padding: 6px 20px;
   }
 
-  .seccion-vision .text-end {
-    text-align: center !important;
-  }
-
+  .seccion-vision .text-end,
   .seccion-vision .col-lg-6,
   .seccion-vision .col-lg-5 {
     text-align: center !important;
   }
 }
 
-/* ===== Layout en pantallas grandes ===== */
-@media (min-width: 992px) {
-  .seccion-mision .col-lg-5,
-  .seccion-vision .col-lg-5 {
-    max-width: 35%;
+/* ===== Layout horizontal para Misión y Visión en pantallas grandes ===== */
+@media (min-width: 768px) {
+  .seccion-mision .row,
+  .seccion-vision .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
   }
 
-  .seccion-vision .col-lg-6 {
-    text-align: right;
+  .seccion-mision .col-md-5,
+  .seccion-mision .col-md-7,
+  .seccion-vision .col-md-5,
+  .seccion-vision .col-md-7 {
+    flex: 0 0 50%;
+    max-width: 50%;
+    padding: 0;
   }
 
-  .seccion-gerente .col-md-6 {
-    max-width: 520px;
+  .seccion-mision .col-md-5 img,
+  .seccion-vision .col-md-5 img {
+    margin: 0 auto;
+    display: block;
   }
 }
