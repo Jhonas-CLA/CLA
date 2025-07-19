@@ -40,8 +40,8 @@ function Novedades() {
       <h2 className="text-center mb-5 titulo-noticias">Últimas Noticias</h2>
       <div className="row">
         {noticias.map((noticia, index) => (
-          <div key={index} className="col-lg-4 col-md-6 mb-4">
-            <div className="card h-100">
+          <div key={index} className="col-lg-4 col-md-6 col-12 mb-4 d-flex">
+            <div className="card w-100 h-100">
               <img src={noticia.imagen} className="card-img-top" alt={noticia.titulo} />
               <div className="card-body d-flex flex-column">
                 <h5 className="card-title fw-bold">{noticia.titulo}</h5>

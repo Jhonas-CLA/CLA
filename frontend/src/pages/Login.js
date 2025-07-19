@@ -1,6 +1,6 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
 
 function Login() {
@@ -54,7 +54,9 @@ function Login() {
             /> Mostrar contraseña
           </div>
           <div className="text-right">
-            <a href="#" className="forgot-link">¿Olvidaste tu contraseña?</a>
+            <Link to="/forgot-password" className="forgot-link">
+              ¿Olvidaste tu contraseña?
+            </Link>
           </div>
         </div>
 

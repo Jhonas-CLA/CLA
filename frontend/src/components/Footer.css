@@ -1,15 +1,16 @@
 .footer {
   background-color: #001054;
   color: white;
-  padding: 40px 0 20px 0;
-  font-family: Arial, sans-serif;
+  padding: 50px 20px 20px; /* Prefiero el padding más amplio */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Fuente más moderna */
   margin-top: 60px;
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1200px; /* Mayor ancho permitido */
   margin: 0 auto;
   padding: 0 20px;
+  text-align: center;
 }
 
 .footer-header {
@@ -19,7 +20,7 @@
 
 .footer-header h2 {
   font-size: 2.5rem;
-  font-weight: bold;
+  font-weight: bold; 
   margin: 0 0 15px 0;
   letter-spacing: 2px;
 }
@@ -29,11 +30,12 @@
   max-width: 600px;
   margin: 0 auto;
   line-height: 1.5;
+  opacity: 0.85;
 }
 
 .footer-content {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 40px;
   margin-bottom: 40px;
@@ -42,18 +44,23 @@
 .footer-section {
   flex: 1;
   min-width: 250px;
+  max-width: 280px;
+  text-align: center;
 }
 
 .footer-section h3 {
   font-size: 1.3rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+  padding-bottom: 4px; 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
   color: white;
 }
 
 .contact-info p {
-  margin: 5px 0;
-  line-height: 1.4;
+  margin: 4px 0;
+  font-size: 0.95rem;
+  opacity: 0.9;
 }
 
 .contact-info p strong {
@@ -67,18 +74,19 @@
 }
 
 .footer-links li {
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .footer-links a {
   color: white;
   text-decoration: none;
+  font-size: 0.95rem;
   transition: color 0.3s ease;
 }
 
 .footer-links a:hover {
   color: #90caf9;
-  text-decoration: underline;
+  transform: translateY(-1px);
 }
 
 .footer-bottom {
@@ -93,21 +101,34 @@
   opacity: 0.8;
 }
 
-/* Responsive Design */
+/* Responsive */
 @media (max-width: 768px) {
   .footer-content {
     flex-direction: column;
     gap: 30px;
   }
-  
-  .footer-section {
-    min-width: 100%;
-  }
-  
+
   .footer-header h2 {
     font-size: 2rem;
   }
-  
+
+  .footer-header p {
+    font-size: 0.95rem;
+  }
+
+  .footer-section {
+    min-width: 100%;
+  }
+
+  .footer-section h3 {
+    font-size: 1.1rem;
+  }
+
+  .footer-links a,
+  .contact-info p {
+    font-size: 0.9rem;
+  }
+
   .footer {
     padding: 30px 0 15px 0;
   }
@@ -117,7 +138,7 @@
   .footer-header h2 {
     font-size: 1.8rem;
   }
-  
+
   .footer-section h3 {
     font-size: 1.1rem;
   }
