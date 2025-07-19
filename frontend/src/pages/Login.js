@@ -1,8 +1,7 @@
 // src/pages/Login.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
-import { Link } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
@@ -55,10 +54,10 @@ function Login() {
             /> Mostrar contraseña
           </div>
           <div className="text-right">
-  <Link to="/forgot-password" className="forgot-link">
-    ¿Olvidaste tu contraseña?
-  </Link>
-</div>
+            <Link to="/forgot-password" className="forgot-link">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
         </div>
 
         <button type="submit" className="btn btn-primary btn-block">Iniciar Sesión</button>
