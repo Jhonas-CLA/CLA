@@ -37,29 +37,29 @@ const noticias = [
 function Novedades() {
   return (
     <section className="container my-5 novedades-section">
-  <h2 className="text-center mb-5 titulo-noticias">Últimas Noticias</h2>
-  <div className="row"> {/* <-- CONTENEDOR FLEXIBLE */}
-    {noticias.map((noticia, index) => (
-      <div key={index} className="col-md-6 col-12 mb-4 d-flex"> {/* <-- 2 columnas en md+ */}
-        <div className="card w-100"> {/* <-- Fuerza el ancho al 100% del contenedor */}
-          <img src={noticia.imagen} className="card-img-top" alt={noticia.titulo} />
-          <div className="card-body d-flex flex-column">
-            <h5 className="card-title fw-bold">{noticia.titulo}</h5>
-            <p className="card-text">{noticia.descripcion}</p>
-            <a
-              href={noticia.enlace}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn-ver-mas mt-auto"
-            >
-              Ver más
-            </a>
+      <h2 className="text-center mb-5 titulo-noticias">Últimas Noticias</h2>
+      <div className="row">
+        {noticias.map((noticia, index) => (
+          <div key={index} className="col-lg-4 col-md-6 col-12 mb-4 d-flex">
+            <div className="card w-100 h-100">
+              <img src={noticia.imagen} className="card-img-top" alt={noticia.titulo} />
+              <div className="card-body d-flex flex-column">
+                <h5 className="card-title fw-bold">{noticia.titulo}</h5>
+                <p className="card-text">{noticia.descripcion}</p>
+                <a
+                  href={noticia.enlace}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn btn-ver-mas mt-auto"
+                >
+                  Ver más
+                </a>
+              </div>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
-    ))}
-  </div>
-</section>
+    </section>
   );
 }
 
