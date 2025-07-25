@@ -8,6 +8,74 @@ function Navbar() {
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation();
 
+  // Organización de categorías por grupos
+  const categorias = {
+    'Cables y Conectores': [
+      { name: 'Alambres y Cables', path: '/categorias/alambres-cables', icon: '🔌' },
+      { name: 'Bornas y Conectores', path: '/categorias/bornas-conectores', icon: '🔗' },
+      { name: 'Conectores', path: '/categorias/conectores', icon: '🔌' },
+      { name: 'Terminales y Uniones', path: '/categorias/terminales-uniones', icon: '🔗' }
+    ],
+    'Iluminación': [
+      { name: 'Iluminación', path: '/categorias/iluminacion', icon: '💡' },
+      { name: 'Portalamparas y Plafones', path: '/categorias/portalamparas-plafones', icon: '💡' },
+      { name: 'Reflectores y Fotoceldas', path: '/categorias/reflectores-fotoceldas', icon: '🔦' },
+      { name: 'Boquillas', path: '/categorias/boquillas', icon: '💡' }
+    ],
+    'Protección Eléctrica': [
+      { name: 'Automáticos / Breakers', path: '/categorias/automaticos-breakers', icon: '⚡' },
+      { name: 'Tableros Eléctricos', path: '/categorias/tableros-electricos', icon: '📋' },
+      { name: 'Contactores y Contadores', path: '/categorias/contactores-contadores', icon: '⚙️' },
+      { name: 'Relés', path: '/categorias/reles', icon: '🔄' }
+    ],
+    'Tubería y Accesorios': [
+      { name: 'Tubería EMT / IMC / PVC / LED', path: '/categorias/tuberia-emt-imc-pvc-led', icon: '🔧' },
+      { name: 'Curvas y Accesorios de Tubería', path: '/categorias/curvas-accesorios-tuberia', icon: '🔧' },
+      { name: 'Canaletas', path: '/categorias/canaletas', icon: '📐' },
+      { name: 'Accesorios para Canaletas', path: '/categorias/accesorios-canaletas', icon: '🔧' }
+    ],
+    'Cajas y Instalación': [
+      { name: 'Cajas', path: '/categorias/cajas', icon: '📦' },
+      { name: 'Tapas y Accesorios de Superficie', path: '/categorias/tapas-accesorios-superficie', icon: '🔲' },
+      { name: 'Rosetas', path: '/categorias/rosetas', icon: '🌸' },
+      { name: 'Capacetes y Chazos', path: '/categorias/capacetes-chazos', icon: '🔩' }
+    ],
+    'Interruptores y Tomas': [
+      { name: 'Interruptores y Programadores', path: '/categorias/interruptores-programadores', icon: '🔲' },
+      { name: 'Tomas y Enchufes', path: '/categorias/tomas-enchufes', icon: '🔌' },
+      { name: 'Clavijas', path: '/categorias/clavijas', icon: '🔌' },
+      { name: 'Extensiones y Multitomas', path: '/categorias/extensiones-multitomas', icon: '🔌' }
+    ],
+    'Herramientas y Medición': [
+      { name: 'Herramientas y Accesorios Especiales', path: '/categorias/herramientas-accesorios-especiales', icon: '🛠️' },
+      { name: 'Instrumentos de Medición', path: '/categorias/instrumentos-medicion', icon: '📏' },
+      { name: 'Testers y Medidores', path: '/categorias/testers-medidores', icon: '🔍' },
+      { name: 'Discos para Pulidora', path: '/categorias/discos-pulidora', icon: '💿' }
+    ],
+    'Sujeción y Soporte': [
+      { name: 'Abrazaderas y Amarres', path: '/categorias/abrazaderas-amarres', icon: '🔗' },
+      { name: 'Soportes, Pernos y Herrajes', path: '/categorias/soportes-pernos-herrajes', icon: '🔩' },
+      { name: 'Hebillas, Grapas y Perchas', path: '/categorias/hebillas-grapas-perchas', icon: '📎' },
+      { name: 'Tensores', path: '/categorias/tensores', icon: '🔗' }
+    ],
+    'Sensores y Control': [
+      { name: 'Sensores y Temporizadores', path: '/categorias/sensores-temporizadores', icon: '⏱️' },
+      { name: 'Timbres', path: '/categorias/timbres', icon: '🔔' }
+    ],
+    'Materiales y Sellantes': [
+      { name: 'Cintas Aislantes', path: '/categorias/cintas-aislantes', icon: '📏' },
+      { name: 'Siliconas y Sellantes', path: '/categorias/siliconas-sellantes', icon: '🧴' },
+      { name: 'Soldaduras', path: '/categorias/soldaduras', icon: '🔥' }
+    ],
+    'Electrodomésticos': [
+      { name: 'Campanas Extractoras', path: '/categorias/campanas-extractoras', icon: '💨' },
+      { name: 'Duchas', path: '/categorias/duchas', icon: '🚿' }
+    ],
+    'Otros': [
+      { name: 'Otros / Misceláneos', path: '/categorias/otros-miscelaneos', icon: '📦' }
+    ]
+  };
+
   useEffect(() => {
     setIsMenuOpen(false);
     setShowDropdown(false);
@@ -77,11 +145,27 @@ function Navbar() {
               <span className={`dropdown-arrow ${showDropdown ? 'active' : ''}`}>▼</span>
             </button>
             {showDropdown && (
-              <div className="dropdown-content">
-                <Link to="/categorias/iluminacion" onClick={closeMenu}>💡 Iluminación</Link>
-                <Link to="/categorias/cables" onClick={closeMenu}>🔌 Cables y Conectores</Link>
-                <Link to="/categorias/tuberia y accesorios" onClick={closeMenu}>🔧 Tuberia</Link>
-                <Link to="/categorias/paneles" onClick={closeMenu}>⚡ Paneles Eléctricos</Link>
+              <div className="dropdown-content mega-dropdown">
+                <div className="dropdown-columns">
+                  {Object.entries(categorias).map(([grupo, items]) => (
+                    <div key={grupo} className="dropdown-column">
+                      <h4 className="dropdown-group-title">{grupo}</h4>
+                      <div className="dropdown-group-items">
+                        {items.map((item) => (
+                          <Link 
+                            key={item.path}
+                            to={item.path} 
+                            onClick={closeMenu}
+                            className="dropdown-item"
+                          >
+                            <span className="item-icon">{item.icon}</span>
+                            <span className="item-name">{item.name}</span>
+                          </Link>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
