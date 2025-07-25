@@ -8,38 +8,38 @@ body {
   font-weight: 700;
   color: #007bff;
   margin-top: 5%;
-  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.15);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
 }
 
 .subtitulo {
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 1.2rem;
+  font-weight: bold;
   color: #555;
   margin-bottom: 40px;
   text-align: center;
 }
 
 .titulo-seccion {
-  font-size: 2.2rem;
-  font-weight: 700;
-  margin-bottom: 15px;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
 }
 
 /* ===== Texto ===== */
 .texto {
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 500;
   line-height: 1.6;
   text-align: justify;
 }
 
-/* ===== Botones ===== */
+/* ===== Botones personalizados ===== */
 .btn-yellow,
 .btn-darkblue {
   border-radius: 30px;
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 1rem;
   padding: 8px 24px;
   border: none;
   transition: all 0.3s ease;
@@ -62,11 +62,12 @@ body {
   transform: scale(1.05);
 }
 
-/* ===== Secciones generales ===== */
+/* ===== Secciones ===== */
+.seccion,
 .seccion-mision,
 .seccion-vision,
 .seccion-gerente {
-  padding: 70px 20px;
+  padding: 80px 20px;
 }
 
 .seccion-mision {
@@ -135,36 +136,39 @@ body {
 /* ===== Responsive ===== */
 @media (max-width: 768px) {
   .titulo-principal {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
 
   .titulo-seccion {
-    font-size: 1.7rem;
+    font-size: 2rem;
   }
 
   .texto {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
 
   .rounded-circle {
-    width: 150px !important;
-    height: 150px !important;
+    width: 160px !important;
+    height: 160px !important;
   }
 
   .btn-yellow,
   .btn-darkblue {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     padding: 6px 20px;
   }
 
-  .seccion-vision .text-end,
+  .seccion-vision .text-end {
+    text-align: center !important;
+  }
+
   .seccion-vision .col-lg-6,
   .seccion-vision .col-lg-5 {
     text-align: center !important;
   }
 }
 
-/* ===== Layout horizontal para Misión y Visión en pantallas grandes ===== */
+/* ===== Layout en pantallas grandes ===== */
 @media (min-width: 768px) {
   .seccion-mision .row,
   .seccion-vision .row {
@@ -187,5 +191,20 @@ body {
   .seccion-vision .col-md-5 img {
     margin: 0 auto;
     display: block;
+  }
+}
+
+@media (min-width: 992px) {
+  .seccion-mision .col-lg-5,
+  .seccion-vision .col-lg-5 {
+    max-width: 35%;
+  }
+
+  .seccion-vision .col-lg-6 {
+    text-align: right;
+  }
+
+  .seccion-gerente .col-md-6 {
+    max-width: 520px;
   }
 }

@@ -1,0 +1,26 @@
+# ----------------------------
+# DJANGO (Backend - Python)
+# ----------------------------
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.log
+.env
+
+# ----------------------------
+# REACT (Frontend - Node)
+# ----------------------------
+node_modules/
+.cache/
+*.log
+*.lock
+.env.local
+
+# ----------------------------
+# SISTEMA Y EDITORES
+# ----------------------------
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp

@@ -34,17 +34,11 @@ class User(AbstractUser):
         ('administrador', 'Administrador'),
     ]
     
-    STATUS_CHOICES = [
-        ('activo', 'Activo'),
-        ('inactivo', 'Inactivo'),
-    ]
-    
     # Eliminar el campo username heredado
     username = None
     
     email = models.EmailField(unique=True)
     rol = models.CharField(max_length=20, choices=ROLE_CHOICES, default='usuario')
-    estado = models.CharField(max_length=10, choices=STATUS_CHOICES, default='activo')
     phone = models.CharField(max_length=15, blank=True, null=True)
     profile_image = models.ImageField(upload_to='profiles/', blank=True, null=True)
     email_verified = models.BooleanField(default=False)
@@ -60,6 +54,3 @@ class User(AbstractUser):
     
     def is_admin(self):
         return self.rol == 'administrador'
-    
-    def is_active_user(self):
-        return self.estado == 'activo'

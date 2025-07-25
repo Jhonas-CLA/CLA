@@ -10,6 +10,8 @@ import Contacto from './pages/Contacto';
 import Carrito from './pages/Carrito';
 import Login from './pages/Login';
 import CategoriaDetalle from './pages/CategoriaDetalle';
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         <Route path="/carrito" element={<Carrito />} />
         <Route path="/perfil" element={<Login />} />
         <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
       </Routes>
       <Footer />
     </Router>
@@ -31,4 +35,3 @@ function App() {
 }
 
 export default App;
-
