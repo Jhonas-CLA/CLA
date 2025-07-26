@@ -100,6 +100,7 @@
   transform: rotate(180deg);
 }
 
+/* Dropdown original - mantener para compatibilidad */
 .dropdown-content {
   position: absolute;
   top: 100%;
@@ -124,6 +125,161 @@
 .dropdown-content a:hover {
   background-color: rgba(0, 188, 212, 0.1);
   color: #00bcd4;
+}
+
+/* NUEVOS ESTILOS PARA MEGA DROPDOWN */
+/* Mega dropdown específico */
+.mega-dropdown {
+  position: absolute;
+  top: 100%;
+  left: -200px;
+  background-color: #001152;
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  min-width: 950px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 25px;
+  margin-top: 5px;
+}
+
+/* Columnas del dropdown */
+.dropdown-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 35px;
+}
+
+.dropdown-column {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Títulos de grupo */
+.dropdown-group-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #00bcd4;
+  margin: 0 0 15px 0;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #00bcd4;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  position: relative;
+}
+
+.dropdown-group-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 30px;
+  height: 2px;
+  background: white;
+}
+
+/* Items del grupo */
+.dropdown-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+/* Items individuales */
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: 10px 15px;
+  text-decoration: none;
+  color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 13px;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.dropdown-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.dropdown-item:hover {
+  background: rgba(0, 188, 212, 0.2);
+  color: #00bcd4;
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(0, 188, 212, 0.2);
+}
+
+.dropdown-item:hover::before {
+  left: 100%;
+}
+
+/* Iconos de items */
+.item-icon {
+  margin-right: 12px;
+  font-size: 16px;
+  width: 20px;
+  display: inline-block;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-item:hover .item-icon {
+  transform: scale(1.2);
+}
+
+.item-name {
+  flex: 1;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-item:hover .item-name {
+  transform: translateX(2px);
+}
+
+/* Scroll personalizado para el dropdown */
+.mega-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.mega-dropdown::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.mega-dropdown::-webkit-scrollbar-thumb {
+  background: #00bcd4;
+  border-radius: 10px;
+}
+
+.mega-dropdown::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 188, 212, 0.8);
+}
+
+/* Animación de entrada */
+@keyframes dropdownFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.mega-dropdown {
+  animation: dropdownFadeIn 0.3s ease-out;
 }
 
 /* Acciones derecha - Íconos limpios sin círculos */
@@ -175,6 +331,19 @@
 }
 
 /* Responsive */
+@media (max-width: 1024px) {
+  .mega-dropdown {
+    min-width: 800px;
+    left: -150px;
+    padding: 20px;
+  }
+  
+  .dropdown-columns {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 25px;
+  }
+}
+
 @media (max-width: 991px) {
   .mobile-toggle {
     display: flex;
@@ -197,6 +366,33 @@
 
   .nav-menu.active {
     left: 0;
+  }
+
+  /* Mega dropdown responsive para móvil */
+  .mega-dropdown {
+    position: static;
+    min-width: 100%;
+    left: 0;
+    max-height: 60vh;
+    padding: 15px;
+    margin: 10px 0;
+    background-color: rgba(0, 188, 212, 0.1);
+    border: 1px solid rgba(0, 188, 212, 0.2);
+  }
+  
+  .dropdown-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+  
+  .dropdown-group-title {
+    font-size: 12px;
+    margin-bottom: 10px;
+  }
+  
+  .dropdown-item {
+    font-size: 12px;
+    padding: 8px 12px;
   }
 
   .dropdown-content {
@@ -250,7 +446,32 @@
   .mode-text {
     display: none;
   }
+
+  /* Mega dropdown móvil pequeño */
+  .dropdown-columns {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .mega-dropdown {
+    padding: 12px;
+  }
+  
+  .dropdown-item {
+    padding: 6px 10px;
+  }
 }
+
+@media (max-width: 480px) {
+  .dropdown-columns {
+    grid-template-columns: 1fr;
+  }
+  
+  .mega-dropdown {
+    padding: 10px;
+  }
+}
+
 @media (min-width: 992px) {
   .nav-link,
   .dropdown-btn {

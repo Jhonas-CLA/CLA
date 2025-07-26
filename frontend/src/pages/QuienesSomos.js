@@ -10,8 +10,8 @@ const QuienesSomos = () => {
         <p className="subtitulo">Dando soluciones a los Tolimenses desde hace 5 años.</p>
       </header>
 
-      {/* Misión */}
-      <section className="seccion-mision">
+      {/* Sección Misión */}
+      <section className="seccion seccion-mision">
         <div className="container">
           <div className="row align-items-center justify-content-center">
             <div className="col-md-5 text-center mb-4 mb-md-0">
@@ -26,41 +26,36 @@ const QuienesSomos = () => {
               <p className="texto">
                 En <strong>Eléctricos y Soluciones (E&S)</strong>, velamos por el bienestar de nuestros clientes, brindándoles variedad y soluciones eléctricas de calidad para sus proyectos.
               </p>
-              <button className="btn btn-yellow mt-3">
-                💡 Soluciones que iluminan tu camino
-              </button>
+              <span className="btn btn-yellow mt-3">💡 Soluciones que iluminan tu camino</span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Visión */}
-<section className="seccion-vision">
-  <div className="container">
-    <div className="row align-items-center justify-content-center">
-      <div className="col-md-7 order-md-1">
-        <h2 className="titulo-seccion">Nuestra Visión</h2>
-        <p className="texto">
-          Aspiramos a ser una empresa sostenible, eficiente y confiable en la prestación de suministros eléctricos, guiados por la innovación y el compromiso con nuestros clientes.
-        </p>
-        <button className="btn btn-darkblue mt-3">
-          🚀 Energía con visión de futuro
-        </button>
-      </div>
-      <div className="col-md-5 text-center order-md-2 mb-4 mb-md-0">
-        <img
-          src="https://www.grupoalava.com/wp-content/uploads/sites/12/2022/02/VisionArtificialAF-1024x502.png"
-          alt="Imagen Visión"
-          className="img-fluid rounded-circle floating"
-        />
-      </div>
-    </div>
-  </div>
-</section>
+      {/* Sección Visión */}
+      <section className="seccion seccion-vision">
+        <div className="container">
+          <div className="row align-items-center justify-content-center flex-md-row-reverse">
+            <div className="col-md-5 text-center mb-4 mb-md-0">
+              <img
+                src="https://www.grupoalava.com/wp-content/uploads/sites/12/2022/02/VisionArtificialAF-1024x502.png"
+                alt="Imagen Visión"
+                className="img-fluid rounded-circle floating"
+              />
+            </div>
+            <div className="col-md-7 text-white">
+              <h2 className="titulo-seccion">Nuestra Visión</h2>
+              <p className="texto">
+                Aspiramos a ser una empresa sostenible, eficiente y confiable en la prestación de suministros eléctricos, guiados por la innovación y el compromiso con nuestros clientes.
+              </p>
+              <span className="btn btn-darkblue mt-3">🚀 Energía con visión de futuro</span>
+            </div>
+          </div>
+        </div>
+      </section>
 
-
-      {/* Gerente */}
-      <section className="seccion-gerente">
+      {/* Sección Gerente */}
+      <section className="seccion seccion-mision">
         <div className="container">
           <div className="row justify-content-center align-items-center text-center text-white">
             <div className="col-md-4 mb-4 mb-md-0">
@@ -73,9 +68,7 @@ const QuienesSomos = () => {
             <div className="col-md-6">
               <h2 className="titulo-seccion">Edinson Gaitán Penagos</h2>
               <p className="texto">Gerente Principal | Técnico Electricista</p>
-              <button className="btn btn-yellow mt-3">
-                ⚡ Liderar con pasión, transformar con energía
-              </button>
+              <span className="btn btn-yellow mt-3">⚡ Liderar con pasión, transformar con energía</span>
             </div>
           </div>
         </div>
