@@ -127,7 +127,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'accounts.User'
-
+ #modificacion para el correo 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
@@ -137,7 +137,7 @@ EMAIL_HOST_PASSWORD = 'sspsfwaonhecprqi'  # Contraseña de aplicación
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CORS_ALLOW_ALL_ORIGINS = True
-
+# las rutas 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:3000",  # o donde esté tu frontend
     "http://127.0.0.1:3000"
