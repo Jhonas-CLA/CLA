@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from .views import enviar_email_reset, resetear_password  
+from .views import login_view
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls), 
+    path('api/login/', login_view, name='login'),
     path('auth/forgot-password/', enviar_email_reset),
     path('auth/reset-password/<uidb64>/<token>/', resetear_password),
 ]

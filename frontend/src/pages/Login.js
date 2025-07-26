@@ -1,8 +1,6 @@
-// src/pages/Login.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import './Login.css';
-import { Link } from 'react-router-dom';
 
 function Login() {
   const navigate = useNavigate();
@@ -11,13 +9,30 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setError('');
 
-    if (email === 'edinsongg@gmail.com' && password === 'solocodigo') {
-      navigate('/analiticas'); // redirige a la ruta protegida
-    } else {
-      setError('Correo o contraseña incorrectos');
+    try {
+      const response = await fetch('http://localhost:8000/api/login/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        if (data.role === 'admin') {
+          navigate('/admin/dashboard');  // Ajusta si tienes otra ruta
+        } else {
+          navigate('/analiticas');  // Usuario normal
+        }
+      } else {
+        setError(data.message || 'Correo o contraseña incorrectos');
+      }
+    } catch (err) {
+      setError('Error en el servidor. Intenta de nuevo.');
     }
   };
 
@@ -55,13 +70,15 @@ function Login() {
             /> Mostrar contraseña
           </div>
           <div className="text-right">
-  <Link to="/forgot-password" className="forgot-link">
-    ¿Olvidaste tu contraseña?
-  </Link>
-</div>
+            <Link to="/forgot-password" className="forgot-link">
+              ¿Olvidaste tu contraseña?
+            </Link>
+          </div>
         </div>
 
-        <button type="submit" className="btn btn-primary btn-block">Iniciar Sesión</button>
+        <button type="submit" className="btn btn-primary btn-block">
+          Iniciar Sesión
+        </button>
       </form>
     </div>
   );
