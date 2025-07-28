@@ -126,6 +126,7 @@ body.dark-mode .btn-ver-mas:hover {
   }
 }
 
+/* ===== Responsive ajustes ===== */
 @media (max-width: 768px) {
   .titulo-noticias {
     font-size: 2.2rem;
