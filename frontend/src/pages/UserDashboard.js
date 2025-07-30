@@ -4,29 +4,25 @@ import './UserDashboard.css';
 function UserDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // 👉 Función para alternar el menú
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // 👉 Función para manejar click en enlaces
   const handleEnlaceClick = (enlace) => {
     setIsOpen(true);
     console.log(`Navegando a: ${enlace}`);
+    // Aquí podrías usar: navigate(`/${enlace}`) si usas react-router
   };
 
-  // 👉 Función para manejar logout
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de que quieres salir?')) {
       console.log('Usuario desconectado');
       localStorage.removeItem('token');
-      // window.location.href = '/login';
+      // window.location.href = '/login'; // Descomenta si lo necesitas
     }
   };
 
-  // 👉 Cargar iconos de Boxicons al montar el componente
   useEffect(() => {
-    // Verificar si ya existe el link de boxicons
     if (!document.querySelector('link[href*="boxicons"]')) {
       const link = document.createElement('link');
       link.href = 'https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css';
@@ -53,11 +49,7 @@ function UserDashboard() {
         {/* INPUT SEARCH */}
         <div className="input-search">
           <i className="bx bx-search"></i>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Buscar..."
-          />
+          <input type="text" className="input" placeholder="Buscar..." />
         </div>
 
         {/* MENU */}
@@ -105,7 +97,7 @@ function UserDashboard() {
           <h1>Bienvenido al Dashboard</h1>
           <p>Gestiona tu negocio eléctrico de manera eficiente.</p>
         </div>
-        
+
         <div className="stats-grid">
           <div className="stat-card">
             <div className="stat-icon">
@@ -116,7 +108,7 @@ function UserDashboard() {
               <p>Usuarios Activos</p>
             </div>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <i className="bx bx-package"></i>
@@ -126,7 +118,7 @@ function UserDashboard() {
               <p>Productos</p>
             </div>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <i className="bx bx-shopping-bag"></i>
@@ -136,7 +128,7 @@ function UserDashboard() {
               <p>Pedidos</p>
             </div>
           </div>
-          
+
           <div className="stat-card">
             <div className="stat-icon">
               <i className="bx bx-dollar"></i>

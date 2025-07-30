@@ -31,6 +31,23 @@
   }
 }
 
+@media (max-width: 768px) {
+  .col-md-6 {
+    flex: 0 1 100%; /* 1 columna en móvil */
+    max-width: 100%;
+  }
+
+  .row {
+    gap: 1.5rem; /* Menor separación en móvil */
+  }
+}
+
+@media (max-width: 576px) {
+  .row {
+    gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
+  }
+}
+
 /* ===== Tarjeta general ===== */
 .card {
   display: flex;
@@ -178,9 +195,16 @@ body.dark-mode .btn-ver-mas:hover {
   .row {
     gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
   }
+/* ===== Enlaces sin decoración ===== */
+/* Utilidades */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
 }
 
 /* ===== Enlaces sin decoración ===== */
 a {
   text-decoration: none;
-}
+} 
