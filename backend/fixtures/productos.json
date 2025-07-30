@@ -1,0 +1,2268 @@
+[
+{
+  "model": "products.category",
+  "pk": 1,
+  "fields": {
+    "name": "Abrazaderas y Amarres",
+    "description": "",
+    "created_at": "2025-07-29T00:08:11.399Z",
+    "updated_at": "2025-07-29T00:08:11.399Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 2,
+  "fields": {
+    "name": "Accesorios para Canaletas / EMT / PVC",
+    "description": "",
+    "created_at": "2025-07-29T01:10:38.591Z",
+    "updated_at": "2025-07-29T01:10:38.591Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 3,
+  "fields": {
+    "name": "Alambres y Cables",
+    "description": "",
+    "created_at": "2025-07-29T01:15:56.228Z",
+    "updated_at": "2025-07-29T01:15:56.228Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 4,
+  "fields": {
+    "name": "Iluminación",
+    "description": "",
+    "created_at": "2025-07-29T01:22:00.113Z",
+    "updated_at": "2025-07-29T01:22:00.113Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 5,
+  "fields": {
+    "name": "Automáticos / Breakers",
+    "description": "",
+    "created_at": "2025-07-29T01:29:30.683Z",
+    "updated_at": "2025-07-29T01:29:30.683Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 6,
+  "fields": {
+    "name": "Bornas y Conectores",
+    "description": "",
+    "created_at": "2025-07-29T12:05:01.404Z",
+    "updated_at": "2025-07-29T12:05:01.404Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 7,
+  "fields": {
+    "name": "Herramientas y Accesorios Especiales",
+    "description": "",
+    "created_at": "2025-07-29T12:13:13.111Z",
+    "updated_at": "2025-07-29T12:13:13.111Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 8,
+  "fields": {
+    "name": "Otros / Misceláneos",
+    "description": "",
+    "created_at": "2025-07-29T12:19:45.968Z",
+    "updated_at": "2025-07-29T12:19:45.968Z"
+  }
+},
+{
+  "model": "products.category",
+  "pk": 9,
+  "fields": {
+    "name": "Cajas",
+    "description": "",
+    "created_at": "2025-07-29T12:40:04.798Z",
+    "updated_at": "2025-07-29T12:40:04.798Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 1,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Abrazaderas de 1 1/4",
+    "codigo": "ABA-001",
+    "precio": "6950.00",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Abrazaderas de 1 1/4: piezas utilizadas para sujetar o fijar tubos o cables de 1 1/4 pulgadas de diámetro.",
+    "is_active": true,
+    "created_at": "2025-07-29T00:13:03.560Z",
+    "updated_at": "2025-07-29T00:13:03.560Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 2,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Abrazaderas metálicas 1",
+    "codigo": "ABA-002",
+    "precio": "1153.70",
+    "cantidad": 4,
+    "imagen": "",
+    "descripcion": "Abrazaderas metálicas 1: sujetadores de metal usados para fijar tubos o cables de 1 pulgada de diámetro.",
+    "is_active": true,
+    "created_at": "2025-07-29T00:57:47.029Z",
+    "updated_at": "2025-07-29T00:57:47.029Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 3,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Abrazaderas metálicas 1/2 (1 ojo)",
+    "codigo": "ABA-003",
+    "precio": "583.80",
+    "cantidad": 45,
+    "imagen": "",
+    "descripcion": "Abrazaderas metálicas 1/2 (1 ojo): sujetadores de metal con un solo orificio, ideales para fijar tubos o cables de 1/2 pulgada.",
+    "is_active": true,
+    "created_at": "2025-07-29T00:58:43.462Z",
+    "updated_at": "2025-07-29T00:58:43.462Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 4,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Abrazaderas metálicas 3/4 (1 ojo)",
+    "codigo": "ABA-004",
+    "precio": "667.20",
+    "cantidad": 19,
+    "imagen": "",
+    "descripcion": "Abrazaderas metálicas 3/4 (1 ojo): sujetadores de metal con un solo orificio, usados para asegurar tubos o cables de 3/4 de pulgada.",
+    "is_active": true,
+    "created_at": "2025-07-29T00:59:18.016Z",
+    "updated_at": "2025-07-29T00:59:18.016Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 5,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Abrazaderas plásticas 3/4",
+    "codigo": "ABA-005",
+    "precio": "1008.80",
+    "cantidad": 9,
+    "imagen": "",
+    "descripcion": "Abrazaderas plásticas 3/4: piezas de plástico utilizadas para sujetar tubos o cables de 3/4 de pulgada de forma ligera y resistente.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:00:01.575Z",
+    "updated_at": "2025-07-29T01:00:01.575Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 6,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 10 blanco Osblack/Titanium paquete",
+    "codigo": "ABA-006",
+    "precio": "1668.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "marre 10 blanco Osblack/Titanium paquete: cintillo plástico de 10 pulgadas, color blanco, marca Osblack/Titanium, usado para agrupar y sujetar cables; viene en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:00:36.611Z",
+    "updated_at": "2025-07-29T01:02:44.621Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 7,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 10 2.5 negro Osblack/Titanium paquete",
+    "codigo": "ABA-007",
+    "precio": "1668.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 10 2.5 negro Osblack/Titanium paquete: cintillo plástico de 10 pulgadas y 2.5 mm de ancho, color negro, marca Osblack/Titanium, ideal para sujetar cables; se presenta en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:01:09.553Z",
+    "updated_at": "2025-07-29T01:03:01.698Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 8,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 15 2.5 blanco Mercury paquete",
+    "codigo": "ABA-008",
+    "precio": "1375.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 15 2.5 blanco Mercury paquete: cintillo plástico de 15 pulgadas de largo y 2.5 mm de ancho, color blanco, marca Mercury, ideal para sujetar y organizar cables; presentación en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:03:46.056Z",
+    "updated_at": "2025-07-29T01:03:46.056Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 9,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 15 2.5 negro paquete",
+    "codigo": "ABA-009",
+    "precio": "3475.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 15 2.5 negro paquete: cintillo plástico de 15 pulgadas de largo y 2.5 mm de ancho, color negro, utilizado para agrupar y asegurar cables; se presenta en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:04:17.166Z",
+    "updated_at": "2025-07-29T01:04:17.166Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 10,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 20 cm Lack paquete #5 und",
+    "codigo": "ABA-010",
+    "precio": "11120.00",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Amarre 20 cm Lack paquete #5 und: cintillos plásticos de 20 cm de largo, marca Lack, ideales para sujetar cables; el paquete contiene 5 unidades.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:04:46.396Z",
+    "updated_at": "2025-07-29T01:04:46.396Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 11,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 20 2.5 negro Osblack paquete",
+    "codigo": "ABA-011",
+    "precio": "4170.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 20 2.5 negro Osblack paquete: cintillo plástico de 20 pulgadas de largo y 2.5 mm de ancho, color negro, marca Osblack, usado para organizar cables; presentación en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:05:34.714Z",
+    "updated_at": "2025-07-29T01:05:34.714Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 12,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 20 2.5 blanco Osblack paquete",
+    "codigo": "ABA-012",
+    "precio": "4170.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 20 2.5 blanco Osblack paquete: cintillo plástico de 20 pulgadas de largo y 2.5 mm de ancho, color blanco, marca Osblack, ideal para sujetar y ordenar cables; viene en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:06:10.712Z",
+    "updated_at": "2025-07-29T01:06:10.712Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 13,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 25 3.6 blanco Titanium",
+    "codigo": "ABA-013",
+    "precio": "4865.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 25 3.6 blanco Titanium: cintillo plástico de 25 pulgadas de largo y 3.6 mm de ancho, color blanco, marca Titanium, utilizado para asegurar cables o elementos similares.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:06:38.687Z",
+    "updated_at": "2025-07-29T01:06:38.687Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 14,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 25 3.6 negro Titanium paquete",
+    "codigo": "ABA-014",
+    "precio": "4865.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 25 3.6 negro Titanium paquete: cintillo plástico de 25 pulgadas de largo y 3.6 mm de ancho, color negro, marca Titanium, ideal para sujetar cables; presentación en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:07:18.769Z",
+    "updated_at": "2025-07-29T01:07:18.769Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 15,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 30 3.6 blanco Osblack/Titanium",
+    "codigo": "ABA-015",
+    "precio": "5838.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 30 3.6 blanco Osblack/Titanium: cintillo plástico de 30 pulgadas de largo y 3.6 mm de ancho, color blanco, marca Osblack/Titanium, utilizado para agrupar y fijar cables o elementos similares.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:07:47.336Z",
+    "updated_at": "2025-07-29T01:07:47.336Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 16,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 30 3.6 negro Titanium paquete",
+    "codigo": "ABA-016",
+    "precio": "5838.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 30 3.6 negro Titanium paquete: cintillo plástico de 30 pulgadas de largo y 3.6 mm de ancho, color negro, marca Titanium, ideal para asegurar y organizar cables; se presenta en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:08:15.674Z",
+    "updated_at": "2025-07-29T01:08:15.674Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 17,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 40 4.0 blanco Osblack paquete",
+    "codigo": "ABA-017",
+    "precio": "11120.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 40 4.0 blanco Osblack paquete: cintillo plástico de 40 pulgadas de largo y 4.0 mm de ancho, color blanco, marca Osblack, utilizado para sujetar y agrupar cables; presentación en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:08:45.950Z",
+    "updated_at": "2025-07-29T01:08:45.951Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 18,
+  "fields": {
+    "categoria": 1,
+    "nombre": "Amarre 40 5.0 negro Mercury paquete",
+    "codigo": "ABA-018",
+    "precio": "13622.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Amarre 40 5.0 negro Mercury paquete: cintillo plástico de 40 pulgadas de largo y 5.0 mm de ancho, color negro, marca Mercury, ideal para fijar, agrupar o organizar cables; viene en paquete.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:09:25.476Z",
+    "updated_at": "2025-07-29T01:09:25.476Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 19,
+  "fields": {
+    "categoria": 1,
+    "nombre": "BOLSA DE ABRAZADERAS",
+    "codigo": "ABA-019",
+    "precio": "10008.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Bolsa de abrazaderas: empaque que contiene múltiples abrazaderas, utilizadas para sujetar o fijar tubos, cables u otros elementos de forma segura.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:10:10.730Z",
+    "updated_at": "2025-07-29T01:10:10.730Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 20,
+  "fields": {
+    "categoria": 2,
+    "nombre": "Accesorio ángulo externo 20 mm x 12 mm Dexson und",
+    "codigo": "ACA-001",
+    "precio": "2336.13",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Accesorio ángulo externo 20x12 mm Dexson: esquina externa para canaleta, unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:11:57.524Z",
+    "updated_at": "2025-07-29T01:11:57.524Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 21,
+  "fields": {
+    "categoria": 2,
+    "nombre": "ccesorio ángulo interno 20 mm x 12 mm Dexson und",
+    "codigo": "ACA-002",
+    "precio": "2336.13",
+    "cantidad": 2,
+    "imagen": "",
+    "descripcion": "Accesorio ángulo interno 20x12 mm Dexson: esquina interna para canaleta, unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:12:35.509Z",
+    "updated_at": "2025-07-29T01:12:35.509Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 22,
+  "fields": {
+    "categoria": 2,
+    "nombre": "Accesorio ángulo plano 20 mm x 12 mm Dexson und",
+    "codigo": "ACA-003",
+    "precio": "2336.13",
+    "cantidad": 2,
+    "imagen": "",
+    "descripcion": "Accesorio ángulo plano 20x12 mm Dexson: unión en ángulo recto para canaleta, unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:13:05.065Z",
+    "updated_at": "2025-07-29T01:13:05.065Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 23,
+  "fields": {
+    "categoria": 2,
+    "nombre": "Ángulo plano 10 x 10 mm blanco",
+    "codigo": "ACA-004",
+    "precio": "1170.84",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Ángulo plano 10x10 mm blanco: unión recta para canaleta pequeña, color blanco.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:13:41.331Z",
+    "updated_at": "2025-07-29T01:13:41.331Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 24,
+  "fields": {
+    "categoria": 2,
+    "nombre": "Adaptador (terminal) EMT 1 1/4\" acerado und",
+    "codigo": "ACA-005",
+    "precio": "4304.55",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Adaptador (terminal) EMT 1 1/4\" acerado: conector metálico para tubo EMT de 1 1/4\", unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:14:24.033Z",
+    "updated_at": "2025-07-29T01:14:24.033Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 25,
+  "fields": {
+    "categoria": 2,
+    "nombre": "Adaptador (terminal) PVC 1 1/4 und",
+    "codigo": "ACA-006",
+    "precio": "3210.90",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Adaptador (terminal) PVC 1 1/4: conector plástico para tubo PVC de 1 1/4\", unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:14:53.575Z",
+    "updated_at": "2025-07-29T01:14:53.575Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 26,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Alambre CU aislado THHN/THWN 12 AWG Centelsa mts",
+    "codigo": "AYC-001",
+    "precio": "2363.00",
+    "cantidad": 440,
+    "imagen": "",
+    "descripcion": "Alambre CU aislado THHN/THWN 12 AWG Centelsa: conductor de cobre con aislamiento, calibre 12, marca Centelsa; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:16:52.559Z",
+    "updated_at": "2025-07-29T01:16:52.559Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 27,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Alambre CU aislado THHN/THWN 14 AWG Centelsa mts",
+    "codigo": "AYC-002",
+    "precio": "1796.49",
+    "cantidad": 246,
+    "imagen": "",
+    "descripcion": "Alambre CU aislado THHN/THWN 14 AWG Centelsa: conductor de cobre aislado, calibre 14, marca Centelsa; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:17:37.041Z",
+    "updated_at": "2025-07-29T01:17:54.953Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 28,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Alambre CU desnudo N.º 14 Centelsa mts",
+    "codigo": "AYC-003",
+    "precio": "1810.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Alambre CU desnudo N.º 14 Centelsa: conductor de cobre sin aislamiento, calibre 14, marca Centelsa; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:18:28.966Z",
+    "updated_at": "2025-07-29T01:18:28.966Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 29,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable aluminio aislado 6",
+    "codigo": "AYC-004",
+    "precio": "2710.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable aluminio aislado 6: conductor de aluminio con aislamiento, calibre 6; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:19:07.706Z",
+    "updated_at": "2025-07-29T01:19:07.706Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 30,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable aluminio aislado 8 serie 8000 negro mts",
+    "codigo": "AYC-005",
+    "precio": "2185.26",
+    "cantidad": 37,
+    "imagen": "",
+    "descripcion": "Cable aluminio aislado 8 serie 8000 negro: conductor aislado, calibre 8, serie 8000, color negro; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:19:50.448Z",
+    "updated_at": "2025-07-29T01:19:50.448Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 31,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable antifraude 1x6+6 AWG monofásico plano Procables mts",
+    "codigo": "AYC-006",
+    "precio": "6533.00",
+    "cantidad": 72,
+    "imagen": "",
+    "descripcion": "Cable antifraude 1x6+6 AWG monofásico plano Procables: cable plano monofásico con conductor de 6 AWG más neutro, marca Procables; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:20:26.293Z",
+    "updated_at": "2025-07-29T01:20:26.293Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 32,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable antifraude bifásico mts",
+    "codigo": "AYC-007",
+    "precio": "3366.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable antifraude bifásico: cable plano para conexión bifásica, usado en instalaciones seguras; se vende por metro.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:21:15.012Z",
+    "updated_at": "2025-07-29T01:21:15.012Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 33,
+  "fields": {
+    "categoria": 4,
+    "nombre": "B. LED Tecno Lite 50W 100-240V E27 6500K und",
+    "codigo": "ILU-001",
+    "precio": "21191.94",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "B. LED Tecno Lite 50W 100-240V E27 6500K: bombillo LED de 50W, luz blanca (6500K), base E27, marca Tecno Lite; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:23:05.207Z",
+    "updated_at": "2025-07-29T01:23:05.207Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 34,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bala s/poner redonda panel LED 18W 8\" 100/240V blanco 6500K",
+    "codigo": "ILU-002",
+    "precio": "21355.28",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Bala s/poner redonda panel LED 18W 8\" 100/240V blanco 6500K: panel LED redondo de 18W, 8\", luz blanca (6500K), para sobreponer; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:23:42.887Z",
+    "updated_at": "2025-07-29T01:23:42.887Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 35,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo emergencia 30 Probelco und",
+    "codigo": "ILU-003",
+    "precio": "20502.50",
+    "cantidad": 2,
+    "imagen": "",
+    "descripcion": "Bombillo emergencia 30 Probelco: bombillo recargable de 30W, marca Probelco; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:24:16.598Z",
+    "updated_at": "2025-07-29T01:24:16.599Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 36,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo filamento 2W luz cálida New Licht",
+    "codigo": "ILU-004",
+    "precio": "3807.91",
+    "cantidad": 100,
+    "imagen": "",
+    "descripcion": "Bombillo filamento 2W luz cálida New Licht: bombillo decorativo de 2W, luz cálida, marca New Licht; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:25:00.303Z",
+    "updated_at": "2025-07-29T01:25:00.303Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 37,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo de 40 vatios",
+    "codigo": "ILU-005",
+    "precio": "22240.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Bombillo de 40 vatios: bombillo estándar de 40W, usado para iluminación general; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:25:31.312Z",
+    "updated_at": "2025-07-29T01:25:31.312Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 38,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo LED 15W 6500K Ecolite uni",
+    "codigo": "ILU-006",
+    "precio": "7183.62",
+    "cantidad": 4,
+    "imagen": "",
+    "descripcion": "Bombillo LED 15W 6500K Ecolite: bombillo LED de 15W, luz blanca (6500K), marca Ecolite; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:26:21.649Z",
+    "updated_at": "2025-07-29T01:26:21.649Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 39,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo LED 9W 6500K Ecolite uni",
+    "codigo": "ILU-007",
+    "precio": "5139.50",
+    "cantidad": 5,
+    "imagen": "",
+    "descripcion": "Bombillo LED 9W 6500K Ecolite: bombillo LED de 9W, luz blanca (6500K), marca Ecolite; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:27:02.784Z",
+    "updated_at": "2025-07-29T01:27:02.785Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 40,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo LED 30W IBL 10 Mercury und",
+    "codigo": "ILU-008",
+    "precio": "7992.50",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Bombillo LED 30W IBL 10 Mercury: bombillo LED de 30W, referencia IBL 10, marca Mercury; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:28:04.299Z",
+    "updated_at": "2025-07-29T01:28:04.299Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 41,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo LED 40W IBL 11 Mercury uni",
+    "codigo": "ILU-009",
+    "precio": "11120.00",
+    "cantidad": 2,
+    "imagen": "",
+    "descripcion": "Bombillo LED 40W IBL 11 Mercury: bombillo LED de 40W, referencia IBL 11, marca Mercury; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:28:35.723Z",
+    "updated_at": "2025-07-29T01:28:35.723Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 42,
+  "fields": {
+    "categoria": 4,
+    "nombre": "Bombillo LED 50W IBL 12 Mercury uni",
+    "codigo": "ILU-010",
+    "precio": "14317.00",
+    "cantidad": 2,
+    "imagen": "",
+    "descripcion": "Bombillo LED 50W IBL 12 Mercury: bombillo LED de 50W, referencia IBL 12, marca Mercury; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:29:08.691Z",
+    "updated_at": "2025-07-29T01:29:08.691Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 43,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 15A",
+    "codigo": "AUT-001",
+    "precio": "19279.30",
+    "cantidad": 14,
+    "imagen": "",
+    "descripcion": "Interruptores térmicos tipo breaker, disponibles en varios amperajes (15 A a 50 A), ideales para proteger circuitos eléctricos contra sobrecargas y cortocircuitos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:32:49.455Z",
+    "updated_at": "2025-07-29T01:32:49.455Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 44,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 18A",
+    "codigo": "AUT-002",
+    "precio": "15012.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Interruptores térmicos tipo breaker, disponibles en varios amperajes (15 A a 50 A), ideales para proteger circuitos eléctricos contra sobrecargas y cortocircuitos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:33:32.214Z",
+    "updated_at": "2025-07-29T01:33:32.214Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 45,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 40A",
+    "codigo": "AUT-003",
+    "precio": "20016.00",
+    "cantidad": 10,
+    "imagen": "",
+    "descripcion": "Interruptores térmicos tipo breaker, disponibles en varios amperajes (15 A a 50 A), ideales para proteger circuitos eléctricos contra sobrecargas y cortocircuitos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:34:07.764Z",
+    "updated_at": "2025-07-29T01:34:22.710Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 46,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 50A",
+    "codigo": "AUT-004",
+    "precio": "4309.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Interruptores térmicos tipo breaker, disponibles en varios amperajes (15 A a 50 A), ideales para proteger circuitos eléctricos contra sobrecargas y cortocircuitos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:34:57.010Z",
+    "updated_at": "2025-07-29T01:34:57.010Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 47,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 20A",
+    "codigo": "AUT-005",
+    "precio": "19279.30",
+    "cantidad": 16,
+    "imagen": "",
+    "descripcion": "Interruptores térmicos tipo breaker, disponibles en varios amperajes (15 A a 50 A), ideales para proteger circuitos eléctricos contra sobrecargas y cortocircuitos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:35:45.705Z",
+    "updated_at": "2025-07-29T01:35:45.705Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 48,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 30A",
+    "codigo": "AUT-006",
+    "precio": "20016.00",
+    "cantidad": 8,
+    "imagen": "",
+    "descripcion": "Interruptores térmicos tipo breaker, disponibles en varios amperajes (15 A a 50 A), ideales para proteger circuitos eléctricos contra sobrecargas y cortocircuitos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:36:29.772Z",
+    "updated_at": "2025-07-29T01:36:29.772Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 49,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 30A Mercury",
+    "codigo": "AUT-007",
+    "precio": "10842.00",
+    "cantidad": 12,
+    "imagen": "",
+    "descripcion": "Breakers térmicos marca Mercury, disponibles en diferentes capacidades, usados para protección de circuitos eléctricos; unidad según amperaje.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:37:39.473Z",
+    "updated_at": "2025-07-29T01:37:39.473Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 50,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 15A Mercury",
+    "codigo": "AUT-008",
+    "precio": "8757.00",
+    "cantidad": 12,
+    "imagen": "",
+    "descripcion": "Breakers térmicos marca Mercury, disponibles en diferentes capacidades, usados para protección de circuitos eléctricos; unidad según amperaje.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:38:27.890Z",
+    "updated_at": "2025-07-29T01:38:27.890Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 51,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 40A Mercury",
+    "codigo": "AUT-009",
+    "precio": "7645.00",
+    "cantidad": 6,
+    "imagen": "",
+    "descripcion": "breakers térmicos marca Mercury, disponibles en diferentes capacidades, usados para protección de circuitos eléctricos; unidad según amperaje.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:39:13.320Z",
+    "updated_at": "2025-07-29T01:39:13.320Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 52,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automáticos de 20A Mercury",
+    "codigo": "AUT-010",
+    "precio": "8757.00",
+    "cantidad": 9,
+    "imagen": "",
+    "descripcion": "Breakers térmicos marca Mercury, disponibles en diferentes capacidades, usados para protección de circuitos eléctricos; unidad según amperaje.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:39:47.667Z",
+    "updated_at": "2025-07-29T01:39:47.667Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 53,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 2X20A",
+    "codigo": "AUT-011",
+    "precio": "59075.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers bipolares y tripolares de diferentes amperajes, ideales para protección de circuitos eléctricos en sistemas bifásicos y trifásicos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:40:54.552Z",
+    "updated_at": "2025-07-29T01:40:54.552Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 54,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 2X30A",
+    "codigo": "AUT-012",
+    "precio": "51291.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers bipolares y tripolares de diferentes amperajes, ideales para protección de circuitos eléctricos en sistemas bifásicos y trifásicos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:41:23.576Z",
+    "updated_at": "2025-07-29T01:41:23.576Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 55,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 2X40A",
+    "codigo": "AUT-013",
+    "precio": "71029.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers bipolares y tripolares de diferentes amperajes, ideales para protección de circuitos eléctricos en sistemas bifásicos y trifásicos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:41:48.760Z",
+    "updated_at": "2025-07-29T01:41:48.760Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 56,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 2X60A",
+    "codigo": "AUT-014",
+    "precio": "71029.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers bipolares y tripolares de diferentes amperajes, ideales para protección de circuitos eléctricos en sistemas bifásicos y trifásicos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:42:13.156Z",
+    "updated_at": "2025-07-29T01:42:13.156Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 57,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Automaticos de 3X40A",
+    "codigo": "AUT-015",
+    "precio": "130243.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers bipolares y tripolares de diferentes amperajes, ideales para protección de circuitos eléctricos en sistemas bifásicos y trifásicos; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:42:40.482Z",
+    "updated_at": "2025-07-29T01:42:40.482Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 58,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker atornillable 50 AMP Luminex und",
+    "codigo": "AUT-016",
+    "precio": "57268.00",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Breker atornillable 50 AMP Luminex: breaker de 50 amperios, tipo atornillable, marca Luminex; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:43:41.031Z",
+    "updated_at": "2025-07-29T01:43:41.031Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 59,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker atornillable DSA-1050 Legrand und",
+    "codigo": "AUT-017",
+    "precio": "75457.54",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Breker atornillable DSA-1050 Legrand: breaker de 50 amperios, referencia DSA-1050, tipo atornillable, marca Legrand; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:44:23.812Z",
+    "updated_at": "2025-07-29T01:44:23.812Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 60,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker atornillable 3x40 AMP DSA un",
+    "codigo": "AUT-018",
+    "precio": "245318.26",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Breker atornillable 3x40 AMP DSA: breaker tripolar de 40 amperios, tipo atornillable, referencia DSA; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:45:02.357Z",
+    "updated_at": "2025-07-29T01:45:02.357Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 61,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breaker bipolar 2x100 A und",
+    "codigo": "AUT-019",
+    "precio": "420504.20",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breaker bipolar 2x100 A: interruptor térmico de dos polos, 100 amperios, usado para sistemas bifásicos; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:45:43.494Z",
+    "updated_at": "2025-07-29T01:45:43.494Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 64,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breaker Enchu. DSE 2X20 AMP Legrand UND",
+    "codigo": "AUT-020",
+    "precio": "53964.05",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Breakers tipo enchufable, bipolares y tripolares, marca Legrand, disponibles en varios amperajes; ideales para protección de sistemas eléctricos residenciales o comerciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:49:45.375Z",
+    "updated_at": "2025-07-29T01:49:45.375Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 65,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breaker Enchu. DSE 2X30 AMP Legrand UND",
+    "codigo": "AUT-021",
+    "precio": "53965.36",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "breakers tipo enchufable, bipolares y tripolares, marca Legrand, disponibles en varios amperajes; ideales para protección de sistemas eléctricos residenciales o comerciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:50:39.761Z",
+    "updated_at": "2025-07-29T01:50:39.761Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 66,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breaker Enchu. DSE 3X40 AMP Legrand UND",
+    "codigo": "AUT-022",
+    "precio": "137679.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers tipo enchufable, bipolares y tripolares, marca Legrand, disponibles en varios amperajes; ideales para protección de sistemas eléctricos residenciales o comerciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:51:12.905Z",
+    "updated_at": "2025-07-29T01:51:12.905Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 67,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker EXE Plug 2x60 A 120/240V und",
+    "codigo": "AUT-023",
+    "precio": "41435.90",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker EXE Plug 2x60 A 120/240V: breaker bipolar tipo plug-in de 60 amperios, para sistemas eléctricos de 120/240V; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:52:03.349Z",
+    "updated_at": "2025-07-29T01:52:03.349Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 68,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker industrial 3X63 36K 220V caja moldeada steck",
+    "codigo": "AUT-024",
+    "precio": "126150.84",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers tripolares industriales, en diferentes amperajes, diseñados para proteger instalaciones trifásicas de alta demanda; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:53:59.794Z",
+    "updated_at": "2025-07-29T01:53:59.794Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 69,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker industrial 3X70 caja moldeada lumek UND",
+    "codigo": "AUT-025",
+    "precio": "148344.54",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breakers tripolares industriales, en diferentes amperajes, diseñados para proteger instalaciones trifásicas de alta demanda; se venden por unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:54:53.582Z",
+    "updated_at": "2025-07-29T01:54:53.582Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 70,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breaker riel 1x32 A Steck und",
+    "codigo": "AUT-026",
+    "precio": "16680.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breaker riel 1x32 A Steck: breaker unipolar de 32 amperios, para montaje en riel DIN, marca Steck; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:57:58.503Z",
+    "updated_at": "2025-07-29T01:57:58.503Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 71,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breaker riel 1x40 A 6 kA Steck und",
+    "codigo": "AUT-028",
+    "precio": "12965.54",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breaker riel 1x40 A 6 kA Steck: breaker unipolar de 40 amperios, capacidad de corte 6 kA, para riel DIN, marca Steck; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:58:33.799Z",
+    "updated_at": "2025-07-29T01:58:33.799Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 72,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker de 1x30 A Lumines",
+    "codigo": "AUT-027",
+    "precio": "50040.00",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Breker de 1x30 A Lumines: breaker unipolar de 30 amperios, marca Lumines; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:59:12.665Z",
+    "updated_at": "2025-07-29T01:59:12.665Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 73,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker industrial 3x40",
+    "codigo": "AUT-029",
+    "precio": "162630.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker industrial 3x40: breaker tripolar industrial de 40 amperios, ideal para sistemas trifásicos; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T01:59:54.110Z",
+    "updated_at": "2025-07-29T01:59:54.110Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 74,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker industrial 3x40 Schneider",
+    "codigo": "AUT-030",
+    "precio": "185834.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker industrial 3x40 Schneider: breaker tripolar de 40 amperios, marca Schneider, para protección de sistemas trifásicos; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:00:27.722Z",
+    "updated_at": "2025-07-29T02:00:38.774Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 75,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker industrial 3x30",
+    "codigo": "AUT-031",
+    "precio": "157765.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker industrial 3x30: breaker tripolar de 30 amperios, usado en sistemas trifásicos industriales; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:01:26.195Z",
+    "updated_at": "2025-07-29T02:01:26.195Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 76,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker Lumines de 2x60",
+    "codigo": "AUT-032",
+    "precio": "80064.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker Lumines de 2x60: breaker bipolar de 60 amperios, marca Lumines, para sistemas bifásicos; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:02:06.937Z",
+    "updated_at": "2025-07-29T02:02:06.937Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 77,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker riel 16 A Voltio",
+    "codigo": "AUT-033",
+    "precio": "13483.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker riel 16 A Voltio: breaker unipolar de 16 amperios para montaje en riel DIN, marca Voltio; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:02:44.957Z",
+    "updated_at": "2025-07-29T02:02:44.957Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 78,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker riel 1x32 Schneider",
+    "codigo": "AUT-034",
+    "precio": "13483.00",
+    "cantidad": 14,
+    "imagen": "",
+    "descripcion": "Breker riel 1x32 A Schneider: breaker unipolar de 32 amperios para riel DIN, marca Schneider; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:03:39.398Z",
+    "updated_at": "2025-07-29T02:03:39.398Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 79,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker riel 2x32 Schneider",
+    "codigo": "AUT-035",
+    "precio": "32804.00",
+    "cantidad": 6,
+    "imagen": "",
+    "descripcion": "Breker riel 2x32 A Schneider: breaker bipolar de 32 amperios para riel DIN, marca Schneider; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:04:13.839Z",
+    "updated_at": "2025-07-29T02:04:13.839Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 80,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker riel 2x40 Schneider",
+    "codigo": "AUT-036",
+    "precio": "32804.00",
+    "cantidad": 6,
+    "imagen": "",
+    "descripcion": "Breker riel 2x40 A Schneider: breaker bipolar de 40 amperios para montaje en riel DIN, marca Schneider; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:04:49.743Z",
+    "updated_at": "2025-07-29T02:04:49.743Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 81,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker riel 3x32 Schneider",
+    "codigo": "AUT-037",
+    "precio": "44480.00",
+    "cantidad": 4,
+    "imagen": "",
+    "descripcion": "Breker riel 3x32 A Schneider: breaker tripolar de 32 amperios para riel DIN, marca Schneider; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:05:29.411Z",
+    "updated_at": "2025-07-29T02:05:29.411Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 82,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker Stech de 20 A",
+    "codigo": "AUT-038",
+    "precio": "25020.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker Stech de 20 A: breaker unipolar de 20 amperios, marca Stech; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:06:30.055Z",
+    "updated_at": "2025-07-29T02:06:30.055Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 83,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker Stech de 3x32",
+    "codigo": "AUT-039",
+    "precio": "37530.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker Stech de 3x32: breaker tripolar de 32 amperios, marca Stech; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:07:04.297Z",
+    "updated_at": "2025-07-29T02:07:04.297Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 84,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker Stech de 3x62",
+    "codigo": "AUT-040",
+    "precio": "36974.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker Stech de 3x62: breaker tripolar de 62 amperios, marca Stech; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:07:38.961Z",
+    "updated_at": "2025-07-29T02:07:38.961Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 85,
+  "fields": {
+    "categoria": 5,
+    "nombre": "Breker Stech de 40 C",
+    "codigo": "AUT-041",
+    "precio": "25020.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Breker Stech de 40 C: breaker unipolar de 40 amperios, curva C, marca Stech; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T02:08:07.965Z",
+    "updated_at": "2025-07-29T02:08:07.965Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 86,
+  "fields": {
+    "categoria": 6,
+    "nombre": "Borna 1 hueco bimetálica N.º 4 CU Conectores und",
+    "codigo": "BOR-001",
+    "precio": "8176.47",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Borna 1 hueco bimetálica N.º 4 CU Conectores: conector bimetálico de un solo orificio, para cable de calibre N.º 4, marca CU Conectores; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:07:57.467Z",
+    "updated_at": "2025-07-29T12:07:57.467Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 87,
+  "fields": {
+    "categoria": 6,
+    "nombre": "Borna 1 hueco bimetálica N.º 6 pulg",
+    "codigo": "BOR-002",
+    "precio": "5840.34",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Borna 1 hueco bimetálica N.º 6 pulg: conector bimetálico de un orificio, para cable calibre N.º 6; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:08:46.616Z",
+    "updated_at": "2025-07-29T12:08:46.616Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 88,
+  "fields": {
+    "categoria": 6,
+    "nombre": "Borna terminal 1 hueco N.º 4 CU 1/4 und",
+    "codigo": "BOR-003",
+    "precio": "2143.71",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Borna terminal 1 hueco N.º 4 CU 1/4: terminal de un orificio para cable N.º 4, con ojo de 1/4\", material cobre; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:09:41.915Z",
+    "updated_at": "2025-07-29T12:09:41.915Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 89,
+  "fields": {
+    "categoria": 6,
+    "nombre": "Borna terminal cobre estañado 1H N.º 6 AWG brazo largo 1/4\"",
+    "codigo": "BOR-004",
+    "precio": "1375.35",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Borna terminal cobre estañado 1H N.º 6 AWG brazo largo 1/4\": terminal de un orificio, calibre 6 AWG, de cobre estañado, brazo largo y ojo de 1/4\"; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:10:36.911Z",
+    "updated_at": "2025-07-29T12:10:36.911Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 90,
+  "fields": {
+    "categoria": 6,
+    "nombre": "Borna terminal 1 hueco N.º 8 und",
+    "codigo": "BOR-005",
+    "precio": "1518.53",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Borna terminal 1 hueco N.º 8: terminal de un orificio para cable calibre N.º 8; unidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:11:20.703Z",
+    "updated_at": "2025-07-29T12:11:20.703Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 91,
+  "fields": {
+    "categoria": 7,
+    "nombre": "Arandela redonda plana 5/8 galvanizada",
+    "codigo": "HER-001",
+    "precio": "500.40",
+    "cantidad": 5,
+    "imagen": "",
+    "descripcion": "Elemento metálico en forma de disco con orificio central, usado para distribuir la presión de una tuerca o tornillo. El galvanizado la protege contra la corrosión. Tamaño: 5/8\".",
+    "is_active": true,
+    "created_at": "2025-07-29T12:16:21.548Z",
+    "updated_at": "2025-07-29T12:16:21.548Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 92,
+  "fields": {
+    "categoria": 7,
+    "nombre": "Arrancador Voltio 4-6 110V",
+    "codigo": "HER-002",
+    "precio": "128486.04",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Controla el encendido de motores de 4 a 6A a 110V, con protección contra sobrecargas.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:17:42.173Z",
+    "updated_at": "2025-07-29T12:17:42.173Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 93,
+  "fields": {
+    "categoria": 7,
+    "nombre": "Base fotocelda und",
+    "codigo": "HER-003",
+    "precio": "7656.12",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Soporte para instalar fotoceldas que controlan el encendido automático de luces.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:18:22.254Z",
+    "updated_at": "2025-07-29T12:18:22.254Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 94,
+  "fields": {
+    "categoria": 7,
+    "nombre": "Boquilla MT de 1 1/2",
+    "codigo": "HER-004",
+    "precio": "7005.60",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "",
+    "is_active": true,
+    "created_at": "2025-07-29T12:18:52.463Z",
+    "updated_at": "2025-07-29T12:18:52.463Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 95,
+  "fields": {
+    "categoria": 7,
+    "nombre": "Aislador carrete 3 ANSI 53-2 und",
+    "codigo": "HER-005",
+    "precio": "5840.34",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Aislador tipo carrete usado en líneas eléctricas, modelo ANSI 53-2, para soportar y aislar conductores.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:19:27.221Z",
+    "updated_at": "2025-07-29T12:19:27.221Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 96,
+  "fields": {
+    "categoria": 8,
+    "nombre": "Bolsa de hidrogel x 15 kg und",
+    "codigo": "MIS-001",
+    "precio": "26865.54",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Bolsa con 15 kg de hidrogel absorbente, usado para retener humedad en instalaciones eléctricas subterráneas.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:21:14.407Z",
+    "updated_at": "2025-07-29T12:21:14.407Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 97,
+  "fields": {
+    "categoria": 8,
+    "nombre": "Bolsa de hidrogel polo a tierra",
+    "codigo": "MIS-002",
+    "precio": "40935.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Hidrogel especializado para sistemas de puesta a tierra, mejora la conductividad y retiene la humedad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:21:49.885Z",
+    "updated_at": "2025-07-29T12:21:49.885Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 98,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable antifraude bifásico aluminio mts",
+    "codigo": "AYC-008",
+    "precio": "12788.00",
+    "cantidad": 77,
+    "imagen": "",
+    "descripcion": "Cable de aluminio para conexiones bifásicas, con diseño antifraude para evitar manipulaciones.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:24:30.958Z",
+    "updated_at": "2025-07-29T12:24:30.959Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 99,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable antifraude 3x6+6 aluminio trifásico mts",
+    "codigo": "AYC-009",
+    "precio": "23127.74",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable trifásico de aluminio 3x6+6 mm², con sistema antifraude, ideal para redes eléctricas seguras.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:25:10.383Z",
+    "updated_at": "2025-07-29T12:25:10.383Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 100,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable antifraude 3x6+1x8 trébol mts",
+    "codigo": "AYC-010",
+    "precio": "53373.41",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable tipo trébol con conductores 3x6 mm² y 1x8 mm² en aluminio, diseño antifraude para instalaciones trifásicas seguras.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:26:00.039Z",
+    "updated_at": "2025-07-29T12:26:00.039Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 101,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable antifraude de 3x4+6 trifásico",
+    "codigo": "AYC-011",
+    "precio": "80620.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable trifásico antifraude de aluminio 3x4 mm² + neutro de 6 mm², usado en redes eléctricas para mayor seguridad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:26:44.673Z",
+    "updated_at": "2025-07-29T12:26:44.673Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 102,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU aislado THHN/THWN N.º 10",
+    "codigo": "AYC-012",
+    "precio": "4587.00",
+    "cantidad": 81,
+    "imagen": "",
+    "descripcion": "Cable de cobre N.º 10 con aislamiento THHN/THWN, ideal para instalaciones eléctricas en interiores o exteriores.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:28:07.840Z",
+    "updated_at": "2025-07-29T12:28:07.840Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 103,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU aislado THHN/THWN N.º 12",
+    "codigo": "AYC-013",
+    "precio": "2509.33",
+    "cantidad": 343,
+    "imagen": "",
+    "descripcion": "Cable de cobre N.º 12 con aislamiento THHN/THWN, usado en circuitos de alumbrado y tomacorrientes.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:28:52.799Z",
+    "updated_at": "2025-07-29T12:28:52.799Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 104,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU aislado THHN/THWN N.º 8",
+    "codigo": "AYC-014",
+    "precio": "7784.00",
+    "cantidad": 82,
+    "imagen": "",
+    "descripcion": "Cable de cobre N.º 8 con aislamiento THHN/THWN, usado para alimentación de equipos y circuitos de mayor carga.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:29:40.514Z",
+    "updated_at": "2025-07-29T12:29:44.372Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 105,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU dúplex 2x10",
+    "codigo": "AYC-015",
+    "precio": "10512.61",
+    "cantidad": 18,
+    "imagen": "",
+    "descripcion": "Cable dúplex de cobre 2x10 AWG, ideal para acometidas eléctricas en sistemas monofásicos.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:30:29.010Z",
+    "updated_at": "2025-07-29T12:30:29.010Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 106,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU dúplex 2x12",
+    "codigo": "AYC-016",
+    "precio": "6950.00",
+    "cantidad": 32,
+    "imagen": "",
+    "descripcion": "Cable dúplex de cobre 2x12 AWG, utilizado en acometidas residenciales y conexiones monofásicas.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:31:01.269Z",
+    "updated_at": "2025-07-29T12:31:01.269Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 107,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU dúplex SPT 60° 300V 2x14 AWG",
+    "codigo": "AYC-017",
+    "precio": "4031.00",
+    "cantidad": 238,
+    "imagen": "",
+    "descripcion": "Cable dúplex de cobre 2x14 AWG tipo SPT, soporta hasta 60 °C y 300V, usado en electrodomésticos y extensiones.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:31:46.099Z",
+    "updated_at": "2025-07-29T22:44:15.949Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 108,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU dúplex SPT 60° 300V 2x16 AWG",
+    "codigo": "AYC-018",
+    "precio": "3058.00",
+    "cantidad": 82,
+    "imagen": "",
+    "descripcion": "Cable dúplex de cobre 2x16 AWG tipo SPT, para usos domésticos, soporta 60 °C y hasta 300V.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:32:19.903Z",
+    "updated_at": "2025-07-29T22:44:05.858Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 109,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU dúplex 2x18 AWG 60° 300V",
+    "codigo": "AYC-019",
+    "precio": "1987.70",
+    "cantidad": 103,
+    "imagen": "",
+    "descripcion": "Cable dúplex de cobre 2x18 AWG, para baja tensión en equipos electrónicos, soporta 60 °C y 300V.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:32:57.926Z",
+    "updated_at": "2025-07-29T12:32:57.926Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 110,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU encauchetado 2x14 AWG",
+    "codigo": "AYC-020",
+    "precio": "6394.00",
+    "cantidad": 10,
+    "imagen": "",
+    "descripcion": "Cable de cobre 2x14 AWG con cubierta encauchetada, flexible y resistente, ideal para uso rudo y ambientes húmedos.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:33:39.675Z",
+    "updated_at": "2025-07-29T12:33:39.675Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 111,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU encauchetado 2x16 AWG",
+    "codigo": "AYC-021",
+    "precio": "5004.00",
+    "cantidad": 15,
+    "imagen": "",
+    "descripcion": "Cable de cobre 2x16 AWG con aislamiento encauchetado, flexible y duradero, usado en herramientas y equipos portátiles.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:34:10.485Z",
+    "updated_at": "2025-07-29T12:34:10.485Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 112,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU encauchetado 3x10",
+    "codigo": "AYC-022",
+    "precio": "17305.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable de cobre 3x10 AWG con cubierta encauchetada, resistente y flexible, ideal para maquinaria y ambientes exigentes.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:34:46.075Z",
+    "updated_at": "2025-07-29T12:34:46.075Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 113,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU encauchetado 3x16",
+    "codigo": "AYC-023",
+    "precio": "6449.60",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable de cobre 3x16 AWG con cubierta encauchetada, usado en conexiones portátiles y entornos industriales.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:35:17.048Z",
+    "updated_at": "2025-07-29T12:35:17.048Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 114,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU encauchetado 3x18",
+    "codigo": "AYC-024",
+    "precio": "4378.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable de cobre 3x18 AWG con aislamiento encauchetado, flexible y resistente, ideal para equipos livianos y portátiles.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:35:53.052Z",
+    "updated_at": "2025-07-29T12:35:53.052Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 115,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable CU soldador N.º 2 600V AmericanoToughFlex und",
+    "codigo": "AYC-025",
+    "precio": "45554.62",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable de cobre N.º 2 tipo soldador, 600V, ToughFlex americano, flexible y resistente para equipos de soldadura.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:36:24.444Z",
+    "updated_at": "2025-07-29T12:36:24.444Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 116,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable de cobre aislado 7 hilos N.º 4",
+    "codigo": "AYC-026",
+    "precio": "16586.55",
+    "cantidad": 5,
+    "imagen": "",
+    "descripcion": "Cable de cobre N.º 4 con 7 hilos, aislado, usado en acometidas y alimentaciones eléctricas de media capacidad.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:37:00.866Z",
+    "updated_at": "2025-07-29T12:37:00.866Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 117,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable N.º 6 mts",
+    "codigo": "AYC-027",
+    "precio": "13524.70",
+    "cantidad": 23,
+    "imagen": "",
+    "descripcion": "Cable N.º 6, usado en alimentaciones eléctricas residenciales o comerciales, ideal para cargas medianas.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:37:34.215Z",
+    "updated_at": "2025-07-29T12:37:34.215Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 118,
+  "fields": {
+    "categoria": 3,
+    "nombre": "Cable soldador 4 AWG 600V Americano mts",
+    "codigo": "AYC-028",
+    "precio": "27916.80",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Cable soldador 4 AWG, 600V, tipo americano, flexible y resistente, ideal para equipos de soldadura industriales.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:38:07.927Z",
+    "updated_at": "2025-07-29T12:38:07.927Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 119,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja 10x10 con refuerzo",
+    "codigo": "CAJ-001",
+    "precio": "3475.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja metálica 10x10 cm con refuerzo, usada para alojar conexiones eléctricas y brindar mayor resistencia.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:41:17.962Z",
+    "updated_at": "2025-07-29T12:41:17.962Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 120,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de 2x4 Radwell",
+    "codigo": "CAJ-002",
+    "precio": "15012.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja metálica de 2x4\", marcas Radwell o Radxon, para instalar interruptores o tomacorrientes eléctricos.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:41:55.210Z",
+    "updated_at": "2025-07-29T12:42:18.942Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 121,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de 2x4 Radxon",
+    "codigo": "CAJ-003",
+    "precio": "4503.60",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja metálica de 2x4\", marcas Radwell o Radxon, para instalar interruptores o tomacorrientes eléctricos.",
+    "is_active": true,
+    "created_at": "2025-07-29T12:43:02.230Z",
+    "updated_at": "2025-07-29T12:43:02.230Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 122,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de automáticos de 2 circuitos",
+    "codigo": "CAJ-004",
+    "precio": "32595.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja para dos automáticos, permite alojar y proteger hasta 2 circuitos eléctricos.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:09:16.566Z",
+    "updated_at": "2025-07-29T13:09:16.566Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 123,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de automáticos de 3 circuitos",
+    "codigo": "CAJ-005",
+    "precio": "40796.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja para tres automáticos, diseñada para proteger y organizar hasta 3 circuitos eléctricos.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:09:53.672Z",
+    "updated_at": "2025-07-29T13:09:53.672Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 124,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de automáticos de 4 circuitos",
+    "codigo": "CAJ-006",
+    "precio": "46634.50",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja para cuatro automáticos, usada para distribuir y proteger hasta 4 circuitos eléctricos.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:10:36.625Z",
+    "updated_at": "2025-07-29T13:10:36.625Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 125,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de automáticos de 4 circuitos monofásico Icafel und",
+    "codigo": "CAJ-007",
+    "precio": "34594.32",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja Icafel para 4 automáticos monofásicos, ideal para distribución y protección de circuitos residenciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:11:56.303Z",
+    "updated_at": "2025-07-29T13:11:56.303Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 126,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de automáticos de 6 circuitos monofásico Icafel und",
+    "codigo": "CAJ-008",
+    "precio": "44036.59",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja Icafel para 6 automáticos monofásicos, usada en la distribución y protección de instalaciones eléctricas.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:12:42.071Z",
+    "updated_at": "2025-07-29T13:12:42.071Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 127,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de automáticos de 6 circuitos",
+    "codigo": "CAJ-009",
+    "precio": "52820.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja para seis automáticos, permite organizar y proteger hasta 6 circuitos eléctricos.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:13:44.499Z",
+    "updated_at": "2025-07-29T13:13:44.499Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 128,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja de protección riel 1 y 2 circuitos Ciles",
+    "codigo": "CAJ-010",
+    "precio": "15184.87",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja de protección Ciles para 1 o 2 circuitos, con riel para montar automáticos, usada en instalaciones compactas.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:14:37.393Z",
+    "updated_at": "2025-07-29T13:14:37.393Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 129,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja distribución 15x15x11 Induma",
+    "codigo": "CAJ-011",
+    "precio": "13900.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja de distribución Induma 15x15x11 cm, utilizada para alojar y proteger conexiones eléctricas en instalaciones interiores o exteriores.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:15:05.768Z",
+    "updated_at": "2025-07-29T13:15:05.768Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 130,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja paso 10x10 Mercury",
+    "codigo": "CAJ-012",
+    "precio": "6463.50",
+    "cantidad": 4,
+    "imagen": "",
+    "descripcion": "Caja de paso Mercury 10x10 cm, usada para canalizar y proteger empalmes o derivaciones eléctricas.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:15:51.203Z",
+    "updated_at": "2025-07-29T13:15:51.203Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 131,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja paso 20x20x8 Voltio",
+    "codigo": "CAJ-013",
+    "precio": "30163.00",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Caja de paso Voltio 20x20x8 cm, ideal para alojar y proteger conexiones eléctricas en sistemas de canalización.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:17:02.328Z",
+    "updated_at": "2025-07-29T13:17:02.328Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 132,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja para contador monofásico",
+    "codigo": "CAJ-014",
+    "precio": "97300.00",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Caja para contador monofásico, diseñada para alojar medidores de energía en instalaciones residenciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:17:32.984Z",
+    "updated_at": "2025-07-29T13:17:32.984Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 133,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja para contador monofásico metalica",
+    "codigo": "CAJ-015",
+    "precio": "70195.00",
+    "cantidad": 3,
+    "imagen": "",
+    "descripcion": "Caja metálica para contador monofásico, brinda protección y soporte al medidor en instalaciones residenciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:18:57.875Z",
+    "updated_at": "2025-07-29T13:18:57.876Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 134,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja para contador monofásico policarbonato",
+    "codigo": "CAJ-016",
+    "precio": "45592.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja de policarbonato para contador monofásico, resistente a impactos y clima, ideal para uso exterior.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:19:59.733Z",
+    "updated_at": "2025-07-29T13:19:59.733Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 135,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja para contador monofásica 2 cuentas vertical",
+    "codigo": "CAJ-017",
+    "precio": "116806.72",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Caja monofásica vertical para 2 medidores, permite instalar y proteger dos cuentas eléctricas en un solo gabinete.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:21:08.492Z",
+    "updated_at": "2025-07-29T13:21:14.108Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 136,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja para contador trifásico metalica",
+    "codigo": "CAJ-018",
+    "precio": "114120.17",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Caja metálica para contador trifásico, robusta y segura, ideal para alojar medidores en sistemas eléctricos industriales.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:23:18.281Z",
+    "updated_at": "2025-07-29T13:23:18.281Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 137,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja para contador trifásico policarbonato",
+    "codigo": "CAJ-019",
+    "precio": "70195.00",
+    "cantidad": 0,
+    "imagen": "",
+    "descripcion": "Caja de policarbonato para contador trifásico, resistente a la intemperie y a impactos, ideal para instalaciones exteriores.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:24:46.182Z",
+    "updated_at": "2025-07-29T13:24:46.182Z"
+  }
+},
+{
+  "model": "products.product",
+  "pk": 138,
+  "fields": {
+    "categoria": 9,
+    "nombre": "Caja policarbonato medidor monofásico EMTI und",
+    "codigo": "CAJ-020",
+    "precio": "43249.85",
+    "cantidad": 1,
+    "imagen": "",
+    "descripcion": "Caja de policarbonato EMTI para medidor monofásico, ligera y duradera, ideal para instalaciones residenciales.",
+    "is_active": true,
+    "created_at": "2025-07-29T13:26:29.223Z",
+    "updated_at": "2025-07-29T13:26:29.223Z"
+  }
+}
+]

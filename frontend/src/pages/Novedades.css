@@ -8,6 +8,29 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
+/* ===== CONTENEDOR CON SEPARACIÓN ===== */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem; /* Separación entre tarjetas */
+  margin: 0; /* Elimina márgenes negativos */
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+}
+
+/* ===== COLUMNAS RESPONSIVE ===== */
+.col-md-6 {
+  flex: 0 1 calc(50% - 1rem); /* 2 columnas con separación */
+  max-width: calc(50% - 1rem);
+}
+
+@media (min-width: 768px) {
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+}
+
 /* ===== Tarjeta general ===== */
 .card {
   display: flex;
@@ -118,14 +141,6 @@ body.dark-mode .btn-ver-mas:hover {
   color: #001152;
 }
 
-/* ===== Responsive ===== */
-@media (min-width: 768px) {
-  .col-md-6 {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
-}
-
 /* ===== Responsive ajustes ===== */
 @media (max-width: 768px) {
   .titulo-noticias {
@@ -148,16 +163,24 @@ body.dark-mode .btn-ver-mas:hover {
   .card-text {
     font-size: 0.9rem;
   }
+
+  .col-md-6 {
+    flex: 0 1 100%; /* 1 columna en móvil */
+    max-width: 100%;
+  }
+
+  .row {
+    gap: 1.5rem; /* Menor separación en móvil */
+  }
 }
 
-/* Utilidades */
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -0.75rem;
-  margin-right: -0.75rem;
+@media (max-width: 576px) {
+  .row {
+    gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
+  }
 }
 
+/* ===== Enlaces sin decoración ===== */
 a {
   text-decoration: none;
 }
