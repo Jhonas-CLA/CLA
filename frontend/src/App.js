@@ -12,6 +12,12 @@ import Login from './pages/Login';
 import CategoriaDetalle from './pages/CategoriaDetalle';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+<<<<<<< HEAD
+=======
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
+
+>>>>>>> 06c5f0cbf14cad4f97ac9a0a1e4551de3bfa7dfd
 
 function App() {
   return (
@@ -28,6 +34,11 @@ function App() {
         <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+<<<<<<< HEAD
+=======
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/analiticas" element={<UserDashboard />} />
+>>>>>>> 06c5f0cbf14cad4f97ac9a0a1e4551de3bfa7dfd
       </Routes>
       <Footer />
     </Router>

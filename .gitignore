@@ -19,6 +19,10 @@ db.sqlite3
 # Ignorar archivos de migraciones compilados
 */migrations/__pycache__/
 *.mo
+*.py[cod]
+*.sqlite3
+*.log
+.env
 
 # ----------------------------
 # REACT (Frontend - Node)
@@ -39,6 +43,9 @@ pnpm-debug.log*
 # Ignorar archivos de build si los generas localmente
 frontend/build/
 dist/
+*.log
+*.lock
+.env.local
 
 # ----------------------------
 # SISTEMA Y EDITORES
