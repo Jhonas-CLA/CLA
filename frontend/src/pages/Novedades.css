@@ -6,6 +6,8 @@
   margin-bottom: 2.5rem;
   text-align: center;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+<<<<<<< HEAD
+=======
 }
 
 /* ===== CONTENEDOR CON SEPARACIÓN ===== */
@@ -46,6 +48,7 @@
   .row {
     gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
   }
+>>>>>>> 06c5f0cbf14cad4f97ac9a0a1e4551de3bfa7dfd
 }
 
 /* ===== Tarjeta general ===== */
@@ -156,6 +159,17 @@ body.dark-mode .btn-ver-mas {
 body.dark-mode .btn-ver-mas:hover {
   background-color: #fff;
   color: #001152;
+<<<<<<< HEAD
+}
+
+/* ===== Responsive ===== */
+@media (min-width: 768px) {
+  .col-md-6 {
+    flex: 0 0 50%;
+    max-width: 50%;
+  }
+=======
+>>>>>>> 06c5f0cbf14cad4f97ac9a0a1e4551de3bfa7dfd
 }
 
 /* ===== Responsive ajustes ===== */
@@ -182,7 +196,18 @@ body.dark-mode .btn-ver-mas:hover {
   }
 }
 
+<<<<<<< HEAD
+/* Utilidades */
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
+}
+
+=======
 /* ===== Enlaces sin decoración ===== */
+>>>>>>> 06c5f0cbf14cad4f97ac9a0a1e4551de3bfa7dfd
 a {
   text-decoration: none;
 }
