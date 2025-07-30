@@ -6,6 +6,8 @@ __pycache__/
 *.sqlite3
 *.log
 .env
+*.pyc
+
 
 # ----------------------------
 # REACT (Frontend - Node)
