@@ -6,7 +6,6 @@ from django.core.mail import send_mail
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.contrib.auth import authenticate
 
 @csrf_exempt
 def enviar_email_reset(request):
@@ -56,20 +55,3 @@ def resetear_password(request, uidb64, token):
             return JsonResponse({'error': 'Error al cambiar la contraseña'}, status=500)
 
     return JsonResponse({'error': 'Método no permitido'}, status=405)
-
-@csrf_exempt
-def login_view(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        email = data.get('email')
-        password = data.get('password')
-
-        user = authenticate(request, username=email, password=password)
-        if user is not None:
-            return JsonResponse({
-                'success': True,
-                'role': 'admin' if user.is_staff else 'user'
-            })
-        else:
-            return JsonResponse({'success': False, 'message': 'Credenciales inválidas'}, status=401)
-
