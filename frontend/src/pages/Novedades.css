@@ -1,26 +1,25 @@
 /* ===== Título principal ===== */
 .titulo-noticias {
   color: #001152;
-  font-size: 2.8rem; /* Tamaño intermedio entre ambas versiones */
+  font-size: 2.8rem;
   font-weight: 800;
   margin-bottom: 2.5rem;
   text-align: center;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== CONTENEDOR CON SEPARACIÓN ===== */
+/* ===== Contenedor con separación ===== */
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 2rem; /* Separación entre tarjetas */
-  margin: 0; /* Elimina márgenes negativos */
+  gap: 2rem;
   margin-left: -0.75rem;
   margin-right: -0.75rem;
 }
 
-/* ===== COLUMNAS RESPONSIVE ===== */
+/* ===== Columnas responsivas ===== */
 .col-md-6 {
-  flex: 0 1 calc(50% - 1rem); /* 2 columnas con separación */
+  flex: 0 1 calc(50% - 1rem);
   max-width: calc(50% - 1rem);
 }
 
@@ -28,6 +27,44 @@
   .col-md-6 {
     flex: 0 0 50%;
     max-width: 50%;
+  }
+}
+
+@media (max-width: 768px) {
+  .col-md-6 {
+    flex: 0 1 100%;
+    max-width: 100%;
+  }
+
+  .row {
+    gap: 1.5rem;
+  }
+
+  .titulo-noticias {
+    font-size: 2.2rem;
+  }
+
+  .card-img-top {
+    height: 180px;
+  }
+
+  .btn-ver-mas {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .row {
+    gap: 1rem;
   }
 }
 
@@ -63,7 +100,7 @@
   transform: scale(1.04);
 }
 
-/* ===== Cuerpo ===== */
+/* ===== Cuerpo de la tarjeta ===== */
 .card-body {
   display: flex;
   flex-direction: column;
@@ -139,45 +176,6 @@ body.dark-mode .btn-ver-mas {
 body.dark-mode .btn-ver-mas:hover {
   background-color: #fff;
   color: #001152;
-}
-
-/* ===== Responsive ajustes ===== */
-@media (max-width: 768px) {
-  .titulo-noticias {
-    font-size: 2.2rem;
-  }
-
-  .card-img-top {
-    height: 180px;
-  }
-
-  .btn-ver-mas {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-  }
-
-  .card-title {
-    font-size: 1rem;
-  }
-
-  .card-text {
-    font-size: 0.9rem;
-  }
-
-  .col-md-6 {
-    flex: 0 1 100%; /* 1 columna en móvil */
-    max-width: 100%;
-  }
-
-  .row {
-    gap: 1.5rem; /* Menor separación en móvil */
-  }
-}
-
-@media (max-width: 576px) {
-  .row {
-    gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
-  }
 }
 
 /* ===== Enlaces sin decoración ===== */
