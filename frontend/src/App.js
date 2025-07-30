@@ -14,6 +14,8 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
         <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/analiticas" element={<UserDashboard />} />
       </Routes>
       <Footer />
     </Router>
