@@ -12,6 +12,8 @@ import Login from './pages/Login';
 import CategoriaDetalle from './pages/CategoriaDetalle';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 function App() {
   return (
