@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Home from './pages/Home';
@@ -12,11 +12,17 @@ import Login from './pages/Login';
 import CategoriaDetalle from './pages/CategoriaDetalle';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
 
-function App() {
+function AppContent() {
+  const location = useLocation();
+  const isDashboard = location.pathname.startsWith('/admin') || location.pathname.startsWith('/analiticas');
+
   return (
-    <Router>
-      <Navbar />
+    <>
+      {!isDashboard && <Navbar />}
+      
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quienes-somos" element={<QuienesSomos />} />
@@ -24,12 +30,23 @@ function App() {
         <Route path="/novedades" element={<Novedades />} />
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/carrito" element={<Carrito />} />
-        <Route path="/perfil" element={<Login />} />
+        <Route path="/Login" element={<Login />} />
         <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/analiticas" element={<UserDashboard />} />
       </Routes>
-      <Footer />
+
+      {!isDashboard && <Footer />}
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }
