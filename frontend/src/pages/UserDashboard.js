@@ -97,57 +97,7 @@ function UserDashboard() {
             <span>Salir</span>
           </div>
         </div>
-      </div>
-
-      {/* CONTENIDO PRINCIPAL */}
-      <div className={`main-content ${isOpen ? 'shifted' : ''}`}>
-        <div className="welcome-section">
-          <h1>Bienvenido al Dashboard</h1>
-          <p>Gestiona tu negocio eléctrico de manera eficiente.</p>
-        </div>
-        
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="bx bx-user"></i>
             </div>
-            <div className="stat-info">
-              <h3>156</h3>
-              <p>Usuarios Activos</p>
-            </div>
-          </div>
-          
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="bx bx-package"></i>
-            </div>
-            <div className="stat-info">
-              <h3>2,847</h3>
-              <p>Productos</p>
-            </div>
-          </div>
-          
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="bx bx-shopping-bag"></i>
-            </div>
-            <div className="stat-info">
-              <h3>432</h3>
-              <p>Pedidos</p>
-            </div>
-          </div>
-          
-          <div className="stat-card">
-            <div className="stat-icon">
-              <i className="bx bx-dollar"></i>
-            </div>
-            <div className="stat-info">
-              <h3>$45,280</h3>
-              <p>Ingresos</p>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   );
 }
