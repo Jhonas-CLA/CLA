@@ -73,3 +73,9 @@ frontend/node_modules/.cache/
 # Archivos Python
 *.pyc
 __pycache__/
+
+# Archivos.pack
+node_modules/
+*.pack
+*.eslintcache
+db.sqlite3
