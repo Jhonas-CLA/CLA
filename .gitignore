@@ -1,8 +1,13 @@
 # ----------------------------
 # DJANGO (Backend - Python)
 # ----------------------------
+<<<<<<< HEAD
+pycache/
+*/pycache/
+=======
 __pycache__/
 */__pycache__/
+>>>>>>> origin/develop
 *.py[cod]
 *.sqlite3
 *.log
@@ -17,12 +22,18 @@ db.sqlite3
 *.json~
 
 # Ignorar archivos de migraciones compilados
+<<<<<<< HEAD
+*/migrations/pycache/
+=======
 */migrations/__pycache__/
+>>>>>>> origin/develop
 *.mo
 *.py[cod]
 *.sqlite3
 *.log
 .env
+*.pyc
+
 
 # ----------------------------
 # REACT (Frontend - Node)
@@ -57,3 +68,22 @@ Thumbs.db
 *.swp
 *.swo
 *.bak
+
+# Archivos de configuración
+backend/backend/settings.py
+backend/backend/urls.py
+backend/backend/views.py
+backend/db.sqlite3
+
+# Cache de node
+frontend/node_modules/
+frontend/node_modules/.cache/
+
+# Archivos Python
+*.pyc
+pycache/
+
+# Archivos.pack
+node_modules/
+*.pack
+*.eslintcache
