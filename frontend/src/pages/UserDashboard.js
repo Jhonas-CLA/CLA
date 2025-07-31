@@ -4,16 +4,28 @@ import './UserDashboard.css';
 function UserDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
+<<<<<<< HEAD
+  // Función para alternar el menú
+=======
+>>>>>>> master
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+<<<<<<< HEAD
+  // Función para manejar click en enlaces
+=======
+>>>>>>> master
   const handleEnlaceClick = (enlace) => {
     setIsOpen(true);
     console.log(`Navegando a: ${enlace}`);
     // Aquí podrías usar: navigate(`/${enlace}`) si usas react-router
   };
 
+<<<<<<< HEAD
+  //  Función para manejar logout
+=======
+>>>>>>> master
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de que quieres salir?')) {
       console.log('Usuario desconectado');
@@ -22,6 +34,10 @@ function UserDashboard() {
     }
   };
 
+<<<<<<< HEAD
+  // Cargar iconos de Boxicons al montar el componente
+=======
+>>>>>>> master
   useEffect(() => {
     if (!document.querySelector('link[href*="boxicons"]')) {
       const link = document.createElement('link');
@@ -54,29 +70,14 @@ function UserDashboard() {
 
         {/* MENU */}
         <div className="menu">
-          <div className="enlace" onClick={() => handleEnlaceClick('usuarios')}>
+          <div className="enlace" onClick={() => handleEnlaceClick('Favoritos')}>
             <i className="bx bx-user"></i>
-            <span>Usuarios</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('proveedores')}>
-            <i className="bx bx-group"></i>
-            <span>Proveedores</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('analiticos')}>
-            <i className="bx bx-bar-chart-alt-2"></i>
-            <span>Analíticos</span>
+            <span>Favoritos</span>
           </div>
 
           <div className="enlace" onClick={() => handleEnlaceClick('productos')}>
             <i className="bx bx-package"></i>
             <span>Productos</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('pedidos')}>
-            <i className="bx bx-shopping-bag"></i>
-            <span>Pedidos</span>
           </div>
 
           <div className="enlace" onClick={() => handleEnlaceClick('configuracion')}>

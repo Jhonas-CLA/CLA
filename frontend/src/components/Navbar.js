@@ -206,10 +206,10 @@ function Navbar() {
 
           {/* Imagen de contacto (usuario) */}
           <Link 
-            to="/perfil" 
-            className={`action-icon profile-icon ${isActiveLink('/perfil') ? 'active' : ''}`}
+            to="/Login" 
+            className={`action-icon profile-icon ${isActiveLink('/Login') ? 'active' : ''}`}
             onClick={closeMenu}
-            title="Perfil"
+            title="Login"
           >
             <div className="profile-circle" style={{ width: '60px', height: '60px', overflow: 'hidden', borderRadius: '50%' }}>
               <img
