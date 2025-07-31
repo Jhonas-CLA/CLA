@@ -4,18 +4,18 @@ import './UserDashboard.css';
 function UserDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
-  // 👉 Función para alternar el menú
+  // Función para alternar el menú
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  // 👉 Función para manejar click en enlaces
+  // Función para manejar click en enlaces
   const handleEnlaceClick = (enlace) => {
     setIsOpen(true);
     console.log(`Navegando a: ${enlace}`);
   };
 
-  // 👉 Función para manejar logout
+  //  Función para manejar logout
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de que quieres salir?')) {
       console.log('Usuario desconectado');
@@ -24,7 +24,7 @@ function UserDashboard() {
     }
   };
 
-  // 👉 Cargar iconos de Boxicons al montar el componente
+  // Cargar iconos de Boxicons al montar el componente
   useEffect(() => {
     // Verificar si ya existe el link de boxicons
     if (!document.querySelector('link[href*="boxicons"]')) {
@@ -62,29 +62,14 @@ function UserDashboard() {
 
         {/* MENU */}
         <div className="menu">
-          <div className="enlace" onClick={() => handleEnlaceClick('usuarios')}>
+          <div className="enlace" onClick={() => handleEnlaceClick('Favoritos')}>
             <i className="bx bx-user"></i>
-            <span>Usuarios</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('proveedores')}>
-            <i className="bx bx-group"></i>
-            <span>Proveedores</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('analiticos')}>
-            <i className="bx bx-bar-chart-alt-2"></i>
-            <span>Analíticos</span>
+            <span>Favoritos</span>
           </div>
 
           <div className="enlace" onClick={() => handleEnlaceClick('productos')}>
             <i className="bx bx-package"></i>
             <span>Productos</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('pedidos')}>
-            <i className="bx bx-shopping-bag"></i>
-            <span>Pedidos</span>
           </div>
 
           <div className="enlace" onClick={() => handleEnlaceClick('configuracion')}>
@@ -97,7 +82,7 @@ function UserDashboard() {
             <span>Salir</span>
           </div>
         </div>
-            </div>
+      </div>
     </div>
   );
 }
