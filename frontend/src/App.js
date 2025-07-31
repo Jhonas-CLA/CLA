@@ -16,10 +16,6 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ShoppingCartElectrical from './pages/Carrito';
 
-// Dashboards
-import AdminDashboard from './pages/AdminDashboard';
-import UserDashboard from './pages/UserDashboard';
-
 function App() {
   return (
     <Router>

@@ -104,16 +104,11 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "http://localhost:3000",  # o donde esté tu frontend
+    "http://127.0.0.1:3000"
 ]
-
-# Backend de autenticación por correo
-AUTHENTICATION_BACKENDS = [
-    'accounts.auth_backends.EmailBackend',
-    'django.contrib.auth.backends.ModelBackend',  # Opción de respaldo si decides permitir username también
-]
-
-# Clave primaria por defecto
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+    )
+}

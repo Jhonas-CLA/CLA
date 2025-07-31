@@ -1,18 +1,8 @@
 # ----------------------------
 # DJANGO (Backend - Python)
 # ----------------------------
-<<<<<<< HEAD
-<<<<<<< HEAD
 pycache/
 */pycache/
-=======
-__pycache__/
-*/__pycache__/
->>>>>>> origin/develop
-=======
-pycache/
-*/pycache/
->>>>>>> master
 *.py[cod]
 *.sqlite3
 *.log
@@ -27,15 +17,7 @@ db.sqlite3
 *.json~
 
 # Ignorar archivos de migraciones compilados
-<<<<<<< HEAD
-<<<<<<< HEAD
 */migrations/pycache/
-=======
-*/migrations/__pycache__/
->>>>>>> origin/develop
-=======
-*/migrations/pycache/
->>>>>>> master
 *.mo
 *.py[cod]
 *.sqlite3
@@ -95,8 +77,4 @@ pycache/
 # Archivos.pack
 node_modules/
 *.pack
-<<<<<<< HEAD
 *.eslintcache
-=======
-*.eslintcache
->>>>>>> master
