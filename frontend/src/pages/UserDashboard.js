@@ -4,29 +4,41 @@ import './UserDashboard.css';
 function UserDashboard() {
   const [isOpen, setIsOpen] = useState(false);
 
+<<<<<<< HEAD
   // Función para alternar el menú
+=======
+>>>>>>> master
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
+<<<<<<< HEAD
   // Función para manejar click en enlaces
+=======
+>>>>>>> master
   const handleEnlaceClick = (enlace) => {
     setIsOpen(true);
     console.log(`Navegando a: ${enlace}`);
+    // Aquí podrías usar: navigate(`/${enlace}`) si usas react-router
   };
 
+<<<<<<< HEAD
   //  Función para manejar logout
+=======
+>>>>>>> master
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de que quieres salir?')) {
       console.log('Usuario desconectado');
       localStorage.removeItem('token');
-      // window.location.href = '/login';
+      // window.location.href = '/login'; // Descomenta si lo necesitas
     }
   };
 
+<<<<<<< HEAD
   // Cargar iconos de Boxicons al montar el componente
+=======
+>>>>>>> master
   useEffect(() => {
-    // Verificar si ya existe el link de boxicons
     if (!document.querySelector('link[href*="boxicons"]')) {
       const link = document.createElement('link');
       link.href = 'https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css';
@@ -53,11 +65,7 @@ function UserDashboard() {
         {/* INPUT SEARCH */}
         <div className="input-search">
           <i className="bx bx-search"></i>
-          <input 
-            type="text" 
-            className="input" 
-            placeholder="Buscar..."
-          />
+          <input type="text" className="input" placeholder="Buscar..." />
         </div>
 
         {/* MENU */}
@@ -80,6 +88,56 @@ function UserDashboard() {
           <div className="enlace logout" onClick={handleLogout}>
             <i className="bx bx-exit"></i>
             <span>Salir</span>
+          </div>
+        </div>
+      </div>
+
+      {/* CONTENIDO PRINCIPAL */}
+      <div className={`main-content ${isOpen ? 'shifted' : ''}`}>
+        <div className="welcome-section">
+          <h1>Bienvenido al Dashboard</h1>
+          <p>Gestiona tu negocio eléctrico de manera eficiente.</p>
+        </div>
+
+        <div className="stats-grid">
+          <div className="stat-card">
+            <div className="stat-icon">
+              <i className="bx bx-user"></i>
+            </div>
+            <div className="stat-info">
+              <h3>156</h3>
+              <p>Usuarios Activos</p>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon">
+              <i className="bx bx-package"></i>
+            </div>
+            <div className="stat-info">
+              <h3>2,847</h3>
+              <p>Productos</p>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon">
+              <i className="bx bx-shopping-bag"></i>
+            </div>
+            <div className="stat-info">
+              <h3>432</h3>
+              <p>Pedidos</p>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon">
+              <i className="bx bx-dollar"></i>
+            </div>
+            <div className="stat-info">
+              <h3>$45,280</h3>
+              <p>Ingresos</p>
+            </div>
           </div>
         </div>
       </div>
