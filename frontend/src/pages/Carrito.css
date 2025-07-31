@@ -1,0 +1,171 @@
+/* ✅ Base universal */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ✅ Elimina decoraciones innecesarias */
+*::before,
+*::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* ✅ SVGs con buen comportamiento */
+svg {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+  overflow: visible;
+}
+
+/* ✅ Contenedor principal */
+.carrito-container {
+  position: relative;
+  overflow: hidden;
+}
+
+/* ✅ Botones limpios */
+button {
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ✅ Inputs y selects */
+input,
+select {
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 16px;
+  outline: none;
+  background-color: #f9f9f9;
+}
+
+input:focus,
+select:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+}
+
+/* ✅ Fondo blanco general */
+body,
+html {
+  background-color: white;
+  overflow-x: hidden;
+}
+
+#root {
+  background-color: white;
+  position: relative;
+  z-index: 10;
+}
+
+/* ✅ Productos en tarjetas tipo rejilla */
+.contenedor-productos {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+/* ✅ Tarjetas de productos */
+.producto-card {
+  background-color: #001152 !important;
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.producto-card:hover {
+  transform: translateY(-3px);
+}
+
+/* ✅ Textos dentro de las tarjetas */
+.producto-card h3 {
+  color: white !important;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+}
+
+.producto-card p {
+  color: #ccc !important;
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.producto-card span {
+  color: white !important;
+}
+
+/* ✅ Botón agregar dentro de tarjeta */
+.producto-card button {
+  background-color: #FFD700;
+  color: #001152;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-top: 15px;
+  align-self: flex-start;
+  cursor: pointer;
+}
+
+/* ✅ Botones de cantidad */
+.cantidad-btn.amarilla {
+  background-color: #FFD700;
+  color: #001152;
+  border-radius: 8px;
+  padding: 4px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ✅ Botón WhatsApp */
+.whatsapp-btn {
+  background-color: #25D366;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+/* ✅ Animación suave */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* ✅ Hover universal */
+.hover-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}

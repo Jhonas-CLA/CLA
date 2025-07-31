@@ -1,17 +1,50 @@
 # ----------------------------
 # DJANGO (Backend - Python)
 # ----------------------------
-__pycache__/
+_pycache_/
+*/_pycache_/
+*.py[cod]
+*.sqlite3
+*.log
+*.pot
+*.pyc
+*.pyo
+db.sqlite3
+.env
+.env.*
+
+# Ignorar fixtures temporales (opcional)
+*.json~
+
+# Ignorar archivos de migraciones compilados
+*/migrations/_pycache_/
+*.mo
 *.py[cod]
 *.sqlite3
 *.log
 .env
+*.pyc
+
 
 # ----------------------------
 # REACT (Frontend - Node)
 # ----------------------------
 node_modules/
 .cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.lock
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vite/
+
+# Ignorar archivos de build si los generas localmente
+frontend/build/
+dist/
 *.log
 *.lock
 .env.local
@@ -24,3 +57,19 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+*.swo
+*.bak
+
+# Archivos de configuración
+backend/backend/settings.py
+backend/backend/urls.py
+backend/backend/views.py
+backend/db.sqlite3
+
+# Cache de node
+frontend/node_modules/
+frontend/node_modules/.cache/
+
+# Archivos Python
+*.pyc
+_pycache_/

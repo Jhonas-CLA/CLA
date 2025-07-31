@@ -1,23 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import ProductoCard from '../components/ProductoCard';
+import React from 'react';
 import './Home.css';
 
 function Home() {
-  const [productos, setProductos] = useState([]);
-
-  useEffect(() => {
-    axios.get('http://localhost:8000/api/productos/')
-      .then(res => setProductos(res.data))
-      .catch(err => console.log("Error al cargar productos:", err));
-  }, []);
-
   const handleSolicitarEnvio = () => {
-    // Puedes personalizar este mensaje
     const mensaje = encodeURIComponent(
       'Hola! Me interesa solicitar un envío de productos eléctricos a mi ubicación en Tolima. ¿Podrían ayudarme con información sobre costos y tiempos de entrega?'
     );
-    // Reemplaza el número por el tuyo
     window.open(`https://wa.me/573123456789?text=${mensaje}`, '_blank');
   };
 
@@ -28,7 +16,7 @@ function Home() {
         <div className="hero-text">
           Les brindamos variedad y soluciones eléctricas a todos sus proyectos
         </div>
-        
+
         <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
           <rect className="ground" x="0" y="370" width="1200" height="40" />
           {/* Torre 1 */}
@@ -59,19 +47,16 @@ function Home() {
         </svg>
       </section>
 
-      {/* Productos renderizados desde backend */}
+      {/* Espacio para Carrusel u otra sección */}
       <div className="container py-5">
         <h2 className="text-center mb-4">Nuestros Productos</h2>
-        <div className="row">
-          {productos.map(prod => (
-            <div className="col-md-4 mb-4" key={prod.id}>
-              <ProductoCard producto={prod} />
-            </div>
-          ))}
+        {/* Aquí va el carrusel que hizo tu compañero */}
+        <div className="row justify-content-center">
+          {/* Carrusel o contenido visual irá aquí */}
         </div>
       </div>
 
-      {/* Sección de Envíos Actualizada */}
+      {/* Sección de Envíos */}
       <section className="envios-section py-5">
         <div className="container-fluid p-0">
           <div className="row g-0 align-items-center envio-bg">
