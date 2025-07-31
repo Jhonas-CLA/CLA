@@ -15,21 +15,14 @@ import CategoriaDetalle from './pages/CategoriaDetalle';
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 import ShoppingCartElectrical from './pages/Carrito';
+import Carrito from './pages/Carrito';
+import AdminDashboard from './pages/AdminDashboard';
+import UserDashboard from './pages/UserDashboard';
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/quienes-somos" element={<QuienesSomos />} />
-        <Route path="/categorias" element={<Categorias />} />
-        <Route path="/novedades" element={<Novedades />} />
-        <Route path="/contacto" element={<Contacto />} />
-        <Route path="/perfil" element={<Login />} />
-        <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
-        <Route path="/productos" element={<ShoppingCartElectrical />} />
         {/* Rutas con Layout (Navbar y Footer) */}
         <Route element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -38,6 +31,8 @@ function App() {
           <Route path="/novedades" element={<Novedades />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/carrito" element={<Carrito />} />
+          <Route path="/productos" element={<ShoppingCartElectrical />} /> {/* Movida aquí */}
+          <Route path="/perfil" element={<Login />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/registrarse" element={<Register />} />
           <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
