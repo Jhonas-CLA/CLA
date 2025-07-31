@@ -31,7 +31,7 @@ function App() {
           <Route path="/novedades" element={<Novedades />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/carrito" element={<Carrito />} />
-          <Route path="/productos" element={<ShoppingCartElectrical />} /> {/* Movida aquí */}
+          <Route path="/productos" element={<ShoppingCartElectrical />} />
           <Route path="/perfil" element={<Login />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/registrarse" element={<Register />} />
