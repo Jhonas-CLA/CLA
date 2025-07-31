@@ -1,65 +1,104 @@
+/* Contenedor general */
 .login-container {
+  width: 100%;
   max-width: 400px;
-  background-color: white;
-  padding: 25px 30px;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
-  margin: 8% auto;
+  margin: 80px auto;
+  padding: 30px 25px;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+  background-color: #fff;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-h1 {
-  text-align: center;
-  color: #0d6efd;
+/* Etiquetas de los inputs */
+label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  font-size: 14px;
+  color: #333;
 }
 
-.form-group {
-  margin-bottom: 18px;
-}
-
+/* Campos de entrada */
+input[type="email"],
+input[type="password"],
 input[type="text"],
-input[type="password"] {
+select {
   width: 100%;
   padding: 10px;
   font-size: 14px;
-  border-radius: 6px;
+  margin-bottom: 15px;
   border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease-in-out;
+}
+
+input:focus {
   outline: none;
+  border-color: #007bff;
 }
 
+/* Contenedor del checkbox */
 .checkbox-container {
-  font-size: 14px;
-  margin-top: 6px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
+/* Botón principal */
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 0;
+  border: none;
+  border-radius: 6px;
+  width: 100%;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+/* Enlace de "Olvidaste tu contraseña" */
 .forgot-link {
+  display: block;
   font-size: 13px;
-  color: #0d6efd;
+  text-align: right;
+  color: #007bff;
   text-decoration: none;
+  margin-top: -10px;
+  margin-bottom: 15px;
 }
 
 .forgot-link:hover {
   text-decoration: underline;
 }
 
-.btn-block {
-  width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border-radius: 6px;
+/* Enlace a registro */
+.register-link {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+  text-align: center;
+  color: #007bff;
+  text-decoration: none;
 }
 
-/* Modo oscuro */
-body.dark-mode .login-container {
-  background-color: #1f1f1f;
-  color: #e0e0e0;
+.register-link:hover {
+  text-decoration: underline;
 }
 
-body.dark-mode input {
-  background-color: #333;
-  color: #e0e0e0;
-  border-color: #555;
-}
-
-body.dark-mode .forgot-link {
-  color: white;
+/* Estilo de errores */
+.text-danger {
+  color: red;
+  font-size: 14px;
+  margin: 10px 0;
+  text-align: center;
 }

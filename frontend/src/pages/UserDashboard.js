@@ -54,29 +54,14 @@ function UserDashboard() {
 
         {/* MENU */}
         <div className="menu">
-          <div className="enlace" onClick={() => handleEnlaceClick('usuarios')}>
+          <div className="enlace" onClick={() => handleEnlaceClick('Favoritos')}>
             <i className="bx bx-user"></i>
-            <span>Usuarios</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('proveedores')}>
-            <i className="bx bx-group"></i>
-            <span>Proveedores</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('analiticos')}>
-            <i className="bx bx-bar-chart-alt-2"></i>
-            <span>Analíticos</span>
+            <span>Favoritos</span>
           </div>
 
           <div className="enlace" onClick={() => handleEnlaceClick('productos')}>
             <i className="bx bx-package"></i>
             <span>Productos</span>
-          </div>
-
-          <div className="enlace" onClick={() => handleEnlaceClick('pedidos')}>
-            <i className="bx bx-shopping-bag"></i>
-            <span>Pedidos</span>
           </div>
 
           <div className="enlace" onClick={() => handleEnlaceClick('configuracion')}>
