@@ -27,7 +27,12 @@ function App() {
         <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+<<<<<<< HEAD
         <Route path="/productos" element={<ShoppingCartElectrical />} />
+=======
+        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/analiticas" element={<UserDashboard />} />
+>>>>>>> origin/develop
       </Routes>
       <Footer />
     </Router>
