@@ -2,41 +2,67 @@ import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import './Carrito.css';
 
+const CATEGORIAS_NOMBRES = {
+  '1': 'Alambres y Cables',
+  '2': 'Bornas y Conectores',
+  '3': 'Conectores',
+  '4': 'Terminales y Uniones',
+  '5': 'Automáticos / Breakers',
+  '6': 'Tableros Eléctricos',
+  '7': 'Contactores y Contadores',
+  '8': 'Relés',
+  '9': 'Cajas',
+  '10': 'Iluminación',
+  '11': 'Portalámparas y Plafones',
+  '12': 'Reflectores y Fotoceldas',
+  '13': 'Boquillas',
+  '14': 'Tubería EMT / IMC / PVC / LED',
+  '15': 'Curvas y Accesorios de Tubería',
+  '16': 'Canaletas',
+  '17': 'Accesorios para Canaletas',
+};
+
 const CarritoCompras = () => {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState({});
   const [busqueda, setBusqueda] = useState('');
-  const [categoriaFiltro, setCategoriaFiltro] = useState('Todas');
+  const [categoriaFiltro, setCategoriaFiltro] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/productos/')
       .then(res => {
-        const productosBack = res.data.map(p => ({
-          codigo: p.codigo,
-          nombre: p.nombre,
-          categoria: p.categoria.nombre || p.categoria,
-          precio: parseFloat(p.precio),
-          stock: p.cantidad,
-          disponible: p.disponible
-        }));
+        const productosBack = res.data.map(p => {
+          const idCategoria = String(p.categoria.id || p.categoria);
+          return {
+            codigo: p.codigo,
+            nombre: p.nombre,
+            categoria: CATEGORIAS_NOMBRES[idCategoria] || 'Otra',
+            categoriaId: idCategoria,
+            precio: parseFloat(p.precio),
+            stock: p.cantidad,
+            disponible: p.disponible
+          };
+        });
         setProductos(productosBack);
       })
       .catch(err => console.error("Error cargando productos:", err));
   }, []);
 
-  const categorias = useMemo(() => ['Todas', ...new Set(productos.map(p => p.categoria))], [productos]);
+  const categorias = useMemo(() => Object.entries(CATEGORIAS_NOMBRES), []);
 
   const productosFiltrados = useMemo(() => {
     return productos.filter(producto => {
-      const coincideBusqueda = producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+      const coincideCategoria = categoriaFiltro === '' || String(producto.categoriaId) === String(categoriaFiltro);
+      const coincideBusqueda =
+        busqueda === '' ||
+        producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
         producto.codigo.toLowerCase().includes(busqueda.toLowerCase());
-      const coincideCategoria = categoriaFiltro === 'Todas' || producto.categoria === categoriaFiltro;
-      return coincideBusqueda && coincideCategoria;
+      return coincideCategoria && coincideBusqueda;
     });
-  }, [busqueda, categoriaFiltro, productos]);
+  }, [productos, busqueda, categoriaFiltro]);
 
   const totalItems = Object.values(carrito).reduce((sum, item) => sum + item.cantidad, 0);
-  const totalPrecio = Object.values(carrito).reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+  const totalPrecio = Object.values(carrito).reduce((sum, item) => sum + item.precio * item.cantidad, 0);
 
   const agregarAlCarrito = (producto) => {
     setCarrito(prev => {
@@ -98,7 +124,7 @@ const CarritoCompras = () => {
       <div className="page-wrapper">
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <h1 style={{ color: '#FFD700', fontSize: '2.5rem' }}>Catálogo de Productos</h1>
-          <p style={{ color: '#000' }}>Encuentra todos los productos eléctricos que necesitas</p>
+          <p style={{ color: '#000' }}>Selecciona una categoría para ver los productos</p>
           {totalItems > 0 && (
             <div style={{
               marginTop: '20px',
@@ -119,61 +145,70 @@ const CarritoCompras = () => {
           {/* Productos */}
           <div>
             <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+              <select
+                value={categoriaFiltro}
+                onChange={(e) => setCategoriaFiltro(e.target.value)}
+                style={{ flex: 1 }}
+              >
+                <option value="">Todas las categorías</option>
+                {categorias.map(([id, nombre]) => (
+                  <option key={id} value={id}>{nombre}</option>
+                ))}
+              </select>
               <input
                 type="text"
                 placeholder="🔍 Buscar productos..."
                 value={busqueda}
                 onChange={(e) => setBusqueda(e.target.value)}
-                style={{ flex: 1 }}
               />
-              <select
-                value={categoriaFiltro}
-                onChange={(e) => setCategoriaFiltro(e.target.value)}
-              >
-                {categorias.map(c => <option key={c} value={c}>{c}</option>)}
-              </select>
             </div>
 
             <div className="contenedor-productos">
-              {productosFiltrados.map(producto => (
-                <div key={producto.codigo} className="producto-card">
-                  <div>
-                    <h3 style={{ color: '#001152' }}>{producto.nombre}</h3>
-                    <p style={{ color: '#666' }}>{producto.codigo} • {producto.categoria}</p>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                      <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#001152' }}>
-                        ${producto.precio.toLocaleString()}
-                      </span>
-                      <span style={{
-                        backgroundColor: producto.stock > 0 ? '#22c55e' : '#ef4444',
-                        color: 'white',
-                        padding: '4px 8px',
-                        borderRadius: '12px',
-                        fontSize: '0.8rem',
-                        fontWeight: 'bold'
-                      }}>
-                        Stock: {producto.stock}
-                      </span>
+              {productosFiltrados.length === 0 ? (
+                <p style={{ color: '#666' }}>
+                  {categoriaFiltro || busqueda ? 'No hay productos que coincidan.' : 'Selecciona una categoría o busca un producto.'}
+                </p>
+              ) : (
+                productosFiltrados.map(producto => (
+                  <div key={producto.codigo} className="producto-card">
+                    <div>
+                      <h3 style={{ color: '#001152' }}>{producto.nombre}</h3>
+                      <p style={{ color: '#666' }}>{producto.codigo} • {producto.categoria}</p>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                        <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#001152' }}>
+                          ${producto.precio.toLocaleString()}
+                        </span>
+                        <span style={{
+                          backgroundColor: producto.stock > 0 ? '#22c55e' : '#ef4444',
+                          color: 'white',
+                          padding: '4px 8px',
+                          borderRadius: '12px',
+                          fontSize: '0.8rem',
+                          fontWeight: 'bold'
+                        }}>
+                          Stock: {producto.stock}
+                        </span>
+                      </div>
                     </div>
+                    <button
+                      onClick={() => agregarAlCarrito(producto)}
+                      disabled={producto.stock === 0}
+                      style={{
+                        marginTop: '15px',
+                        backgroundColor: producto.stock === 0 ? '#ccc' : '#FFD700',
+                        color: '#001152',
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        fontWeight: 'bold',
+                        fontSize: '1rem',
+                        cursor: producto.stock === 0 ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      + Agregar
+                    </button>
                   </div>
-                  <button
-                    onClick={() => agregarAlCarrito(producto)}
-                    disabled={producto.stock === 0}
-                    style={{
-                      marginTop: '15px',
-                      backgroundColor: producto.stock === 0 ? '#ccc' : '#FFD700',
-                      color: '#001152',
-                      padding: '10px 20px',
-                      borderRadius: '8px',
-                      fontWeight: 'bold',
-                      fontSize: '1rem',
-                      cursor: producto.stock === 0 ? 'not-allowed' : 'pointer'
-                    }}
-                  >
-                    + Agregar
-                  </button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -189,10 +224,7 @@ const CarritoCompras = () => {
             position: 'sticky',
             top: '20px'
           }}>
-            <div style={{ marginBottom: '10px' }}>
-              <h3 style={{ color: '#001152', fontSize: '1.2rem', fontWeight: 'bold', margin: 0 }}>Tu Carrito</h3>
-            </div>
-
+            <h3 style={{ color: '#001152', fontSize: '1.2rem', fontWeight: 'bold', margin: 0 }}>Tu Carrito</h3>
             {totalItems === 0 ? (
               <p style={{ color: '#666' }}>El carrito está vacío.</p>
             ) : (
@@ -206,20 +238,14 @@ const CarritoCompras = () => {
                       justifyContent: 'space-between', marginTop: '5px'
                     }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <button onClick={() => modificarCantidad(item.codigo, item.cantidad - 1)} className="cantidad-btn amarilla">
-                          -
-                        </button>
+                        <button onClick={() => modificarCantidad(item.codigo, item.cantidad - 1)} className="cantidad-btn amarilla">-</button>
                         <span style={{ fontWeight: 'bold', fontSize: '1rem' }}>{item.cantidad}</span>
-                        <button onClick={() => modificarCantidad(item.codigo, item.cantidad + 1)} className="cantidad-btn amarilla">
-                          +
-                        </button>
+                        <button onClick={() => modificarCantidad(item.codigo, item.cantidad + 1)} className="cantidad-btn amarilla">+</button>
                       </div>
                       <span style={{ fontWeight: 'bold' }}>${(item.precio * item.cantidad).toLocaleString()}</span>
                       <button onClick={() => eliminarDelCarrito(item.codigo)} style={{
                         border: 'none', background: 'transparent', color: '#dc2626', cursor: 'pointer'
-                      }}>
-                        ❌
-                      </button>
+                      }}>❌</button>
                     </div>
                   </div>
                 ))}
@@ -230,9 +256,8 @@ const CarritoCompras = () => {
                     backgroundColor: '#ef4444', color: 'white', padding: '10px 20px',
                     borderRadius: '8px', fontWeight: 'bold'
                   }}>
-                    🗑 Eliminar producto
+                    🗑 Eliminar productos
                   </button>
-
                   <button onClick={enviarPedido} className="whatsapp-btn">
                     📲 Enviar pedido por WhatsApp
                   </button>

@@ -1,4 +1,9 @@
-/* ===== Título principal ===== */
+/* ===== SECCIÓN PRINCIPAL ===== */
+.novedades-section {
+  padding: 2rem 0;
+}
+
+/* ===== TÍTULO PRINCIPAL ===== */
 .titulo-noticias {
   color: #001152;
   font-size: 2.8rem;
@@ -8,7 +13,7 @@
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-/* ===== Contenedor con separación ===== */
+/* ===== GRID DE NOTICIAS ===== */
 .row {
   display: flex;
   flex-wrap: wrap;
@@ -17,58 +22,23 @@
   margin-right: -0.75rem;
 }
 
-/* ===== Columnas responsivas ===== */
+/* ===== COLUMNAS RESPONSIVAS ===== */
+.col-lg-4 {
+  flex: 0 1 calc(33.333% - 1.33rem);
+  max-width: calc(33.333% - 1.33rem);
+}
+
 .col-md-6 {
   flex: 0 1 calc(50% - 1rem);
   max-width: calc(50% - 1rem);
 }
 
-@media (min-width: 768px) {
-  .col-md-6 {
-    flex: 0 0 50%;
-    max-width: 50%;
-  }
+.col-12 {
+  flex: 0 1 100%;
+  max-width: 100%;
 }
 
-@media (max-width: 768px) {
-  .col-md-6 {
-    flex: 0 1 100%;
-    max-width: 100%;
-  }
-
-  .row {
-    gap: 1.5rem;
-  }
-
-  .titulo-noticias {
-    font-size: 2.2rem;
-  }
-
-  .card-img-top {
-    height: 180px;
-  }
-
-  .btn-ver-mas {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
-  }
-
-  .card-title {
-    font-size: 1rem;
-  }
-
-  .card-text {
-    font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 576px) {
-  .row {
-    gap: 1rem;
-  }
-}
-
-/* ===== Tarjeta general ===== */
+/* ===== TARJETA PRINCIPAL ===== */
 .card {
   display: flex;
   flex-direction: column;
@@ -86,21 +56,21 @@
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
 }
 
-/* ===== Imagen superior ===== */
+/* ===== IMAGEN DE LA TARJETA ===== */
 .card-img-top {
   width: 100%;
-  height: 200px;
+  height: 290px;
   object-fit: cover;
-  border-top-left-radius: 0.75rem;
-  border-top-right-radius: 0.75rem;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
   transition: transform 0.3s ease;
 }
 
-.card-img-top:hover {
+.card:hover .card-img-top {
   transform: scale(1.04);
 }
 
-/* ===== Cuerpo de la tarjeta ===== */
+/* ===== CUERPO DE LA TARJETA ===== */
 .card-body {
   display: flex;
   flex-direction: column;
@@ -108,7 +78,7 @@
   flex-grow: 1;
 }
 
-/* ===== Título de la noticia ===== */
+/* ===== TÍTULO DE LA NOTICIA ===== */
 .card-title {
   font-size: 1.1rem;
   font-weight: 700;
@@ -117,19 +87,20 @@
   line-height: 1.4;
 }
 
-/* ===== Descripción de la noticia ===== */
+/* ===== DESCRIPCIÓN DE LA NOTICIA ===== */
 .card-text {
   color: #4b5563;
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 1rem;
+  flex-grow: 1;
   display: -webkit-box;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* ===== Botón "Ver más" ===== */
+/* ===== BOTÓN "VER MÁS" ===== */
 .btn-ver-mas {
   align-self: flex-start;
   background-color: #1e3a8a;
@@ -139,17 +110,20 @@
   font-size: 0.95rem;
   font-weight: 600;
   border: none;
+  text-decoration: none;
   transition: background-color 0.3s ease, transform 0.2s ease;
   margin-top: auto;
+  display: inline-block;
 }
 
 .btn-ver-mas:hover {
   background-color: #3b82f6;
   transform: scale(1.05);
   color: #fff;
+  text-decoration: none;
 }
 
-/* ===== Modo oscuro ===== */
+/* ===== MODO OSCURO ===== */
 body.dark-mode .card {
   background-color: #1e1e2f;
   color: white;
@@ -178,19 +152,41 @@ body.dark-mode .btn-ver-mas:hover {
   color: #001152;
 }
 
-/* ===== Responsive ajustes ===== */
-@media (max-width: 768px) {
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Tablets y pantallas medianas */
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .col-lg-4 {
+    flex: 0 1 calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
+  }
+}
+
+/* Tablets pequeñas y móviles grandes */
+@media (max-width: 767.98px) {
   .titulo-noticias {
     font-size: 2.2rem;
+    margin-bottom: 2rem;
+  }
+
+  .row {
+    gap: 1.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+  }
+
+  .col-lg-4,
+  .col-md-6 {
+    flex: 0 1 100%;
+    max-width: 100%;
   }
 
   .card-img-top {
-    height: 180px;
+    height: 250px;
   }
 
-  .btn-ver-mas {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
+  .card-body {
+    padding: 1rem;
   }
 
   .card-title {
@@ -201,23 +197,96 @@ body.dark-mode .btn-ver-mas:hover {
     font-size: 0.9rem;
   }
 
-  .col-md-6 {
-    flex: 0 1 100%; /* 1 columna en móvil */
-    max-width: 100%;
-  }
-
-  .row {
-    gap: 1.5rem; /* Menor separación en móvil */
+  .btn-ver-mas {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
   }
 }
 
-@media (max-width: 576px) {
+/* Móviles pequeños */
+@media (max-width: 575.98px) {
+  .titulo-noticias {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+  }
+
   .row {
-    gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
+    gap: 1rem;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .card-body {
+    padding: 0.8rem;
+  }
+
+  .card-img-top {
+    height: 230px;
+  }
+
+  .card-title {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-text {
+    font-size: 0.85rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .btn-ver-mas {
+    font-size: 0.85rem;
+    padding: 0.45rem 0.9rem;
   }
 }
 
-/* ===== Enlaces sin decoración ===== */
+/* ===== UTILIDADES ===== */
+.w-100 {
+  width: 100% !important;
+}
+
+.h-100 {
+  height: 100% !important;
+}
+
+.d-flex {
+  display: flex !important;
+}
+
+.flex-column {
+  flex-direction: column !important;
+}
+
+.mt-auto {
+  margin-top: auto !important;
+}
+
+.mb-4 {
+  margin-bottom: 1.5rem !important;
+}
+
+.mb-5 {
+  margin-bottom: 3rem !important;
+}
+
+.my-5 {
+  margin-top: 3rem !important;
+  margin-bottom: 3rem !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.fw-bold {
+  font-weight: 700 !important;
+}
+
+/* ===== Asegurar que los enlaces no tengan decoración ===== */
 a {
+  text-decoration: none;
+}
+
+a:hover {
   text-decoration: none;
 }

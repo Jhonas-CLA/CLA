@@ -64,9 +64,10 @@ function Register() {
   return (
     <div className="register-container">
       <form className="register-form" onSubmit={handleSubmit}>
-        <h2>Crear Cuenta</h2>
+        <h2 className="register-title">Crear Cuenta</h2>
 
         <input
+          className="register-input"
           name="first_name"
           placeholder="Nombre"
           value={form.first_name}
@@ -74,6 +75,7 @@ function Register() {
           required
         />
         <input
+          className="register-input"
           name="last_name"
           placeholder="Apellido"
           value={form.last_name}
@@ -81,6 +83,7 @@ function Register() {
           required
         />
         <input
+          className="register-input"
           name="email"
           type="email"
           placeholder="Email"
@@ -89,6 +92,7 @@ function Register() {
           required
         />
         <input
+          className="register-input"
           name="password"
           type={showPassword ? 'text' : 'password'}
           placeholder="Contraseña"
@@ -97,6 +101,7 @@ function Register() {
           required
         />
         <input
+          className="register-input"
           name="confirmPassword"
           type={showPassword ? 'text' : 'password'}
           placeholder="Confirmar Contraseña"
@@ -105,16 +110,9 @@ function Register() {
           required
         />
 
-        <label className="show-password">
-          <input
-            type="checkbox"
-            onChange={() => setShowPassword(!showPassword)}
-          /> Mostrar contraseña
-        </label>
+        <button type="submit" className="register-button">Registrarse</button>
 
-        <button type="submit">Registrarse</button>
-
-        <Link to="/" className="back-link">← Volver al inicio</Link>
+        <Link to="/" className="register-back-link">← Volver al inicio</Link>
       </form>
     </div>
   );

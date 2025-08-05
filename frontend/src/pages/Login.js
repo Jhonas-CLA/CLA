@@ -90,6 +90,8 @@ function Login() {
 
   return (
     <div className="login-container">
+      <h2 className="login-title">Iniciar Sesión</h2>
+      
       {error && <p className="text-danger text-center">{error}</p>}
 
       {activeTab === 'login' ? (
