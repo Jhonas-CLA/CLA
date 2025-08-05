@@ -1,6 +1,9 @@
 // src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Layout from './components/Layout';
 
 // Páginas
@@ -19,7 +22,15 @@ import Carrito from './pages/Carrito';
 import AdminDashboard from './components/AdminDashboard';
 import UserDashboard from './components/UserDashboard';
 
-function App() {
+import { ThemeProvider, useTheme } from './context/ThemeContext';
+
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import './index.css';
+
+
+function AppContent() {
+  const { darkMode } = useTheme();
   return (
     <Router>
       <Routes>
@@ -45,6 +56,15 @@ function App() {
         <Route path="/analiticas" element={<UserDashboard />} />
       </Routes>
     </Router>
+  );
+}
+
+// 👇 Envolvemos toda la app con el proveedor del contexto de tema
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

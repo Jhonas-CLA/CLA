@@ -479,3 +479,17 @@
     font-weight: 600;
   }
 }
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+:root {
+  --bg: #f4f4f4;
+  --text: #121212;
+}
+
+.dark {
+  --bg: #121212;
+  --text: #f4f4f4;
+}

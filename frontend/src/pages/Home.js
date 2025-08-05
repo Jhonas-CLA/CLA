@@ -1,5 +1,8 @@
-import React from 'react';
+
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import './Home.css';
+import ProductCarousel from '../components/ProductCarousel';
 
 function Home() {
   const handleSolicitarEnvio = () => {
@@ -49,12 +52,10 @@ function Home() {
 
       {/* Espacio para Carrusel u otra sección */}
       <div className="container py-5">
-        <h2 className="text-center mb-4">Nuestros Productos</h2>
-        {/* Aquí va el carrusel que hizo tu compañero */}
-        <div className="row justify-content-center">
-          {/* Carrusel o contenido visual irá aquí */}
-        </div>
-      </div>
+  <h2 className="text-center mb-4">Nuestros Productos</h2>
+  <ProductCarousel productos={ProductCarousel} />
+  </div>
+      
 
       {/* Sección de Envíos */}
       <section className="envios-section py-5">
