@@ -31,6 +31,7 @@ import './index.css';
 
 function AppContent() {
   const { darkMode } = useTheme();
+  
   return (
     <Router>
       <Routes>
