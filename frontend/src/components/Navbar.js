@@ -144,7 +144,13 @@ function Navbar() {
             <img src="https://cdn-icons-png.flaticon.com/512/8146/8146003.png" alt="Productos" style={{ width: '50px', height: '40px', objectFit: 'cover' }} />
           </Link>
 
-          <Link to="/perfil" className={`action-icon profile-icon ${isActiveLink('/perfil') ? 'active' : ''}`} onClick={closeMenu} title="Perfil">
+          {/* Imagen de contacto (usuario) */}
+          <Link 
+            to="/Login" 
+            className={`action-icon profile-icon ${isActiveLink('/Login') ? 'active' : ''}`}
+            onClick={closeMenu}
+            title="Login"
+          >
             <div className="profile-circle" style={{ width: '60px', height: '60px', overflow: 'hidden', borderRadius: '50%' }}>
               <img src="https://static.vecteezy.com/ti/vetor-gratis/p3/7407996-user-icon-person-icon-client-symbol-login-head-sign-icon-design-vetor.jpg" alt="Usuario" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>

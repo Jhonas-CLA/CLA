@@ -178,6 +178,45 @@ body.dark-mode .btn-ver-mas:hover {
   color: #001152;
 }
 
+/* ===== Responsive ajustes ===== */
+@media (max-width: 768px) {
+  .titulo-noticias {
+    font-size: 2.2rem;
+  }
+
+  .card-img-top {
+    height: 180px;
+  }
+
+  .btn-ver-mas {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .card-title {
+    font-size: 1rem;
+  }
+
+  .card-text {
+    font-size: 0.9rem;
+  }
+
+  .col-md-6 {
+    flex: 0 1 100%; /* 1 columna en móvil */
+    max-width: 100%;
+  }
+
+  .row {
+    gap: 1.5rem; /* Menor separación en móvil */
+  }
+}
+
+@media (max-width: 576px) {
+  .row {
+    gap: 1rem; /* Aún menor separación en pantallas muy pequeñas */
+  }
+}
+
 /* ===== Enlaces sin decoración ===== */
 a {
   text-decoration: none;
