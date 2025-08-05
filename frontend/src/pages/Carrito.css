@@ -1,18 +1,39 @@
-/* ✅ Base universal */
-* {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-/* ✅ Elimina decoraciones innecesarias */
 *::before,
 *::after {
   content: none !important;
   display: none !important;
 }
 
-/* ✅ SVGs con buen comportamiento */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+body,
+html {
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  overflow-x: hidden;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.6;
+  color: #334155;
+  scroll-behavior: smooth;
+  font-feature-settings: 'liga' 1, 'kern' 1;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  background: transparent;
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+}
+
 svg {
   display: inline-block;
   max-width: 100%;
@@ -21,151 +42,417 @@ svg {
   overflow: visible;
 }
 
-/* ✅ Contenedor principal */
+/* ✅ Contenedor principal mejorado */
 .carrito-container {
   position: relative;
   overflow: hidden;
+  padding: clamp(16px, 4vw, 32px);
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
-/* ✅ Botones limpios */
-button {
-  border: none;
-  outline: none;
-  background: none;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-button:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-/* ✅ Inputs y selects */
+/* ✅ Inputs y selects modernos */
 input,
 select {
-  border: 2px solid #ddd;
-  border-radius: 8px;
-  padding: 12px;
-  font-size: 16px;
-  outline: none;
-  background-color: #f9f9f9;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 16px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 
+              0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  width: 100%;
+}
+
+input:hover,
+select:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
 }
 
 input:focus,
 select:focus {
   border-color: #FFD700;
-  box-shadow: 0 0 0 2px rgba(255, 215, 0, 0.2);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.15),
+              0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  outline: none;
+  transform: translateY(-2px);
 }
 
-/* ✅ Fondo blanco general */
-body,
-html {
-  background-color: white;
-  overflow-x: hidden;
+input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
 }
 
-#root {
-  background-color: white;
+/* ✅ Botones con diseño premium */
+button {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
-  z-index: 10;
+  overflow: hidden;
+  font-weight: 600;
 }
 
-/* ✅ Productos en tarjetas tipo rejilla */
+button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+/* ✅ Tarjetas de producto premium */
 .contenedor-productos {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: clamp(20px, 3vw, 32px);
+  margin-top: 2rem;
 }
 
-/* ✅ Tarjetas de productos */
 .producto-card {
-  background-color: #001152 !important;
-  border-radius: 12px;
-  padding: 20px;
+  background: linear-gradient(145deg, #001152 0%, #001a73 100%) !important;
+  border-radius: 24px;
+  padding: 28px;
   color: white;
-  transition: transform 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+  box-shadow: 0 10px 25px -5px rgba(0, 17, 82, 0.3),
+              0 8px 10px -6px rgba(0, 17, 82, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.producto-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #FFD700, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .producto-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 20px 40px -5px rgba(0, 17, 82, 0.4),
+              0 15px 25px -5px rgba(0, 17, 82, 0.3);
 }
 
-/* ✅ Textos dentro de las tarjetas */
+.producto-card:hover::before {
+  opacity: 1;
+}
+
 .producto-card h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
   color: white !important;
-  font-size: 1.2rem;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  letter-spacing: -0.015em;
 }
 
 .producto-card p {
-  color: #ccc !important;
-  font-size: 0.9rem;
-  margin-bottom: 8px;
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 0.95rem;
+  margin-bottom: 16px;
+  line-height: 1.5;
 }
 
 .producto-card span {
   color: white !important;
+  font-weight: 600;
 }
 
-/* ✅ Botón agregar dentro de tarjeta */
+/* ✅ Botón "Agregar" mejorado */
 .producto-card button {
-  background-color: #FFD700;
+  background: linear-gradient(135deg, #FFD700 0%, #ffed4e 100%);
   color: #001152;
-  padding: 10px 20px;
-  border-radius: 8px;
-  font-weight: bold;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-weight: 600;
   font-size: 1rem;
-  margin-top: 15px;
-  align-self: flex-start;
-  cursor: pointer;
+  align-self: stretch;
+  margin-top: 20px;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.025em;
 }
 
-/* ✅ Botones de cantidad */
+.producto-card button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.producto-card button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+}
+
+.producto-card button:hover::before {
+  left: 100%;
+}
+
+/* ✅ Cantidad botones cuadrados */
 .cantidad-btn.amarilla {
-  background-color: #FFD700;
+  background: linear-gradient(135deg, #FFD700 0%, #ffed4e 100%);
   color: #001152;
   border-radius: 8px;
-  padding: 4px 10px;
+  padding: 0;
+  font-weight: 700;
+  font-size: 1.2rem;
+  box-shadow: 0 2px 8px rgba(255, 215, 0, 0.25);
+  min-height: 36px;
+  min-width: 36px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
+  letter-spacing: 0;
 }
 
-/* ✅ Botón WhatsApp */
-.whatsapp-btn {
-  background-color: #25D366;
+.cantidad-btn.amarilla:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.35);
+}
+
+/* ✅ Botón eliminar rojo */
+.eliminar-btn {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
-  font-weight: bold;
-  padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
+  letter-spacing: 0.025em;
   gap: 8px;
 }
 
-/* ✅ Animación suave */
-@keyframes fadeIn {
+.eliminar-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+
+/* ✅ Botón WhatsApp premium */
+.whatsapp-btn {
+  background: linear-gradient(135deg, #25D366 0%, #20c25a 100%);
+  color: white;
+  font-weight: 600;
+  padding: 16px 32px;
+  border-radius: 16px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+  position: relative;
+  overflow: hidden;
+  min-height: 50px;
+  letter-spacing: 0.025em;
+}
+
+.whatsapp-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+  transition: left 0.6s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
+}
+
+.whatsapp-btn:hover::before {
+  left: 100%;
+}
+
+/* ✅ Título mejorado */
+h1 {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 800;
+  background: linear-gradient(135deg, #FFD700 0%, #ffed4e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 0.5rem;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: -0.025em;
+}
+
+p {
+  font-size: 1.1rem;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+/* ✅ Filtros modernos */
+.filtros-bar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.filtros-bar select,
+.filtros-bar input[type="text"] {
+  flex: 1;
+  min-width: 250px;
+  margin: 0;
+}
+
+/* ✅ Carrito mejorado */
+.carrito-item {
+  padding: 20px 0;
+  border-bottom: 2px solid #f1f5f9;
+  transition: all 0.3s ease;
+}
+
+.carrito-item:hover {
+  background: rgba(255, 215, 0, 0.05);
+  border-radius: 12px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.carrito-item:last-child {
+  border-bottom: none;
+}
+
+.carrito-item span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* ✅ Texto vacío mejorado */
+.texto-vacio {
+  font-style: italic;
+  color: #94a3b8;
+  font-size: 1.1rem;
+  margin-top: 24px;
+  text-align: center;
+  padding: 40px 20px;
+  background: rgba(148, 163, 184, 0.05);
+  border-radius: 16px;
+  border: 2px dashed #cbd5e1;
+}
+
+/* ✅ Animaciones mejoradas */
+.fade-in {
+  animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeInUp {
   from {
     opacity: 0;
+    transform: translateY(30px);
   }
-
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
 
-.fade-in {
-  animation: fadeIn 0.3s ease-in-out;
+.hover-effect:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* ✅ Hover universal */
-.hover-effect:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+/* ✅ Efectos adicionales */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* ✅ Responsividad mejorada */
+@media (max-width: 768px) {
+  .carrito-container {
+    padding: 16px;
+  }
+  
+  .filtros-bar {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .filtros-bar select,
+  .filtros-bar input[type="text"] {
+    min-width: 100%;
+  }
+  
+  .contenedor-productos {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  
+  .producto-card {
+    padding: 20px;
+  }
 }
