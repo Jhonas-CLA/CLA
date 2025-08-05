@@ -21,27 +21,14 @@
 }
 
 /* Título del formulario */
-.register-form h2 {
+.register-title {
   text-align: center;
   margin-bottom: 10px;
   color: #333;
 }
 
-/* Grupo de inputs */
-.form-group {
-  display: flex;
-  flex-direction: column;
-}
-
-/* Etiquetas */
-.form-group label {
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: #555;
-}
-
 /* Campos de entrada */
-.form-group input {
+.register-input {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -49,13 +36,13 @@
   transition: border 0.3s;
 }
 
-.form-group input:focus {
+.register-input:focus {
   border-color: #007bff;
   outline: none;
 }
 
 /* Mostrar contraseña */
-.show-password {
+.register-show-password {
   display: flex;
   align-items: center;
   gap: 6px;
@@ -64,7 +51,7 @@
 }
 
 /* Botón de registro */
-.register-form button {
+.register-button {
   padding: 12px;
   background-color: #007bff;
   color: white;
@@ -75,12 +62,12 @@
   transition: background-color 0.3s;
 }
 
-.register-form button:hover {
+.register-button:hover {
   background-color: #0056b3;
 }
 
 /* Enlace para volver al inicio */
-.back-link {
+.register-back-link {
   margin-top: 10px;
   text-align: center;
   display: block;
@@ -90,6 +77,6 @@
   transition: color 0.3s;
 }
 
-.back-link:hover {
+.register-back-link:hover {
   color: #0056b3;
 }
