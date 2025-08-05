@@ -1,16 +1,59 @@
-/* Estilos para la sección hero eléctrica */
+/* ================================
+   VARIABLES Y MODO OSCURO
+   ================================ */
+:root {
+  --hero-bg: linear-gradient(to top, #0a1f2f 0%, #1f6ba3 70%, #a0d8f7 100%);
+  --hero-color: white;
+  --ground-fill: #142c44;
+  --tower-stroke: #cbd6e1;
+  --tower-fill: #b2c6db;
+  --tower-base-stroke: #9fb8c9;
+  --power-line: #00ffff;
+  --spark: #0ff;
+  --envio-overlay: rgba(0, 0, 0, 0.5);
+  --envio-title: white;
+  --btn-bg: linear-gradient(45deg, #FFD700, #FFA500);
+  --btn-color: #333;
+  --btn-hover-bg: linear-gradient(45deg, #FFA500, #FF8C00);
+  --btn-shadow: rgba(255, 215, 0, 0.4);
+  --btn-hover-shadow: rgba(255, 165, 0, 0.6);
+  --btn-active-shadow: rgba(255, 165, 0, 0.4);
+}
+
+.dark {
+  --hero-bg: linear-gradient(to top, #020b15 0%, #153b5c 70%, #4f9bc9 100%);
+  --hero-color: #f0f0f0;
+  --ground-fill: #0a1a28;
+  --tower-stroke: #90a6b9;
+  --tower-fill: #809ab2;
+  --tower-base-stroke: #6a879d;
+  --power-line: #00eaff;
+  --spark: #00ffff;
+  --envio-overlay: rgba(0, 0, 0, 0.6);
+  --envio-title: #fefefe;
+  --btn-bg: linear-gradient(45deg, #fdd835, #fb8c00);
+  --btn-color: #111;
+  --btn-hover-bg: linear-gradient(45deg, #fb8c00, #ef6c00);
+  --btn-shadow: rgba(255, 215, 0, 0.3);
+  --btn-hover-shadow: rgba(255, 165, 0, 0.5);
+  --btn-active-shadow: rgba(255, 165, 0, 0.3);
+}
+
+/* ================================
+   SECCIÓN HERO ELÉCTRICA
+   ================================ */
 .hero-electric {
   position: relative;
   height: 480px;
-  background: linear-gradient(to top, #0a1f2f 0%, #1f6ba3 70%, #a0d8f7 100%);
+  background: var(--hero-bg);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  color: var(--hero-color);
   text-align: center;
   overflow: hidden;
   padding: 0 20px;
-  box-shadow: inset 0 0 150px #135;
+  box-shadow: inset 0 0 150px rgba(0, 0, 0, 0.5);
   font-family: 'Segoe UI', sans-serif;
 }
 
@@ -22,6 +65,9 @@
   font-weight: 700;
 }
 
+/* ================================
+   SVG Y TORRES
+   ================================ */
 svg {
   position: absolute;
   bottom: 0;
@@ -31,39 +77,40 @@ svg {
 }
 
 .ground {
-  fill: #142c44;
+  fill: var(--ground-fill);
 }
 
-.tower, .tower-line {
-  stroke: #cbd6e1;
+.tower,
+.tower-line {
+  stroke: var(--tower-stroke);
   stroke-width: 3;
   fill: none;
-  filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.4));
+  filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.4));
 }
 
 .tower-base {
-  stroke: #9fb8c9;
+  stroke: var(--tower-base-stroke);
   stroke-width: 2;
-  fill: #b2c6db;
+  fill: var(--tower-fill);
   rx: 5;
 }
 
 .power-line {
-  stroke: #00ffff;
+  stroke: var(--power-line);
   stroke-width: 4;
   stroke-linecap: round;
   stroke-dasharray: 40 20;
   animation: dashmove 2.5s linear infinite;
-  filter: drop-shadow(0 0 10px #00ffff);
+  filter: drop-shadow(0 0 10px var(--power-line));
 }
 
 .spark {
-  stroke: #0ff;
+  stroke: var(--spark);
   stroke-width: 5;
   stroke-linecap: round;
   stroke-dasharray: 5 5;
   animation: sparkFlash 0.5s ease-in-out infinite alternate;
-  filter: drop-shadow(0 0 10px #0ff);
+  filter: drop-shadow(0 0 10px var(--spark));
 }
 
 @keyframes dashmove {
@@ -81,7 +128,9 @@ svg {
   }
 }
 
-/* Productos */
+/* ================================
+   CONTENEDOR GENERAL
+   ================================ */
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -89,7 +138,9 @@ svg {
   box-sizing: border-box;
 }
 
-/* Envíos */
+/* ================================
+   SECCIÓN DE ENVÍOS
+   ================================ */
 .envios-section .envio-bg {
   position: relative;
   height: 320px;
@@ -107,7 +158,7 @@ svg {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--envio-overlay);
 }
 
 .envio-text {
@@ -118,16 +169,18 @@ svg {
 
 .envio-text h2 {
   text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
-  color: white;
+  color: var(--envio-title);
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 20px;
 }
 
-/* Botón de Solicitar Envío */
+/* ================================
+   BOTÓN DE SOLICITAR ENVÍO
+   ================================ */
 .btn-solicitar-envio {
-  background: linear-gradient(45deg, #FFD700, #FFA500);
-  color: #333;
+  background: var(--btn-bg);
+  color: var(--btn-color);
   padding: 15px 30px;
   font-size: 1.1rem;
   font-weight: 700;
@@ -137,18 +190,18 @@ svg {
   transition: all 0.3s ease;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4);
+  box-shadow: 0 4px 15px var(--btn-shadow);
   text-decoration: none;
   display: inline-block;
 }
 
 .btn-solicitar-envio:hover {
-  background: linear-gradient(45deg, #FFA500, #FF8C00);
+  background: var(--btn-hover-bg);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(255, 165, 0, 0.6);
+  box-shadow: 0 6px 20px var(--btn-hover-shadow);
 }
 
 .btn-solicitar-envio:active {
   transform: translateY(0);
-  box-shadow: 0 2px 10px rgba(255, 165, 0, 0.4);
+  box-shadow: 0 2px 10px var(--btn-active-shadow);
 }

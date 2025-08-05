@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import ProductoCard from '../components/ProductoCard';
 import './Home.css';
+import ProductCarousel from '../components/ProductCarousel';
 
 function Home() {
   const [productos, setProductos] = useState([]);
@@ -61,15 +62,10 @@ function Home() {
 
       {/* Productos renderizados desde backend */}
       <div className="container py-5">
-        <h2 className="text-center mb-4">Nuestros Productos</h2>
-        <div className="row">
-          {productos.map(prod => (
-            <div className="col-md-4 mb-4" key={prod.id}>
-              <ProductoCard producto={prod} />
-            </div>
-          ))}
-        </div>
-      </div>
+  <h2 className="text-center mb-4">Nuestros Productos</h2>
+  <ProductCarousel productos={ProductCarousel} />
+  </div>
+      
 
       {/* Sección de Envíos Actualizada */}
       <section className="envios-section py-5">

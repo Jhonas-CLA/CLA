@@ -1,13 +1,70 @@
+/* Estilos por defecto (modo claro) */
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  color: #121212;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.app-container {
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Modo oscuro */
+.app-container.dark {
+  background-color: #0a0a0a;
+  color: #f4f4f4;
+}
+
+/* Ejemplo: estilos para el navbar */
+.navbar {
+  background-color: #ffffff;
+  color: #121212;
+}
+
+.app-container.dark .navbar {
+  background-color: #121212;
+  color: #f4f4f4;
+}
+
+/* Estilos para las tarjetas u otros componentes */
+.card {
+  background-color: #ffffff;
+  color: #121212;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app-container.dark .card {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+:root {
+  --bg-color: #ffffff;
+  --text-color: #2c3e50;
+  --card-bg: #ffffff;
+  --navbar-bg: #f0f0f0;
+  --button-bg: #27ae60;
+}
+
+.dark {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --card-bg: #1f1f1f;
+  --navbar-bg: #1a1a1a;
+  --button-bg: #27ae60; /* o blanco si quieres */
+}
+/* Viñetas del carrusel en modo oscuro */
+.app-container.dark .slick-dots li button:before {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+/* Viñeta activa en modo oscuro */
+.app-container.dark .slick-dots li.slick-active button:before {
+  color: white !important;
+  opacity: 1 !important;
+}
+
+html, body {
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
