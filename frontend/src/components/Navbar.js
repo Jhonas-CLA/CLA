@@ -144,6 +144,8 @@ function Navbar() {
             <img src="https://cdn-icons-png.flaticon.com/512/8146/8146003.png" alt="Productos" style={{ width: '50px', height: '40px', objectFit: 'cover' }} />
           </Link>
 
+
+
           {/* Imagen de contacto (usuario) */}
           <Link 
             to="/Login" 
