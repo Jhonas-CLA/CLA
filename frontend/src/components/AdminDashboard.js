@@ -1,17 +1,36 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 
 function AdminDashboard() {
+  const [usuarios, setUsuarios] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [filtro, setFiltro] = useState('');
+  const [activeSection, setActiveSection] = useState('usuarios');
+  
+  // Estados para el modal de edición
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [usuarioEditando, setUsuarioEditando] = useState(null);
+  const [formData, setFormData] = useState({
+    first_name: '',
+    last_name: '',
+    email: '',
+    phone: '',
+    rol: 'usuario'
+  });
+  const [loadingAction, setLoadingAction] = useState(false);
+
   const toggleSidebar = () => {
     const sidebar = document.getElementById('sidebar');
     sidebar.classList.toggle('closed');
   };
 
-  const setActive = (target) => {
+  const setActive = (target, section) => {
     document.querySelectorAll('.menu-item').forEach(item => {
       item.classList.remove('active');
     });
     target.classList.add('active');
+    setActiveSection(section);
   };
 
   const logout = () => {
@@ -21,53 +40,408 @@ function AdminDashboard() {
     }
   };
 
-  useEffect(() => {
-    const menuItems = document.querySelectorAll('.menu-item');
-    menuItems.forEach((item, index) => {
-      setTimeout(() => {
-        item.style.opacity = '0';
-        item.style.transform = 'translateX(-20px)';
-        item.style.transition = 'all 0.5s ease';
-        setTimeout(() => {
-          item.style.opacity = '1';
-          item.style.transform = 'translateX(0)';
-        }, 50);
-      }, index * 100);
+  const fetchUsuarios = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch('http://localhost:8000/accounts/usuarios/');
+      const data = await response.json();
+      
+      if (data.success) {
+        setUsuarios(data.usuarios);
+      } else {
+        setError(data.error || 'Error al cargar usuarios');
+      }
+    } catch (err) {
+      setError('Error de conexión con el servidor');
+      console.error('Error:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Función para abrir modal de edición
+  const abrirModalEdicion = (usuario) => {
+    setUsuarioEditando(usuario);
+    setFormData({
+      first_name: usuario.first_name,
+      last_name: usuario.last_name,
+      email: usuario.email,
+      phone: usuario.phone || '',
+      rol: usuario.rol
     });
+    setShowEditModal(true);
+  };
 
-    const handleClickOutside = (event) => {
-      const sidebar = document.getElementById('sidebar');
-      const toggleBtn = document.querySelector('.toggle-btn');
-      if (
-        !sidebar.classList.contains('closed') &&
-        !sidebar.contains(event.target) &&
-        !toggleBtn.contains(event.target)
-      ) {
-        sidebar.classList.add('closed');
-      }
-    };
+  // Función para cerrar modal
+  const cerrarModal = () => {
+    setShowEditModal(false);
+    setUsuarioEditando(null);
+    setFormData({
+      first_name: '',
+      last_name: '',
+      email: '',
+      phone: '',
+      rol: 'usuario'
+    });
+  };
 
-    const handleKeyDown = (event) => {
-      if (event.ctrlKey && event.key === 'm') {
-        event.preventDefault();
-        toggleSidebar();
+  // Función para guardar cambios
+  const guardarCambios = async () => {
+    try {
+      setLoadingAction(true);
+      
+      const response = await fetch(`http://localhost:8000/accounts/usuarios/${usuarioEditando.id}/editar/`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+      
+      const data = await response.json();
+      
+      if (data.success) {
+        // Actualizar la lista de usuarios
+        setUsuarios(usuarios.map(usuario => 
+          usuario.id === usuarioEditando.id 
+            ? { ...usuario, ...data.usuario }
+            : usuario
+        ));
+        cerrarModal();
+        alert('Usuario actualizado correctamente');
+      } else {
+        alert(data.error || 'Error al actualizar usuario');
       }
-      if (event.key === 'Escape') {
-        const sidebar = document.getElementById('sidebar');
-        if (!sidebar.classList.contains('closed')) {
-          sidebar.classList.add('closed');
+    } catch (err) {
+      alert('Error de conexión con el servidor');
+      console.error('Error:', err);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  // Función para toggle estado del usuario
+  const toggleEstadoUsuario = async (usuarioId, nombreUsuario) => {
+    const usuario = usuarios.find(u => u.id === usuarioId);
+    const accion = usuario.is_active ? 'inhabilitar' : 'habilitar';
+    
+    if (window.confirm(`¿Estás seguro de que quieres ${accion} a ${nombreUsuario}?`)) {
+      try {
+        setLoadingAction(true);
+        
+        const response = await fetch(`http://localhost:8000/accounts/usuarios/${usuarioId}/toggle-estado/`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          // Actualizar la lista de usuarios
+          setUsuarios(usuarios.map(usuario => 
+            usuario.id === usuarioId 
+              ? { ...usuario, is_active: data.is_active }
+              : usuario
+          ));
+          alert(data.message);
+        } else {
+          alert(data.error || 'Error al cambiar estado del usuario');
         }
+      } catch (err) {
+        alert('Error de conexión con el servidor');
+        console.error('Error:', err);
+      } finally {
+        setLoadingAction(false);
       }
-    };
+    }
+  };
 
-    document.addEventListener('click', handleClickOutside);
-    document.addEventListener('keydown', handleKeyDown);
+  useEffect(() => {
+    if (activeSection === 'usuarios') {
+      fetchUsuarios();
+    }
+  }, [activeSection]);
 
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, []);
+  const usuariosFiltrados = usuarios.filter(usuario =>
+    usuario.email.toLowerCase().includes(filtro.toLowerCase()) ||
+    (usuario.full_name && usuario.full_name.toLowerCase().includes(filtro.toLowerCase())) ||
+    usuario.rol.toLowerCase().includes(filtro.toLowerCase())
+  );
+
+  const formatearFecha = (fechaString) => {
+    if (!fechaString || fechaString === 'Nunca') return 'Nunca';
+    const fecha = new Date(fechaString);
+    return fecha.toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
+  const getRolBadgeColor = (rol) => {
+    switch (rol) {
+      case 'admin': return 'badge-admin';
+      case 'usuario': return 'badge-usuario';
+      default: return 'badge-default';
+    }
+  };
+
+  const renderContent = () => {
+    switch (activeSection) {
+      case 'usuarios':
+        return renderUsuarios();
+      case 'proveedores':
+        return <div className="content-section"><h2>Sección de Proveedores</h2><p>Aquí irá la gestión de proveedores</p></div>;
+      case 'analiticos':
+        return <div className="content-section"><h2>Analíticos</h2><p>Aquí irán las estadísticas y gráficos</p></div>;
+      case 'productos':
+        return <div className="content-section"><h2>Productos</h2><p>Aquí irá la gestión de productos</p></div>;
+      case 'pedidos':
+        return <div className="content-section"><h2>Pedidos</h2><p>Aquí irá la gestión de pedidos</p></div>;
+      case 'configuracion':
+        return <div className="content-section"><h2>Configuración</h2><p>Aquí irá la configuración del sistema</p></div>;
+      default:
+        return renderUsuarios();
+    }
+  };
+
+  const renderUsuarios = () => {
+    if (loading) {
+      return (
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <span>Cargando usuarios...</span>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className="error-container">
+          <div className="error-content">
+            <h3>Error</h3>
+            <p>{error}</p>
+            <button onClick={fetchUsuarios} className="retry-btn">
+              Reintentar
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="usuarios-section">
+        {/* Header de usuarios */}
+        <div className="usuarios-header">
+          <div>
+            <h2>Lista de Usuarios</h2>
+            <p>Gestiona todos los usuarios del sistema</p>
+          </div>
+          <div className="usuarios-stats">
+            <span>Total: {usuarios.length}</span>
+          </div>
+        </div>
+
+        {/* Filtros */}
+        <div className="usuarios-filters">
+          <input
+            type="text"
+            placeholder="Buscar por email, nombre o rol..."
+            value={filtro}
+            onChange={(e) => setFiltro(e.target.value)}
+            className="search-input"
+          />
+          <button onClick={fetchUsuarios} className="refresh-btn">
+            Actualizar
+          </button>
+        </div>
+
+        {/* Tabla de usuarios */}
+        <div className="tabla-container">
+          <table className="tabla-usuarios">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Estado</th>
+                <th>Teléfono</th>
+                <th>Registro</th>
+                <th>Último acceso</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {usuariosFiltrados.map((usuario) => (
+                <tr key={usuario.id}>
+                  <td>
+                    <div className="usuario-info">
+                      <div className="usuario-avatar">
+                        {usuario.profile_image ? (
+                          <img 
+                            src={usuario.profile_image} 
+                            alt={usuario.full_name || `${usuario.first_name} ${usuario.last_name}`}
+                          />
+                        ) : (
+                          <div className="avatar-placeholder">
+                            {usuario.first_name?.charAt(0)}{usuario.last_name?.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <div className="usuario-details">
+                        <div className="usuario-name">
+                          {usuario.full_name || `${usuario.first_name} ${usuario.last_name}`}
+                        </div>
+                        <div className="usuario-email">{usuario.email}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span className={`rol-badge ${getRolBadgeColor(usuario.rol)}`}>
+                      {usuario.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                    </span>
+                  </td>
+                  <td>
+                    <div className="estado-info">
+                      <div className={`estado-dot ${usuario.is_active ? 'activo' : 'inactivo'}`}></div>
+                      <span className={`estado-text ${usuario.is_active ? 'activo' : 'inactivo'}`}>
+                        {usuario.is_active ? 'Activo' : 'Inactivo'}
+                      </span>
+                    </div>
+                  </td>
+                  <td>{usuario.phone || 'No especificado'}</td>
+                  <td>{formatearFecha(usuario.date_joined)}</td>
+                  <td>{formatearFecha(usuario.last_login)}</td>
+                  <td>
+                    <div className="acciones-usuario">
+                      <button
+                        className="btn-editar"
+                        onClick={() => abrirModalEdicion(usuario)}
+                        title="Editar usuario"
+                        disabled={loadingAction}
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        className={`btn-toggle ${usuario.is_active ? 'btn-inhabilitar' : 'btn-habilitar'}`}
+                        onClick={() => toggleEstadoUsuario(usuario.id, usuario.full_name || `${usuario.first_name} ${usuario.last_name}`)}
+                        title={usuario.is_active ? 'Inhabilitar usuario' : 'Habilitar usuario'}
+                        disabled={loadingAction}
+                      >
+                        {usuario.is_active ? '🚫' : '✅'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {usuariosFiltrados.length === 0 && (
+            <div className="empty-state">
+              <h3>No hay usuarios</h3>
+              <p>
+                {filtro ? 'No se encontraron usuarios con ese filtro.' : 'Comienza agregando usuarios al sistema.'}
+              </p>
+            </div>
+          )}
+        </div>
+
+        {/* Modal de edición */}
+        {showEditModal && (
+          <div className="modal-overlay" onClick={cerrarModal}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h3>Editar Usuario</h3>
+                <button className="modal-close" onClick={cerrarModal}>×</button>
+              </div>
+              
+              <div className="modal-body">
+                <div className="form-group">
+                  <label>Nombre:</label>
+                  <input
+                    type="text"
+                    value={formData.first_name}
+                    onChange={(e) => setFormData({...formData, first_name: e.target.value})}
+                    placeholder="Nombre del usuario"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Apellido:</label>
+                  <input
+                    type="text"
+                    value={formData.last_name}
+                    onChange={(e) => setFormData({...formData, last_name: e.target.value})}
+                    placeholder="Apellido del usuario"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Email:</label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                    placeholder="Email del usuario"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Teléfono:</label>
+                  <input
+                    type="text"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    placeholder="Teléfono del usuario"
+                  />
+                </div>
+                
+                <div className="form-group">
+                  <label>Rol:</label>
+                  <select
+                    value={formData.rol}
+                    onChange={(e) => setFormData({...formData, rol: e.target.value})}
+                  >
+                    <option value="usuario">Usuario</option>
+                    <option value="admin">Administrador</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div className="modal-footer">
+                <button 
+                  className="btn-cancelar" 
+                  onClick={cerrarModal}
+                  disabled={loadingAction}
+                >
+                  Cancelar
+                </button>
+                <button 
+                  className="btn-guardar" 
+                  onClick={guardarCambios}
+                  disabled={loadingAction}
+                >
+                  {loadingAction ? 'Guardando...' : 'Guardar Cambios'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    if (activeSection === 'usuarios') {
+      fetchUsuarios();
+    }
+  }, [activeSection]);
 
   return (
     <div className="dashboard">
@@ -84,43 +458,51 @@ function AdminDashboard() {
         </div>
 
         <nav className="menu">
-          <button className="menu-item active" onClick={(e) => setActive(e.target)}>
+          <button 
+            className={`menu-item ${activeSection === 'usuarios' ? 'active' : ''}`} 
+            onClick={(e) => setActive(e.target, 'usuarios')}
+          >
             <div className="menu-icon">👤</div>
             <span>Usuarios</span>
           </button>
-
-          <button className="menu-item" onClick={(e) => setActive(e.target)}>
+          <button 
+            className={`menu-item ${activeSection === 'proveedores' ? 'active' : ''}`} 
+            onClick={(e) => setActive(e.target, 'proveedores')}
+          >
             <div className="menu-icon">👥</div>
             <span>Proveedores</span>
           </button>
-
-          <button className="menu-item" onClick={(e) => setActive(e.target)}>
+          <button 
+            className={`menu-item ${activeSection === 'analiticos' ? 'active' : ''}`} 
+            onClick={(e) => setActive(e.target, 'analiticos')}
+          >
             <div className="menu-icon">📊</div>
             <span>Analíticos</span>
           </button>
-
-          <button className="menu-item" onClick={(e) => setActive(e.target)}>
+          <button 
+            className={`menu-item ${activeSection === 'productos' ? 'active' : ''}`} 
+            onClick={(e) => setActive(e.target, 'productos')}
+          >
             <div className="menu-icon">📦</div>
             <span>Productos</span>
           </button>
-
-          <button className="menu-item" onClick={(e) => setActive(e.target)}>
+          <button 
+            className={`menu-item ${activeSection === 'pedidos' ? 'active' : ''}`} 
+            onClick={(e) => setActive(e.target, 'pedidos')}
+          >
             <div className="menu-icon">🛒</div>
             <span>Pedidos</span>
           </button>
-
-          <button className="menu-item" onClick={(e) => setActive(e.target)}>
+          <button 
+            className={`menu-item ${activeSection === 'configuracion' ? 'active' : ''}`} 
+            onClick={(e) => setActive(e.target, 'configuracion')}
+          >
             <div className="menu-icon">⚙️</div>
             <span>Configuración</span>
           </button>
-
           <button
-            className="menu-item"
+            className="menu-item logout-btn"
             onClick={logout}
-            style={{
-              marginTop: 'auto',
-              borderTop: '1px solid rgba(255,255,255,0.1)',
-            }}
           >
             <div className="menu-icon">🚪</div>
             <span>Salir</span>
@@ -128,8 +510,13 @@ function AdminDashboard() {
         </nav>
       </div>
 
-      {/* Botón toggle */}
+      {/* Toggle Button */}
       <button className="toggle-btn" onClick={toggleSidebar}>☰</button>
+
+      {/* Main Content */}
+      <main className="main-content">
+        {renderContent()}
+      </main>
     </div>
   );
 }

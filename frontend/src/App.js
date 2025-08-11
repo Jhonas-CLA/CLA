@@ -52,6 +52,7 @@ function AppContent() {
           {/* Sin Layout */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/analiticas" element={<UserDashboard />} />
+
         </Routes>
       </Router>
     </div>
