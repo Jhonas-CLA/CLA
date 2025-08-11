@@ -50,15 +50,22 @@ const CarritoCompras = () => {
 
   const categorias = useMemo(() => Object.entries(CATEGORIAS_NOMBRES), []);
 
+  // 🔹 Ajuste para que no muestre nada al inicio y ordene por nombre
   const productosFiltrados = useMemo(() => {
-    return productos.filter(producto => {
-      const coincideCategoria = categoriaFiltro === '' || String(producto.categoriaId) === String(categoriaFiltro);
-      const coincideBusqueda =
-        busqueda === '' ||
-        producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        producto.codigo.toLowerCase().includes(busqueda.toLowerCase());
-      return coincideCategoria && coincideBusqueda;
-    });
+    if (!categoriaFiltro && !busqueda) {
+      return [];
+    }
+
+    return productos
+      .filter(producto => {
+        const coincideCategoria = categoriaFiltro === '' || String(producto.categoriaId) === String(categoriaFiltro);
+        const coincideBusqueda =
+          busqueda === '' ||
+          producto.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+          producto.codigo.toLowerCase().includes(busqueda.toLowerCase());
+        return coincideCategoria && coincideBusqueda;
+      })
+      .sort((a, b) => a.nombre.localeCompare(b.nombre));
   }, [productos, busqueda, categoriaFiltro]);
 
   const totalItems = Object.values(carrito).reduce((sum, item) => sum + item.cantidad, 0);
