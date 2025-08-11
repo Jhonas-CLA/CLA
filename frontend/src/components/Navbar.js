@@ -140,7 +140,7 @@ function Navbar() {
         </div>
 
         <div className="nav-actions">
-          <Link to="/productos" className={`action-icon cart-icon ${isActiveLink('/productos') ? 'active' : ''}`} onClick={closeMenu} title="Carrito">
+          <Link to="/carrito" className={`action-icon cart-icon ${isActiveLink('/carrito') ? 'active' : ''}`} onClick={closeMenu} title="Carrito">
             <img src="https://cdn-icons-png.flaticon.com/512/8146/8146003.png" alt="Productos" style={{ width: '50px', height: '40px', objectFit: 'cover' }} />
           </Link>
 
