@@ -38,6 +38,11 @@ function Login() {
       const data = await response.json();
 
       if (response.ok && data.success) {
+        // IMPORTANTE: Guardar el token y datos del usuario
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('userRole', data.role);
+        localStorage.setItem('userEmail', loginData.email);
+        
         // Redirección según el rol del usuario
         if (data.role === 'admin') {
           navigate('/admin/dashboard');

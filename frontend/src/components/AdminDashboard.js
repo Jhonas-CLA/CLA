@@ -445,17 +445,23 @@ function AdminDashboard() {
 
   return (
     <div className="dashboard">
-      {/* Sidebar */}
-      <div id="sidebar" className="sidebar">
-        <div className="header">
-          <div className="logo-section">
-            <div className="logo">⚡</div>
-            <div className="company-name">
-              Eléctricos &<br />Soluciones
-            </div>
-          </div>
-          <button className="close-btn" onClick={toggleSidebar}>✕</button>
+  {/* Sidebar */}
+  <div id="sidebar" className="sidebar">
+    <div className="header">
+      <div className="logo-section">
+        <div className="logo">
+          <img 
+            src="https://i.postimg.cc/YCZg4n8g/LOGO-ELECTRICOS-removebg-preview.png"
+            alt="Logo"
+            style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+          />
         </div>
+        <div className="company-name">
+          Eléctricos &<br />Soluciones
+        </div>
+      </div>
+      <button className="close-btn" onClick={toggleSidebar}>✕</button>
+    </div>
 
         <nav className="menu">
           <button 
