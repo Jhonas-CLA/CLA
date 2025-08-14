@@ -1,10 +1,28 @@
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './Home.css';
 import ProductCarousel from '../components/ProductCarousel';
 
 function Home() {
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/productos/')
+      .then((res) => {
+        console.log("📦 Productos recibidos:", res.data);
+        setProductos(res.data);
+      })
+      .catch((err) => {
+        console.error("❌ Error cargando productos:", err);
+        setError(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
   const handleSolicitarEnvio = () => {
     const mensaje = encodeURIComponent(
       'Hola! Me interesa solicitar un envío de productos eléctricos a mi ubicación en Tolima. ¿Podrían ayudarme con información sobre costos y tiempos de entrega?'
@@ -22,27 +40,27 @@ function Home() {
 
         <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMid meet">
           <rect className="ground" x="0" y="370" width="1200" height="40" />
-          {/* Torre 1 */}
+          {/* Torres */}
           <polyline className="tower" points="100,370 120,280 140,370" />
           <line className="tower-line" x1="120" y1="280" x2="120" y2="200" />
           <polyline className="tower-line" points="100,370 120,200 140,370" />
           <rect className="tower-base" x="110" y="365" width="20" height="15" />
-          {/* Torre 2 */}
+
           <polyline className="tower" points="400,370 420,260 440,370" />
           <line className="tower-line" x1="420" y1="260" x2="420" y2="180" />
           <polyline className="tower-line" points="400,370 420,180 440,370" />
           <rect className="tower-base" x="410" y="365" width="20" height="15" />
-          {/* Torre 3 */}
+
           <polyline className="tower" points="700,370 720,240 740,370" />
           <line className="tower-line" x1="720" y1="240" x2="720" y2="160" />
           <polyline className="tower-line" points="700,370 720,160 740,370" />
           <rect className="tower-base" x="710" y="365" width="20" height="15" />
-          {/* Torre Final */}
+
           <polyline className="tower" points="950,370 980,180 1010,370" />
           <polyline className="tower-line" points="950,370 980,140 1010,370" />
           <line className="tower-line" x1="980" y1="140" x2="980" y2="100" />
           <rect className="tower-base" x="965" y="365" width="30" height="20" />
-          {/* Líneas */}
+
           <line className="power-line" x1="140" y1="200" x2="420" y2="180" />
           <line className="power-line" x1="440" y1="180" x2="720" y2="160" />
           <line className="power-line" x1="740" y1="160" x2="980" y2="140" />
@@ -50,12 +68,19 @@ function Home() {
         </svg>
       </section>
 
-      {/* Espacio para Carrusel u otra sección */}
+      {/* Sección productos */}
       <div className="container py-5">
-  <h2 className="text-center mb-4">Nuestros Productos</h2>
-  <ProductCarousel productos={ProductCarousel} />
-  </div>
-      
+        <h2 className="text-center mb-4">Nuestros Productos</h2>
+
+        {loading && <p className="text-center">⏳ Cargando productos...</p>}
+        {error && <p className="text-center text-danger">Error: {error}</p>}
+        {!loading && productos.length === 0 && (
+          <p className="text-center">⚠️ No hay productos disponibles.</p>
+        )}
+        {!loading && productos.length > 0 && (
+          <ProductCarousel productos={productos} />
+        )}
+      </div>
 
       {/* Sección de Envíos */}
       <section className="envios-section py-5">
