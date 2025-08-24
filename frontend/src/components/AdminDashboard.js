@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
+import Proveedores from '../pages/proveedores';
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -19,6 +20,10 @@ function AdminDashboard() {
     rol: 'usuario'
   });
   const [loadingAction, setLoadingAction] = useState(false);
+
+  // 🔹 Estados para la paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [usuariosPorPagina] = useState(1);
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById('sidebar');
@@ -44,10 +49,18 @@ function AdminDashboard() {
     try {
       setLoading(true);
       setError(null);
-      
-      const response = await fetch('http://localhost:8000/accounts/usuarios/');
+
+      const token = localStorage.getItem('token');
+      const response = await fetch('http://localhost:8000/accounts/usuarios/', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
       const data = await response.json();
-      
+
       if (data.success) {
         setUsuarios(data.usuarios);
       } else {
@@ -172,6 +185,12 @@ function AdminDashboard() {
     usuario.rol.toLowerCase().includes(filtro.toLowerCase())
   );
 
+  // 🔹 Cálculo de paginación
+  const indiceUltimo = paginaActual * usuariosPorPagina;
+  const indicePrimero = indiceUltimo - usuariosPorPagina;
+  const usuariosActuales = usuariosFiltrados.slice(indicePrimero, indiceUltimo);
+  const totalPaginas = Math.ceil(usuariosFiltrados.length / usuariosPorPagina);
+
   const formatearFecha = (fechaString) => {
     if (!fechaString || fechaString === 'Nunca') return 'Nunca';
     const fecha = new Date(fechaString);
@@ -197,7 +216,7 @@ function AdminDashboard() {
       case 'usuarios':
         return renderUsuarios();
       case 'proveedores':
-        return <div className="content-section"><h2>Sección de Proveedores</h2><p>Aquí irá la gestión de proveedores</p></div>;
+        return <Proveedores />;
       case 'analiticos':
         return <div className="content-section"><h2>Analíticos</h2><p>Aquí irán las estadísticas y gráficos</p></div>;
       case 'productos':
@@ -254,7 +273,10 @@ function AdminDashboard() {
             type="text"
             placeholder="Buscar por email, nombre o rol..."
             value={filtro}
-            onChange={(e) => setFiltro(e.target.value)}
+            onChange={(e) => {
+              setFiltro(e.target.value);
+              setPaginaActual(1); // Reinicia a la primera página al filtrar
+            }}
             className="search-input"
           />
           <button onClick={fetchUsuarios} className="refresh-btn">
@@ -277,7 +299,7 @@ function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {usuariosFiltrados.map((usuario) => (
+              {usuariosActuales.map((usuario) => (
                 <tr key={usuario.id}>
                   <td>
                     <div className="usuario-info">
@@ -351,6 +373,35 @@ function AdminDashboard() {
             </div>
           )}
         </div>
+
+        {/* 🔹 Paginación */}
+        {totalPaginas > 1 && (
+          <div className="paginacion">
+            <button 
+              onClick={() => setPaginaActual(paginaActual - 1)} 
+              disabled={paginaActual === 1}
+            >
+              ⬅️ Anterior
+            </button>
+
+            {[...Array(totalPaginas)].map((_, index) => (
+              <button
+                key={index + 1}
+                onClick={() => setPaginaActual(index + 1)}
+                className={paginaActual === index + 1 ? 'activo' : ''}
+              >
+                {index + 1}
+              </button>
+            ))}
+
+            <button 
+              onClick={() => setPaginaActual(paginaActual + 1)} 
+              disabled={paginaActual === totalPaginas}
+            >
+              Siguiente ➡️
+            </button>
+          </div>
+        )}
 
         {/* Modal de edición */}
         {showEditModal && (
@@ -437,31 +488,25 @@ function AdminDashboard() {
     );
   };
 
-  useEffect(() => {
-    if (activeSection === 'usuarios') {
-      fetchUsuarios();
-    }
-  }, [activeSection]);
-
   return (
     <div className="dashboard">
-  {/* Sidebar */}
-  <div id="sidebar" className="sidebar">
-    <div className="header">
-      <div className="logo-section">
-        <div className="logo">
-          <img 
-            src="https://i.postimg.cc/YCZg4n8g/LOGO-ELECTRICOS-removebg-preview.png"
-            alt="Logo"
-            style={{ width: '50px', height: '50px', objectFit: 'contain' }}
-          />
+      {/* Sidebar */}
+      <div id="sidebar" className="sidebar">
+        <div className="header">
+          <div className="logo-section">
+            <div className="logo">
+              <img 
+                src="https://i.postimg.cc/YCZg4n8g/LOGO-ELECTRICOS-removebg-preview.png"
+                alt="Logo"
+                style={{ width: '50px', height: '50px', objectFit: 'contain' }}
+              />
+            </div>
+            <div className="company-name">
+              Eléctricos &<br />Soluciones
+            </div>
+          </div>
+          <button className="close-btn" onClick={toggleSidebar}>✕</button>
         </div>
-        <div className="company-name">
-          Eléctricos &<br />Soluciones
-        </div>
-      </div>
-      <button className="close-btn" onClick={toggleSidebar}>✕</button>
-    </div>
 
         <nav className="menu">
           <button 

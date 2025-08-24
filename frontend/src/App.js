@@ -16,6 +16,7 @@ import CategoriaDetalle from './pages/CategoriaDetalle';
 import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import Carrito from './pages/Carrito';
+import Proveedores from './pages/proveedores';
 
 import AdminDashboard from './components/AdminDashboard';
 import UserDashboard from './components/UserDashboard';
@@ -52,11 +53,12 @@ function AppContent() {
           {/* Sin Layout */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/analiticas" element={<UserDashboard />} />
+          <Route path="/proveedores" element={<Proveedores />} />
 
         </Routes>
       </Router>
     </div>
-  );
+  ); 
 }
 
 function App() {

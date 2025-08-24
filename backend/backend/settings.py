@@ -20,9 +20,11 @@ INSTALLED_APPS = [
     # Apps propias
     'accounts',
     'products',
+    'proveedores',
 
     # Terceros
     'corsheaders',
+    'rest_framework',
 ]
 
 # Middleware
