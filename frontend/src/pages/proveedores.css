@@ -1,0 +1,645 @@
+/* Contenedor principal */
+.proveedores-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f0f0f0;
+  min-height: 100vh;
+}
+
+/* Header de la sección */
+.proveedores-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #001152;
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 17, 82, 0.2);
+}
+
+.proveedores-header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.proveedores-header span {
+  background: rgba(255, 255, 255, 0.2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Estados de carga y error */
+.proveedores-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  color: #6c757d;
+  font-size: 18px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e3e3e3;
+  border-top: 4px solid #001152;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.proveedores-error {
+  text-align: center;
+  padding: 40px;
+  background: #fff;
+  border-radius: 12px;
+  border: 2px solid #dc3545;
+  color: #dc3545;
+}
+
+.retry-btn {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 15px;
+  transition: all 0.3s ease;
+}
+
+.retry-btn:hover {
+  background: #c82333;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.retry-btn:focus {
+  outline: 2px solid #dc3545;
+  outline-offset: 2px;
+}
+
+/* Barra de acciones */
+.acciones {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e9ecef;
+}
+
+.acciones input {
+  flex: 1;
+  padding: 12px 20px;
+  border: 2px solid #e9ecef;
+  border-radius: 25px;
+  font-size: 16px;
+  background: #f8f9fa;
+  transition: all 0.3s ease;
+  min-width: 250px;
+}
+
+.acciones input:focus {
+  outline: none;
+  border-color: #001152;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(0, 17, 82, 0.1);
+}
+
+.acciones input::placeholder {
+  color: #6c757d;
+  font-style: italic;
+}
+
+.acciones button {
+  background: #001152;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 17, 82, 0.2);
+}
+
+.acciones button:hover {
+  background: #000c3d;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 17, 82, 0.4);
+}
+
+.acciones button:focus {
+  outline: 2px solid #001152;
+  outline-offset: 2px;
+}
+
+/* Overlay pantalla completa */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 0;
+  animation: overlayFadeIn 0.4s ease-out forwards;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Contenido del overlay */
+.overlay-content {
+  background: linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 40px;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 
+    0 20px 60px rgba(0, 0, 0, 0.3),
+    0 8px 20px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  transform: scale(0.8) translateY(30px);
+  animation: contentSlideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Título del overlay */
+.overlay-content h2 {
+  margin: 0 0 30px 0;
+  color: #2c3e50;
+  font-size: 28px;
+  font-weight: 700;
+  text-align: center;
+  background: linear-gradient(135deg, #001152 0%, #000c3d 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.overlay-content h2::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #001152 0%, #000c3d 100%);
+  border-radius: 2px;
+}
+
+/* Formulario del overlay */
+.overlay-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Inputs del overlay mejorados */
+.overlay-content input {
+  padding: 16px 20px;
+  font-size: 16px;
+  border: 2px solid #e1e8ed;
+  border-radius: 25px;
+  background: #f8f9fa;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  outline: none;
+}
+
+.overlay-content input:focus {
+  border-color: #001152;
+  background: #ffffff;
+  box-shadow: 
+    0 0 0 4px rgba(0, 17, 82, 0.1),
+    0 4px 12px rgba(0, 17, 82, 0.15);
+  transform: translateY(-2px);
+}
+
+.overlay-content input:valid {
+  border-color: #28a745;
+}
+
+.overlay-content input::placeholder {
+  color: #6c757d;
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* Botones del formulario */
+.form-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.form-buttons button {
+  padding: 14px 32px;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 140px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Botón principal (Guardar/Actualizar) */
+.form-buttons button[type="submit"] {
+  background: #001152;
+  color: white;
+  box-shadow: 0 6px 20px rgba(0, 17, 82, 0.3);
+}
+
+.form-buttons button[type="submit"]:hover {
+  background: #000c3d;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0, 17, 82, 0.4);
+}
+
+.form-buttons button[type="submit"]:focus {
+  outline: 2px solid #001152;
+  outline-offset: 2px;
+}
+
+/* Botón secundario (Cancelar) */
+.form-buttons button[type="button"] {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+  color: white;
+  box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+}
+
+.form-buttons button[type="button"]:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(108, 117, 125, 0.4);
+  background: linear-gradient(135deg, #5a6268 0%, #343a40 100%);
+}
+
+.form-buttons button[type="button"]:focus {
+  outline: 2px solid #6c757d;
+  outline-offset: 2px;
+}
+
+/* Tabla */
+.tabla-container {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.tabla-proveedores {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+
+.tabla-proveedores thead {
+  background: #001152;
+  color: white;
+}
+
+.tabla-proveedores th {
+  padding: 18px 20px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tabla-proveedores td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #e9ecef;
+  vertical-align: middle;
+}
+
+.tabla-proveedores tbody tr {
+  transition: all 0.3s ease;
+}
+
+.tabla-proveedores tbody tr:hover {
+  background-color: #f8f9fa;
+  transform: scale(1.01);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.tabla-proveedores tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Botones de acción en tabla */
+.tabla-proveedores button {
+  background: #001152;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  margin-right: 8px;
+}
+
+.tabla-proveedores button:hover {
+  background: #000c3d;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 17, 82, 0.3);
+}
+
+.tabla-proveedores button:focus {
+  outline: 2px solid #001152;
+  outline-offset: 2px;
+}
+
+.tabla-proveedores button:last-child {
+  margin-right: 0;
+}
+
+/* Estado vacío */
+.empty-state {
+  padding: 60px 20px;
+  text-align: center;
+  color: #6c757d;
+}
+
+.empty-state h3 {
+  margin: 0 0 15px 0;
+  font-size: 24px;
+  color: #495057;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+/* Paginación */
+.paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.paginacion button {
+  padding: 10px 15px;
+  border: 2px solid #e9ecef;
+  background: white;
+  color: #495057;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 40px;
+}
+
+.paginacion button:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #001152;
+  color: #001152;
+  transform: translateY(-1px);
+}
+
+.paginacion button.activo {
+  background: #001152;
+  color: white;
+  border-color: #001152;
+  font-weight: bold;
+}
+
+.paginacion button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #e9ecef;
+  color: #6c757d;
+}
+
+.paginacion button:focus {
+  outline: 2px solid #001152;
+  outline-offset: 2px;
+}
+
+/* Animaciones */
+@keyframes overlayFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes contentSlideIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .proveedores-section {
+    padding: 15px;
+  }
+  
+  .proveedores-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .proveedores-header h2 {
+    font-size: 24px;
+  }
+  
+  .acciones {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .acciones input {
+    min-width: auto;
+    width: 100%;
+  }
+  
+  .acciones button {
+    width: 100%;
+  }
+  
+  .overlay {
+    padding: 15px;
+  }
+  
+  .overlay-content {
+    padding: 30px 25px;
+    border-radius: 25px;
+    max-height: 95vh;
+  }
+  
+  .overlay-content h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .form-buttons button {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .tabla-container {
+    overflow-x: auto;
+  }
+  
+  .tabla-proveedores {
+    min-width: 600px;
+  }
+  
+  .tabla-proveedores th,
+  .tabla-proveedores td {
+    padding: 12px 15px;
+  }
+  
+  .paginacion {
+    gap: 5px;
+  }
+  
+  .paginacion button {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .proveedores-header h2 {
+    font-size: 20px;
+  }
+  
+  .acciones {
+    padding: 15px;
+  }
+  
+  .acciones input {
+    font-size: 14px;
+    padding: 10px 16px;
+  }
+  
+  .acciones button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+  
+  .overlay-content {
+    padding: 25px 20px;
+    border-radius: 25px;
+  }
+  
+  .overlay-content h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .overlay-content input {
+    padding: 12px 16px;
+    font-size: 16px; /* Evita zoom en iOS */
+  }
+  
+  .form-buttons button {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+  
+  .tabla-proveedores th,
+  .tabla-proveedores td {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+  
+  .paginacion button {
+    padding: 6px 10px;
+    font-size: 12px;
+    min-width: 35px;
+  }
+}
+
+/* Accesibilidad */
+@media (prefers-reduced-motion: reduce) {
+  .overlay,
+  .overlay-content,
+  .form-buttons button,
+  .acciones button,
+  .tabla-proveedores button,
+  .paginacion button,
+  .tabla-proveedores tbody tr {
+    animation: none;
+    transition: none;
+  }
+}
+
+/* Estados de enfoque mejorados para accesibilidad */
+*:focus-visible {
+  outline: 2px solid #001152;
+  outline-offset: 2px;
+}
+
+/* Mejora de contraste para texto */
+.tabla-proveedores tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.tabla-proveedores tbody tr:nth-child(even):hover {
+  background-color: #e9ecef;
+}

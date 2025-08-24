@@ -1,7 +1,7 @@
 # Agregar estas líneas a tu urlpatterns existente en accounts/urls.py
 
 from django.urls import path
-from .views import enviar_email_reset, resetear_password, login_view
+from .views import enviar_email_reset, resetear_password, login_view ,register_view
 from accounts import views
 
 urlpatterns = [
