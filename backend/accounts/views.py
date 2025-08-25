@@ -11,7 +11,8 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import Http404
 from .models import User
-
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 User = get_user_model()
 
@@ -257,3 +258,13 @@ def toggle_usuario_estado(request, user_id):
             return JsonResponse({'success': False, 'error': f'Error al cambiar estado: {str(e)}'}, status=500)
     
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+@api_view(['GET'])
+def get_profile(request):
+    if request.user.is_authenticated:
+        return Response({
+            'email': request.user.email,
+            'first_name': request.user.first_name,
+            'last_name': request.user.last_name,
+        })
+    return Response({'error': 'No autenticado'}, status=401)
