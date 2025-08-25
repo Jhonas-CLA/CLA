@@ -52,19 +52,19 @@ function Contacto() {
           <div id="formulario" className="col-12 col-md-10 col-lg-6 mx-auto p-4 rounded text-white" style={{ backgroundColor: '#00338d', transition: 'opacity 1s' }}>
             <form id="contact-form" onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="nombre">👤 Nombre Completo*</label>
+                <p>👤 Nombre Completo*</p>
                 <input type="text" className="form-control" id="nombre" name="name" placeholder="Escribe tu nombre" autoComplete="name" required />
               </div>
               <div className="form-group">
-                <label htmlFor="correo">✉️ Correo*</label>
+                <p>✉️ Correo*</p>
                 <input type="email" className="form-control" id="correo" name="mail" placeholder="correo@ejemplo.com" autoComplete="email" required />
               </div>
               <div className="form-group">
-                <label htmlFor="telefono">📱 Número de Teléfono*</label>
+                <p>📱 Número de Teléfono*</p>
                 <input type="tel" className="form-control" id="telefono" name="phone" placeholder="Ej: 3001234567" pattern="[0-9]{10}" title="Ingresa un número de 10 dígitos" autoComplete="tel" required />
               </div>
               <div className="form-group">
-                <label htmlFor="mensaje">📝 Describe por qué te comunicas con nosotros:</label>
+                <p>📝 Describe por qué te comunicas con nosotros:</p>
                 <textarea className="form-control" id="mensaje" name="message" rows="4" placeholder="Tu mensaje..."></textarea>
               </div>
               <div className="text-center">
