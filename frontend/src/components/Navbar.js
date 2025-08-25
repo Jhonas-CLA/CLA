@@ -14,7 +14,8 @@ function Navbar() {
       { name: 'Alambres y Cables', path: '/categorias/alambres-cables', icon: '🔌' },
       { name: 'Bornas y Conectores', path: '/categorias/bornas-conectores', icon: '🔗' },
       { name: 'Conectores', path: '/categorias/conectores', icon: '🔌' },
-      { name: 'Terminales y Uniones', path: '/categorias/terminales-uniones', icon: '🔗' }
+      { name: 'Terminales y Uniones', path: '/categorias/terminales-uniones', icon: '🔗' },
+      { name: 'Clavijas', path: '/categorias/clavijas', icon: '🔌' }
     ],
     'Iluminación': [
       { name: 'Iluminación', path: '/categorias/iluminacion', icon: '💡' },
@@ -29,12 +30,12 @@ function Navbar() {
       { name: 'Relés', path: '/categorias/reles', icon: '🔄' }
     ],
     'Tubería y Accesorios': [
-      { name: 'Tubería EMT / IMC / PVC / LED', path: '/categorias/tuberia-emt-imc-pvc-led', icon: '🔧' },
+      { name: 'Tuberia', path: '/categorias/tuberia', icon: '🔧' },
       { name: 'Curvas y Accesorios de Tubería', path: '/categorias/curvas-accesorios-tuberia', icon: '🔧' },
       { name: 'Canaletas', path: '/categorias/canaletas', icon: '📐' },
-      { name: 'Accesorios para Canaletas', path: '/categorias/accesorios-canaletas', icon: '🔧' }
+      { name: 'Accesorios para Canaletas / EMT / PVC', path: '/categorias/accesorios-canaletas-emt-pvc', icon: '🔧' }
     ],
-    'Cajas y Instalación': [
+    'Cajas e Instalación': [
       { name: 'Cajas', path: '/categorias/cajas', icon: '📦' },
       { name: 'Tapas y Accesorios de Superficie', path: '/categorias/tapas-accesorios-superficie', icon: '🔲' },
       { name: 'Rosetas', path: '/categorias/rosetas', icon: '🌸' },
@@ -43,13 +44,11 @@ function Navbar() {
     'Interruptores y Tomas': [
       { name: 'Interruptores y Programadores', path: '/categorias/interruptores-programadores', icon: '🔲' },
       { name: 'Tomas y Enchufes', path: '/categorias/tomas-enchufes', icon: '🔌' },
-      { name: 'Clavijas', path: '/categorias/clavijas', icon: '🔌' },
       { name: 'Extensiones y Multitomas', path: '/categorias/extensiones-multitomas', icon: '🔌' }
     ],
     'Herramientas y Medición': [
       { name: 'Herramientas y Accesorios Especiales', path: '/categorias/herramientas-accesorios-especiales', icon: '🛠️' },
       { name: 'Instrumentos de Medición', path: '/categorias/instrumentos-medicion', icon: '📏' },
-      { name: 'Testers y Medidores', path: '/categorias/testers-medidores', icon: '🔍' },
       { name: 'Discos para Pulidora', path: '/categorias/discos-pulidora', icon: '💿' }
     ],
     'Sujeción y Soporte': [
@@ -64,11 +63,9 @@ function Navbar() {
     ],
     'Materiales y Sellantes': [
       { name: 'Cintas Aislantes', path: '/categorias/cintas-aislantes', icon: '📏' },
-      { name: 'Siliconas y Sellantes', path: '/categorias/siliconas-sellantes', icon: '🧴' },
       { name: 'Soldaduras', path: '/categorias/soldaduras', icon: '🔥' }
     ],
     'Electrodomésticos': [
-      { name: 'Campanas Extractoras', path: '/categorias/campanas-extractoras', icon: '💨' },
       { name: 'Duchas', path: '/categorias/duchas', icon: '🚿' }
     ],
     'Otros': [
@@ -143,8 +140,6 @@ function Navbar() {
           <Link to="/carrito" className={`action-icon cart-icon ${isActiveLink('/carrito') ? 'active' : ''}`} onClick={closeMenu} title="Carrito">
             <img src="https://cdn-icons-png.flaticon.com/512/8146/8146003.png" alt="Productos" style={{ width: '50px', height: '40px', objectFit: 'cover' }} />
           </Link>
-
-
 
           {/* Imagen de contacto (usuario) */}
           <Link 
