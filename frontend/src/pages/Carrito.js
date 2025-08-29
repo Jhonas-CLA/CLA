@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import './Carrito.css';
 
@@ -27,6 +27,13 @@ const CarritoCompras = () => {
   const [carrito, setCarrito] = useState({});
   const [busqueda, setBusqueda] = useState('');
   const [categoriaFiltro, setCategoriaFiltro] = useState('');
+  
+  // Estados para la validación de usuario
+  const [email, setEmail] = useState('');
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     axios.get('http://localhost:8000/api/productos/')
@@ -50,7 +57,6 @@ const CarritoCompras = () => {
 
   const categorias = useMemo(() => Object.entries(CATEGORIAS_NOMBRES), []);
 
-  // 🔹 Ajuste para que no muestre nada al inicio y ordene por nombre
   const productosFiltrados = useMemo(() => {
     if (!categoriaFiltro && !busqueda) {
       return [];
@@ -111,19 +117,336 @@ const CarritoCompras = () => {
 
   const vaciarCarrito = () => setCarrito({});
 
-  const enviarPedido = () => {
+  // FIXED: Función para enviar pedido con manejo de errores mejorado
+  const enviarPedido = async () => {
     if (totalItems === 0) {
       alert('El carrito está vacío');
       return;
     }
 
-    const detallesPedido = Object.values(carrito).map(item =>
-      `${item.nombre} (${item.codigo}) - Cantidad: ${item.cantidad} - Total: $${(item.precio * item.cantidad).toLocaleString()}`
-    ).join('\n');
+    // Si no hay email, mostrar modal
+    if (!email) {
+      setShowEmailModal(true);
+      return;
+    }
 
-    const mensaje = `NUEVO PEDIDO%0A%0A${encodeURIComponent(detallesPedido)}%0A%0ATOTAL: $${totalPrecio.toLocaleString()}%0AProductos: ${totalItems}`;
-    window.open(`https://wa.me/3022560604?text=${mensaje}`, '_blank');
-    vaciarCarrito();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      // Preparar datos del pedido
+      const pedidoData = {
+        productos: Object.values(carrito).map(item => ({
+          nombre: item.nombre,
+          codigo: item.codigo,
+          cantidad: item.cantidad,
+          precio: item.precio
+        })),
+        total: totalPrecio,
+        email: email
+      };
+
+      console.log('Enviando pedido:', pedidoData); // Debug
+
+      // FIXED: URL corregida
+      const response = await fetch("http://localhost:8000/accounts/api/whatsapp/pedido/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(pedidoData),
+      });
+
+      const data = await response.json();
+      console.log('Respuesta del servidor:', data); // Debug
+
+      if (response.ok) {
+        setSuccess("✅ ¡Perfecto! Tu pedido está listo");
+
+        // Si el backend devuelve un link de WhatsApp, lo abrimos:
+        if (data.whatsapp_url) {
+          window.open(data.whatsapp_url, "_blank");
+        }
+
+        vaciarCarrito();
+        setShowEmailModal(false);
+        setTimeout(() => setSuccess(""), 5000);
+      } else {
+        // FIXED: Manejo de errores específicos
+        console.error('Error del servidor:', data);
+        
+        switch (data.error) {
+          case 'USER_NOT_REGISTERED':
+            setError('❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero.');
+            break;
+          case 'USER_INACTIVE':
+            setError('⚠️ Tu cuenta está inactiva. Contacta al administrador.');
+            break;
+          case 'EMAIL_REQUIRED':
+            setError('📧 Por favor ingresa tu correo electrónico.');
+            break;
+          case 'PRODUCTS_REQUIRED':
+            setError('🛒 Debe incluir al menos un producto en el pedido.');
+            break;
+          case 'ADMIN_NOT_FOUND':
+            setError('⚠️ No hay administrador disponible. Contacta al soporte.');
+            break;
+          case 'INVALID_JSON':
+            setError('❌ Error en el formato de datos. Intenta nuevamente.');
+            break;
+          case 'SERVER_ERROR':
+            setError(`❌ Error del servidor: ${data.message}`);
+            break;
+          default:
+            setError(data.message || '❌ Ocurrió un error inesperado');
+        }
+      }
+    } catch (err) {
+      console.error('Error de conexión:', err);
+      setError("❌ Error de conexión. Verifica tu internet e intenta nuevamente");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // FIXED: Función separada para manejar el cambio del email con useCallback
+  const handleEmailChange = useCallback((e) => {
+    const newEmail = e.target.value;
+    setEmail(newEmail);
+    if (error) {
+      setError('');
+    }
+  }, [error]);
+
+  // FIXED: Función para cerrar modal con useCallback
+  const cerrarModal = useCallback(() => {
+    setShowEmailModal(false);
+    setError('');
+    setEmail('');
+  }, []);
+
+  // Componente Modal para solicitar email - FIXED con estado local
+  const EmailModal = () => {
+    const [localEmail, setLocalEmail] = useState(email);
+    const [localError, setLocalError] = useState('');
+
+    const handleLocalEmailChange = (e) => {
+      setLocalEmail(e.target.value);
+      if (localError) {
+        setLocalError('');
+      }
+      if (error) {
+        setError('');
+      }
+    };
+
+    const handleContinuar = async () => {
+      if (!localEmail.trim()) {
+        setLocalError('📧 Por favor ingresa tu correo electrónico.');
+        return;
+      }
+
+      // Actualizar el estado principal
+      setEmail(localEmail);
+      
+      // Proceder con el envío
+      setLoading(true);
+      setError('');
+      setSuccess('');
+
+      try {
+        const pedidoData = {
+          productos: Object.values(carrito).map(item => ({
+            nombre: item.nombre,
+            codigo: item.codigo,
+            cantidad: item.cantidad,
+            precio: item.precio
+          })),
+          total: totalPrecio,
+          email: localEmail
+        };
+
+        const response = await fetch("http://localhost:8000/accounts/api/whatsapp/pedido/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(pedidoData),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setSuccess("✅ ¡Perfecto! Tu pedido está listo");
+          if (data.whatsapp_url) {
+            window.open(data.whatsapp_url, "_blank");
+          }
+          vaciarCarrito();
+          setShowEmailModal(false);
+          setTimeout(() => setSuccess(""), 5000);
+        } else {
+          switch (data.error) {
+            case 'USER_NOT_REGISTERED':
+              setError('❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero.');
+              break;
+            case 'USER_INACTIVE':
+              setError('⚠️ Tu cuenta está inactiva. Contacta al administrador.');
+              break;
+            case 'EMAIL_REQUIRED':
+              setError('📧 Por favor ingresa tu correo electrónico.');
+              break;
+            case 'PRODUCTS_REQUIRED':
+              setError('🛒 Debe incluir al menos un producto en el pedido.');
+              break;
+            case 'ADMIN_NOT_FOUND':
+              setError('⚠️ No hay administrador disponible. Contacta al soporte.');
+              break;
+            case 'INVALID_JSON':
+              setError('❌ Error en el formato de datos. Intenta nuevamente.');
+              break;
+            case 'SERVER_ERROR':
+              setError(`❌ Error del servidor: ${data.message}`);
+              break;
+            default:
+              setError(data.message || '❌ Ocurrió un error inesperado');
+          }
+        }
+      } catch (err) {
+        console.error('Error de conexión:', err);
+        setError("❌ Error de conexión. Verifica tu internet e intenta nuevamente");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const handleCerrar = () => {
+      setShowEmailModal(false);
+      setError('');
+      setLocalError('');
+      setLocalEmail('');
+      setEmail('');
+    };
+
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000
+      }}>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '15px',
+          padding: '30px',
+          maxWidth: '500px',
+          width: '90%',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
+        }}>
+          <h3 style={{
+            color: '#001152',
+            fontSize: '1.5rem',
+            marginBottom: '15px',
+            textAlign: 'center'
+          }}>
+            🔐 Verificación Requerida
+          </h3>
+          <p style={{
+            color: '#666',
+            marginBottom: '20px',
+            textAlign: 'center',
+            lineHeight: '1.5'
+          }}>
+            Para enviar tu pedido por WhatsApp, necesitamos verificar que tienes una cuenta registrada en nuestro sistema.
+          </p>
+          
+          <div style={{ marginBottom: '20px' }}>
+            <label style={{
+              display: 'block',
+              fontWeight: 'bold',
+              color: '#001152',
+              marginBottom: '8px'
+            }}>
+              Correo Electrónico Registrado
+            </label>
+            <input
+              type="email"
+              value={localEmail}
+              onChange={handleLocalEmailChange}
+              placeholder="ejemplo@correo.com"
+              autoComplete="email"
+              style={{
+                width: '100%',
+                padding: '12px',
+                border: localError ? '2px solid #ef4444' : '2px solid #ddd',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                outline: 'none',
+                boxSizing: 'border-box'
+              }}
+              onFocus={(e) => e.target.style.borderColor = '#FFD700'}
+              onBlur={(e) => e.target.style.borderColor = localError ? '#ef4444' : '#ddd'}
+            />
+          </div>
+
+          {(localError || error) && (
+            <div style={{
+              backgroundColor: '#fee2e2',
+              border: '1px solid #ef4444',
+              borderRadius: '8px',
+              padding: '12px',
+              marginBottom: '20px',
+              color: '#dc2626',
+              fontSize: '0.9rem'
+            }}>
+              {localError || error}
+            </div>
+          )}
+
+          <div style={{ display: 'flex', gap: '12px' }}>
+            <button
+              onClick={handleCerrar}
+              style={{
+                flex: 1,
+                padding: '12px 20px',
+                backgroundColor: '#f3f4f6',
+                color: '#374151',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                cursor: 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={handleContinuar}
+              disabled={loading || !localEmail.trim()}
+              style={{
+                flex: 1,
+                padding: '12px 20px',
+                backgroundColor: loading || !localEmail.trim() ? '#ccc' : '#FFD700',
+                color: '#001152',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '1rem',
+                cursor: loading || !localEmail.trim() ? 'not-allowed' : 'pointer',
+                fontWeight: 'bold'
+              }}
+            >
+              {loading ? '⏳ Verificando...' : '✅ Continuar'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -132,6 +455,22 @@ const CarritoCompras = () => {
         <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <h1 style={{ color: '#FFD700', fontSize: '2.5rem' }}>Catálogo de Productos</h1>
           <p style={{ color: '#000' }}>Selecciona una categoría para ver los productos</p>
+          
+          {/* Mensaje de éxito */}
+          {success && (
+            <div style={{
+              backgroundColor: '#d1fae5',
+              border: '2px solid #22c55e',
+              borderRadius: '10px',
+              padding: '15px',
+              marginTop: '15px',
+              color: '#065f46',
+              fontWeight: 'bold'
+            }}>
+              {success}
+            </div>
+          )}
+          
           {totalItems > 0 && (
             <div style={{
               marginTop: '20px',
@@ -268,12 +607,16 @@ const CarritoCompras = () => {
                   <button onClick={enviarPedido} className="whatsapp-btn">
                     📲 Enviar pedido por WhatsApp
                   </button>
+                  
                 </div>
               </>
             )}
           </div>
         </div>
       </div>
+      
+      {/* Modal de email */}
+      {showEmailModal && <EmailModal />}
     </div>
   );
 };
