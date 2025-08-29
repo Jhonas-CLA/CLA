@@ -20,8 +20,10 @@ from products.views import productos_limitados
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),path('api/productos/', obtener_productos),
+    path("api/whatsapp/", include("whatsapp.urls")),
 ]
 
 if settings.DEBUG:

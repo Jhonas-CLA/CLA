@@ -1,10 +1,13 @@
+// Navbar.js
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.css';
-import { useTheme } from '../context/ThemeContext'; // ✅ solo este
+import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext'; // Agregar el useAuth
 
 function Navbar() {
-  const { darkMode, toggleTheme } = useTheme(); // ✅ usamos useTheme, no useContext manual
+  const { darkMode, toggleTheme } = useTheme();
+  const { user, isAuthenticated, logout } = useAuth(); // Usar el contexto de auth
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const location = useLocation();
@@ -86,6 +89,11 @@ function Navbar() {
   const toggleDropdown = () => setShowDropdown(!showDropdown);
   const isActiveLink = (path) => location.pathname === path;
 
+  const handleLogout = async () => {
+    await logout();
+    closeMenu();
+  };
+
   return (
     <nav className={`custom-navbar ${darkMode ? 'dark-mode' : ''}`}>
       <div className="navbar-container">
@@ -141,17 +149,82 @@ function Navbar() {
             <img src="https://cdn-icons-png.flaticon.com/512/8146/8146003.png" alt="Productos" style={{ width: '50px', height: '40px', objectFit: 'cover' }} />
           </Link>
 
-          {/* Imagen de contacto (usuario) */}
-          <Link 
-            to="/Login" 
-            className={`action-icon profile-icon ${isActiveLink('/Login') ? 'active' : ''}`}
-            onClick={closeMenu}
-            title="Login"
-          >
-            <div className="profile-circle" style={{ width: '60px', height: '60px', overflow: 'hidden', borderRadius: '50%' }}>
-              <img src="https://static.vecteezy.com/ti/vetor-gratis/p3/7407996-user-icon-person-icon-client-symbol-login-head-sign-icon-design-vetor.jpg" alt="Usuario" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          {/* Sección de usuario - Cambia según si está autenticado */}
+          {isAuthenticated ? (
+            <div className="user-section" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              {/* Usuario logueado */}
+              <Link 
+                to="/analiticas" 
+                className={`action-icon profile-icon ${isActiveLink('/analiticas') ? 'active' : ''}`}
+                onClick={closeMenu} 
+                title={`Dashboard - ${user.first_name}`}
+              >
+                <div 
+                  className="user-greeting" 
+                  style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    padding: '8px 12px',
+                    backgroundColor: '#FFD700',
+                    borderRadius: '20px',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                    color: '#001152',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  <span>Hola, {user.first_name}</span>
+                </div>
+              </Link>
+              
+              {/* Botón de logout */}
+              <button 
+                onClick={handleLogout}
+                className="logout-btn"
+                style={{
+                  padding: '6px 12px',
+                  backgroundColor: '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: 'bold'
+                }}
+                title="Cerrar sesión"
+              >
+                Salir
+              </button>
             </div>
-          </Link>
+          ) : (
+            /* Usuario no logueado */
+            <Link 
+              to="/Login" 
+              className={`action-icon profile-icon ${isActiveLink('/Login') ? 'active' : ''}`} 
+              onClick={closeMenu} 
+              title="Login"
+            >
+              <div 
+                className="profile-circle" 
+                style={{ 
+                  width: '60px', 
+                  height: '60px', 
+                  overflow: 'hidden', 
+                  borderRadius: '50%' 
+                }}
+              >
+                <img 
+                  src="https://static.vecteezy.com/ti/vetor-gratis/p3/7407996-user-icon-person-icon-client-symbol-login-head-sign-icon-design-vetor.jpg" 
+                  alt="Usuario" 
+                  style={{ 
+                    width: '100%', 
+                    height: '100%', 
+                    objectFit: 'cover' 
+                  }} 
+                />
+              </div>
+            </Link>
+          )}
 
           <button className="mode-toggle-btn" onClick={toggleTheme} title={darkMode ? "Cambiar a modo claro" : "Cambiar a modo oscuro"}>
             <span className="mode-icon">{darkMode ? '☀️' : '🌙'}</span>
