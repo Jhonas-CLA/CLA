@@ -1,38 +1,124 @@
+# backend/products/views.py
 from rest_framework.decorators import api_view
 from rest_framework import generics
 from rest_framework.response import Response
-from .models import Product
-from .serializers import ProductoSerializer
-from .models import Product
-from .serializers import ProductoSerializer
-from products.models import Product, Category
-from backend.serializers import ProductSerializer, CategorySerializer
+from django.db.models import Q
+from .models import Product, Category, Cart, CartItem
+from .serializers import ProductSerializer, CategorySerializer, ProductoSerializer, CartSerializer
+
+# -------------------
+# PRODUCTOS Y CATEGORÍAS
+# -------------------
+
 class ProductListView(generics.ListCreateAPIView):
-    # hice un cambio para que flitre (all()) asi estaba antes 
+    serializer_class = ProductSerializer
+    
+    def get_queryset(self):
+        queryset = Product.objects.filter(is_active=True).order_by('-id')
+        
+        # Filtro por ID de categoría (para compatibilidad)
+        categoria_id = self.request.query_params.get("categoria_id")
+        if categoria_id:
+            queryset = queryset.filter(categoria_id=categoria_id)
+        
+        # NUEVO: Filtro por nombre de categoría
+        categoria_nombre = self.request.query_params.get("categoria")
+        if categoria_nombre:
+            # Reemplazar guiones por espacios y buscar por nombre
+            nombre_formateado = categoria_nombre.replace('-', ' ')
+            queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
+        
+        return queryset
+
+class ProductDetailView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-
-    # le agrege esto para que el codigo organice los productos y muestre los activos 
-
-    def get_queryset(self):
-        qs = Product.objects.all().order_by('-id')
-        only_active = self.request.query_params.get('only_active')
-        if only_active in ('1', 'true', 'True', 'yes'):
-            qs = qs.filter(is_active=True)
-        return qs
 
 class CategoryListView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
-
 @api_view(['GET'])
 def obtener_productos(request):
-    #hice un cambio para que flitre(asi estaba antes all().order_by('-id')[:15] )
-    productos = Product.objects.filter(is_active=True).order_by('-id') # Últimos 15 productos
-    serializer = ProductoSerializer(productos, many=True)
+    productos = Product.objects.filter(is_active=True).order_by('-id')[:15]
+    serializer = ProductoSerializer(productos, many=True, context={'request': request})
     return Response(serializer.data)
 
-class ProductDetailView(generics.RetrieveUpdateAPIView):
-    queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+# -------------------
+# CARRITO
+# -------------------
+
+@api_view(["GET"])
+def obtener_carrito(request, cart_id):
+    cart, _ = Cart.objects.get_or_create(id=cart_id)
+    serializer = CartSerializer(cart, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(["POST"])
+def agregar_producto(request, cart_id):
+    cart, _ = Cart.objects.get_or_create(id=cart_id)
+    product_id = request.data.get("product_id")
+    quantity = int(request.data.get("quantity", 1))
+    
+    try:
+        product = Product.objects.get(id=product_id, is_active=True)
+    except Product.DoesNotExist:
+        return Response({"error": "Producto no encontrado"}, status=404)
+    
+    # Verificar stock disponible
+    if product.cantidad < quantity:
+        return Response({"error": "No hay suficiente stock disponible"}, status=400)
+    
+    item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+    if not created:
+        nueva_cantidad = item.quantity + quantity
+        if product.cantidad < nueva_cantidad:
+            return Response({"error": "No hay suficiente stock disponible"}, status=400)
+        item.quantity = nueva_cantidad
+    else:
+        item.quantity = quantity
+    item.save()
+    
+    serializer = CartSerializer(cart, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(["POST"])
+def eliminar_producto(request, cart_id):
+    product_id = request.data.get("product_id")
+    
+    try:
+        item = CartItem.objects.get(cart_id=cart_id, product_id=product_id)
+        item.delete()
+    except CartItem.DoesNotExist:
+        return Response({"error": "Producto no está en el carrito"}, status=404)
+    
+    cart, _ = Cart.objects.get_or_create(id=cart_id)
+    serializer = CartSerializer(cart, context={'request': request})
+    return Response(serializer.data)
+
+@api_view(["POST"])
+def actualizar_cantidad(request, cart_id):
+    """Nueva función para actualizar cantidad en el carrito"""
+    product_id = request.data.get("product_id")
+    quantity = int(request.data.get("quantity", 1))
+    
+    try:
+        item = CartItem.objects.get(cart_id=cart_id, product_id=product_id)
+        product = item.product
+        
+        # Verificar stock
+        if product.cantidad < quantity:
+            return Response({"error": "No hay suficiente stock disponible"}, status=400)
+        
+        if quantity <= 0:
+            item.delete()
+        else:
+            item.quantity = quantity
+            item.save()
+            
+    except CartItem.DoesNotExist:
+        return Response({"error": "Producto no está en el carrito"}, status=404)
+    
+    cart, _ = Cart.objects.get_or_create(id=cart_id)
+    serializer = CartSerializer(cart, context={'request': request})
+    return Response(serializer.data)

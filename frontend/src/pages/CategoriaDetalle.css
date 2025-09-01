@@ -1,0 +1,99 @@
+/* Contenedor principal */
+.titulo-categorias {
+  color: #FFD700;
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Cards de productos */
+.card-producto {
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  padding: 20px;
+  text-align: center;
+  height: 100%;
+}
+
+.card-producto:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Imagen del producto */
+.card-producto img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  margin: 0 auto 15px;
+  display: block;
+}
+
+/* Nombre y descripción */
+.card-producto h5 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #001152;
+  margin-bottom: 10px;
+}
+
+.card-producto p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+/* Precio */
+.card-producto .precio {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #FFD700;
+  margin-top: 10px;
+}
+
+/* Botón de acción */
+.btn-agregar {
+  display: inline-block;
+  background-color: #FFD700;
+  color: #001152;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-agregar:hover {
+  background-color: #e6c200;
+  color: #000;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .card-producto img {
+    width: 90px;
+    height: 90px;
+  }
+  .btn-agregar {
+    padding: 8px 14px;
+    font-size: 0.9rem;
+  }
+}
+
+/* --- Modo oscuro --- */
+body.dark-mode .card-producto {
+  background-color: #2d3748;
+  color: white;
+}
+
+body.dark-mode .card-producto h5 {
+  color: #FFD700;
+}
+
+body.dark-mode .card-producto p {
+  color: #cbd5e0;
+}
