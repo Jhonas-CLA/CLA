@@ -1,80 +1,103 @@
+/* Contenedor general del carrusel */
 .carousel-container {
-  width: 90%;
-  margin: auto;
+  padding: 20px 0;
 }
 
-/* Tarjeta */
+.react-multi-carousel-item {
+  padding: 10px; /* separación entre tarjetas */
+}
+
 .product-card {
-  background-color: var(--card-bg);
-  color: var(--text-color);
+  background-color: var(--card-bg, #fff);
   border-radius: 12px;
-  padding: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 340px; /* Un poquito más para meter las estrellas */
 }
 
 .product-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
 }
 
-/* Imagen */
-.product-image-container {
-  width: 100%;
-  height: 220px;
-  background-color: var(--card-bg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.image-container {
+  position: relative;
+  height: 180px;
   overflow: hidden;
-  border-radius: 8px;
+  flex-shrink: 0;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
 }
 
-/* Info */
+.stock-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  color: white;
+  font-weight: bold;
+}
+
+.stock-available {
+  background-color: #28a745;
+}
+
+.stock-out {
+  background-color: #dc3545;
+}
+
 .product-info {
-  margin-top: 10px;
+  padding: 12px;
+  flex-grow: 1;
 }
 
 .product-name {
   font-size: 1rem;
-  font-weight: 600;
+  margin: 0;
+  font-weight: bold;
+  line-height: 1.2;
+  min-height: 38px;
 }
 
 .product-price {
-  font-size: 0.95rem;
-  color: var(--accent-color);
+  color: #007bff;
+  font-size: 1rem;
+  margin-top: 4px;
 }
 
-/* Cantidad */
-.product-stock {
-  font-size: 0.85rem;
-  font-weight: 500;
+/* ⭐ Estrellas de calificación */
+.rating {
+  display: flex;
+  justify-content: center;
+  margin-top: 6px;
 }
 
-.in-stock {
-  color: #28a745;
+.star {
+  color: gold;
+  font-size: 1rem;
+  margin: 0 1px;
 }
 
-.out-of-stock {
-  color: #dc3545;
+/* 🎨 Modo oscuro */
+body.dark-mode .product-card {
+  background-color: #1e1e1e;
 }
 
-/* Variables modo claro */
-:root {
-  --card-bg: #ffffff;
-  --text-color: #000000;
-  --accent-color: #1f6ba3;
+body.dark-mode .product-name {
+  color: #f1f1f1;
 }
 
-/* Variables modo oscuro */
-[data-theme="dark"] {
-  --card-bg: #1a1a1a;
-  --text-color: #f5f5f5;
-  --accent-color: #4ea8ff;
+body.dark-mode .product-price {
+  color: #66b3ff;
 }

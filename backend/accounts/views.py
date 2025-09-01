@@ -11,9 +11,45 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import Http404
 from .models import User
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.contrib.auth.models import User
 
 User = get_user_model()
+@api_view(['GET', 'PUT'])
+@permission_classes([IsAuthenticated])
+def configuracion_usuario(request):
+    user = request.user  
 
+    if request.method == 'GET':
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        })
+
+    if request.method == 'PUT':
+        data = request.data
+        user.first_name = data.get("first_name", user.first_name)
+        user.last_name = data.get("last_name", user.last_name)
+        user.email = data.get("email", user.email)
+        user.save()
+        return Response({"message": "Perfil actualizado correctamente"})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def usuario_actual(request):
+    user = request.user
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+    })
 @csrf_exempt
 def register_view(request):
     if request.method == 'POST':
