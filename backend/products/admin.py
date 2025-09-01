@@ -7,9 +7,10 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ['name']
     readonly_fields = ['created_at', 'updated_at']
 
+
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['nombre', 'codigo', 'categoria', 'precio', 'cantidad', 'stock_status', 'is_active']
+    list_display = ['nombre', 'codigo', 'categoria', 'precio', 'cantidad', 'stock_status_display', 'is_active']
     list_filter = ['categoria', 'is_active', 'created_at']
     search_fields = ['nombre', 'codigo', 'descripcion']
     readonly_fields = ['created_at', 'updated_at']
@@ -33,6 +34,6 @@ class ProductAdmin(admin.ModelAdmin):
         }),
     )
     
-    def stock_status(self, obj):
+    def stock_status_display(self, obj):
         return obj.stock_status
-    stock_status.short_description = "Estado del stock"
+    stock_status_display.short_description = "Estado del stock"

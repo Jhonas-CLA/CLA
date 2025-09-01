@@ -1,5 +1,5 @@
-from django.db import models
-from django.core.validators import MinValueValidator, DecimalValidator
+from django.db import models 
+from django.core.validators import MinValueValidator
 import uuid
 
 class Category(models.Model):
@@ -16,6 +16,7 @@ class Category(models.Model):
     
     def __str__(self):
         return self.name
+
 
 class Product(models.Model):
     """Modelo para productos"""
@@ -48,8 +49,6 @@ class Product(models.Model):
         null=True,
         verbose_name="Imagen del producto"
     )
-    
-    # Campos adicionales útiles
     descripcion = models.TextField(blank=True, null=True, verbose_name="Descripción")
     is_active = models.BooleanField(default=True, verbose_name="Activo")
     created_at = models.DateTimeField(auto_now_add=True)
@@ -77,3 +76,29 @@ class Product(models.Model):
             return "Stock bajo"
         else:
             return "En stock"
+
+
+class Cart(models.Model):
+    """Carrito de compras (UUID para usuarios anónimos)"""
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def total_price(self):
+        return sum(item.subtotal() for item in self.items.all())
+
+    def __str__(self):
+        return f"Carrito {self.id} - {self.items.count()} items"
+
+
+class CartItem(models.Model):
+    """Productos dentro del carrito"""
+    cart = models.ForeignKey(Cart, related_name="items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+
+    def subtotal(self):
+        return self.product.precio * self.quantity
+
+    def __str__(self):
+        return f"{self.quantity} x {self.product.nombre} en carrito {self.cart.id}"
