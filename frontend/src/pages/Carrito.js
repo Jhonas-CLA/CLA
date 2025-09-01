@@ -36,7 +36,7 @@ const CarritoCompras = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/productos/')
+    axios.get('http://localhost:8000/api/productos/?only_active=true') //le agrege una validacion de los poductos activos 
       .then(res => {
         const productosBack = res.data.map(p => {
           const idCategoria = String(p.categoria.id || p.categoria);
@@ -47,13 +47,32 @@ const CarritoCompras = () => {
             categoriaId: idCategoria,
             precio: parseFloat(p.precio),
             stock: p.cantidad,
-            disponible: p.disponible
+            // le quite lo anterior por que nesecitaba que el carrito me muestre solo los productos activos 
+            is_active: p.is_active
           };
         });
         setProductos(productosBack);
       })
       .catch(err => console.error("Error cargando productos:", err));
   }, []);
+
+  // le agrege esto al carrito 
+
+  useEffect(() => {
+    if (!productos || productos.length === 0) {
+      return;
+    }
+    setCarrito(prev => {
+      const activos = new Set(productos.map(p => p.codigo));
+      const nuevo = {};
+      for (const [codigo, item] of Object.entries(prev)) {
+        if (activos.has(codigo)) {
+          nuevo[codigo] = item;
+        }
+      }
+      return nuevo;
+    });
+  }, [productos]);
 
   const categorias = useMemo(() => Object.entries(CATEGORIAS_NOMBRES), []);
 
