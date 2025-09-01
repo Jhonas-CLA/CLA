@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 import Proveedores from '../pages/proveedores';
+import DashboardProductos from '../pages/DashboardProductos';
+
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -211,6 +213,7 @@ function AdminDashboard() {
     }
   };
 
+  // ⬇️ FUNCIÓN RENDERCONTENT ACTUALIZADA CON EL CAMBIO
   const renderContent = () => {
     switch (activeSection) {
       case 'usuarios':
@@ -218,13 +221,33 @@ function AdminDashboard() {
       case 'proveedores':
         return <Proveedores />;
       case 'analiticos':
-        return <div className="content-section"><h2>Analíticos</h2><p>Aquí irán las estadísticas y gráficos</p></div>;
+        return (
+          <div className="content-section">
+            <h2>Analíticos</h2>
+            <p>Aquí irán las estadísticas y gráficos</p>
+          </div>
+        );
       case 'productos':
-        return <div className="content-section"><h2>Productos</h2><p>Aquí irá la gestión de productos</p></div>;
+        // ⬇️ AQUÍ EL CAMBIO: ahora muestra el componente DashboardProductos
+        return (
+          <div className="content-section">
+            <DashboardProductos />
+          </div>
+        );
       case 'pedidos':
-        return <div className="content-section"><h2>Pedidos</h2><p>Aquí irá la gestión de pedidos</p></div>;
+        return (
+          <div className="content-section">
+            <h2>Pedidos</h2>
+            <p>Aquí irá la gestión de pedidos</p>
+          </div>
+        );
       case 'configuracion':
-        return <div className="content-section"><h2>Configuración</h2><p>Aquí irá la configuración del sistema</p></div>;
+        return (
+          <div className="content-section">
+            <h2>Configuración</h2>
+            <p>Aquí irá la configuración del sistema</p>
+          </div>
+        );
       default:
         return renderUsuarios();
     }
@@ -346,6 +369,7 @@ function AdminDashboard() {
                         onClick={() => abrirModalEdicion(usuario)}
                         title="Editar usuario"
                         disabled={loadingAction}
+                        style={{ display: 'none' }}
                       >
                         ✏️
                       </button>

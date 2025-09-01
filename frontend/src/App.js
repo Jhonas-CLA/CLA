@@ -17,6 +17,7 @@ import ForgotPassword from './components/ForgotPassword';
 import ResetPassword from './components/ResetPassword';
 import Carrito from './pages/Carrito';
 import Proveedores from './pages/proveedores';
+import DashboardProductos from './pages/DashboardProductos';
 
 import AdminDashboard from './components/AdminDashboard';
 import UserDashboard from './components/UserDashboard';
@@ -54,6 +55,7 @@ function AppContent() {
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/analiticas" element={<UserDashboard />} />
           <Route path="/proveedores" element={<Proveedores />} />
+          <Route path="/dashboard/productos" element={<DashboardProductos />} />
 
         </Routes>
       </Router>
