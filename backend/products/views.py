@@ -2,46 +2,68 @@
 from rest_framework.decorators import api_view
 from rest_framework import generics
 from rest_framework.response import Response
-from django.db.models import Q
 from .models import Product, Category, Cart, CartItem
 from .serializers import ProductSerializer, CategorySerializer, ProductoSerializer, CartSerializer
-
+from backend.serializers import ProductSerializer 
 # -------------------
 # PRODUCTOS Y CATEGORÍAS
 # -------------------
 
 class ProductListView(generics.ListCreateAPIView):
+    queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    
+
     def get_queryset(self):
-        queryset = Product.objects.filter(is_active=True).order_by('-id')
+        queryset = Product.objects.all().order_by('-id')
         
-        # Filtro por ID de categoría (para compatibilidad)
+        # Filtro por ID de categoría
         categoria_id = self.request.query_params.get("categoria_id")
         if categoria_id:
             queryset = queryset.filter(categoria_id=categoria_id)
         
-        # NUEVO: Filtro por nombre de categoría
+        # Filtro por nombre de categoría (corregido)
         categoria_nombre = self.request.query_params.get("categoria")
         if categoria_nombre:
-            # Reemplazar guiones por espacios y buscar por nombre
             nombre_formateado = categoria_nombre.replace('-', ' ')
             queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
         
+        # Filtro por estado activo
+        only_active = self.request.query_params.get('only_active')
+        if only_active in ('1', 'true', 'True', 'yes'):
+            queryset = queryset.filter(is_active=True) 
+        
         return queryset
+
 
 class ProductDetailView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
+
 class CategoryListView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
 
+
 @api_view(['GET'])
 def obtener_productos(request):
-    productos = Product.objects.filter(is_active=True).order_by('-id')[:15]
-    serializer = ProductoSerializer(productos, many=True, context={'request': request})
+    queryset = Product.objects.filter(is_active=True).order_by('-id')
+    
+    # Filtro por ID de categoría
+    categoria_id = request.query_params.get("categoria_id")
+    if categoria_id:
+        queryset = queryset.filter(categoria_id=categoria_id)
+    
+    # Filtro por nombre de categoría (corregido)
+    categoria_nombre = request.query_params.get("categoria")
+    if categoria_nombre:
+        nombre_formateado = categoria_nombre.replace('-', ' ')
+        queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
+    
+    # Limitar a los últimos 15 productos
+    queryset = queryset[:15]
+    
+    serializer = ProductoSerializer(queryset, many=True, context={'request': request})
     return Response(serializer.data)
 
 # -------------------
@@ -53,6 +75,7 @@ def obtener_carrito(request, cart_id):
     cart, _ = Cart.objects.get_or_create(id=cart_id)
     serializer = CartSerializer(cart, context={'request': request})
     return Response(serializer.data)
+
 
 @api_view(["POST"])
 def agregar_producto(request, cart_id):
@@ -82,6 +105,7 @@ def agregar_producto(request, cart_id):
     serializer = CartSerializer(cart, context={'request': request})
     return Response(serializer.data)
 
+
 @api_view(["POST"])
 def eliminar_producto(request, cart_id):
     product_id = request.data.get("product_id")
@@ -96,9 +120,10 @@ def eliminar_producto(request, cart_id):
     serializer = CartSerializer(cart, context={'request': request})
     return Response(serializer.data)
 
+
 @api_view(["POST"])
 def actualizar_cantidad(request, cart_id):
-    """Nueva función para actualizar cantidad en el carrito"""
+    """Actualizar cantidad en el carrito"""
     product_id = request.data.get("product_id")
     quantity = int(request.data.get("quantity", 1))
     
