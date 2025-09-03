@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import './Carrito.css';
 
+// URL base para las imágenes
+const BASE_URL = 'http://localhost:8000';
+
 const CATEGORIAS_NOMBRES = {
   '1': 'Abrazaderas y Amarres',
   '2': 'Accesorios para Canaletas / EMT / PVC',
@@ -55,11 +58,43 @@ const CarritoCompras = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Función para obtener la URL completa de la imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) {
+      console.log('❌ No hay imagen para este producto');
+      return null;
+    }
+    
+    console.log('🖼️ Procesando imagen:', imagePath);
+    
+    // Si la imagen ya tiene una URL completa, la devolvemos tal como está
+    if (imagePath.startsWith('http')) {
+      console.log('✅ URL completa encontrada:', imagePath);
+      return imagePath;
+    }
+    
+    // Construir la URL completa
+    let fullUrl;
+    if (imagePath.startsWith('/media/')) {
+      fullUrl = `${BASE_URL}${imagePath}`;
+    } else if (imagePath.startsWith('media/')) {
+      fullUrl = `${BASE_URL}/${imagePath}`;
+    } else {
+      // Asumir que está en la carpeta media
+      fullUrl = `${BASE_URL}/media/${imagePath}`;
+    }
+    
+    console.log('🔗 URL construida:', fullUrl);
+    return fullUrl;
+  };
+
   useEffect(() => {
-    axios.get('http://localhost:8000/api/productos/?only_active=true') //le agrege una validacion de los poductos activos 
+    axios.get('http://localhost:8000/api/productos/?only_active=true')
       .then(res => {
+        console.log('🔍 Datos completos de la API:', res.data[0]); // Debug: ver estructura completa
         const productosBack = res.data.map(p => {
           const idCategoria = String(p.categoria.id || p.categoria);
+          console.log('🖼️ Campo imagen del producto:', p.nombre, ':', p.imagen); // Debug: ver campo imagen
           return {
             codigo: p.codigo,
             nombre: p.nombre,
@@ -67,16 +102,14 @@ const CarritoCompras = () => {
             categoriaId: idCategoria,
             precio: parseFloat(p.precio),
             stock: p.cantidad,
-            // le quite lo anterior por que nesecitaba que el carrito me muestre solo los productos activos 
-            is_active: p.is_active
+            is_active: p.is_active,
+            imagen: p.imagen || p.image || p.foto || p.picture // Intentar diferentes nombres posibles
           };
         });
         setProductos(productosBack);
       })
       .catch(err => console.error("Error cargando productos:", err));
   }, []);
-
-  // le agrege esto al carrito 
 
   useEffect(() => {
     if (!productos || productos.length === 0) {
@@ -556,6 +589,29 @@ const CarritoCompras = () => {
               ) : (
                 productosFiltrados.map(producto => (
                   <div key={producto.codigo} className="producto-card">
+                    {/* Agregar imagen si existe */}
+                    {producto.imagen && (
+                      <div style={{ 
+                        marginBottom: '15px',
+                        display: 'flex',
+                        justifyContent: 'center'
+                      }}>
+                        <img 
+                          src={getImageUrl(producto.imagen)} 
+                          alt={producto.nombre}
+                          style={{
+                            maxWidth: '100%',
+                            maxHeight: '200px',
+                            objectFit: 'contain',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none'; // Ocultar si no se puede cargar
+                          }}
+                        />
+                      </div>
+                    )}
                     <div>
                       <h3 style={{ color: '#001152' }}>{producto.nombre}</h3>
                       <p style={{ color: '#666' }}>{producto.codigo} • {producto.categoria}</p>
@@ -616,6 +672,25 @@ const CarritoCompras = () => {
               <>
                 {Object.values(carrito).map(item => (
                   <div key={item.codigo} className="carrito-item">
+                    {/* Imagen pequeña en el carrito */}
+                    {item.imagen && (
+                      <div style={{ marginBottom: '8px' }}>
+                        <img 
+                          src={getImageUrl(item.imagen)} 
+                          alt={item.nombre}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            objectFit: 'contain',
+                            borderRadius: '4px',
+                            border: '1px solid #ddd'
+                          }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                          }}
+                        />
+                      </div>
+                    )}
                     <div style={{ fontWeight: 'bold', color: '#001152' }}>{item.nombre}</div>
                     <div style={{ fontSize: '0.9rem', color: '#666' }}>{item.codigo}</div>
                     <div style={{

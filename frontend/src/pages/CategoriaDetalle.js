@@ -3,29 +3,124 @@ import { useParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
 import "./Categorias.css";
 
+// URL base para las imágenes
+const BASE_URL = 'http://localhost:8000';
+
 const CategoriasDetalle = () => {
   const { nombre } = useParams();
   const navigate = useNavigate();
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Mapeo de URLs a nombres exactos de categorías
+  const categoriasMap = {
+    'automaticos-breakers': 'Automáticos / Breakers',
+    'alambres-cables': 'Alambres y Cables',
+    'abrazaderas-amarres': 'Abrazaderas y Amarres',
+    'accesorios-canaletas-emt-pvc': 'Accesorios para Canaletas / EMT / PVC',
+    'bornas-conectores': 'Bornas y Conectores',
+    'herramientas-accesorios-especiales': 'Herramientas y Accesorios Especiales',
+    'boquillas': 'Boquillas',
+    'cajas': 'Cajas',
+    'canaletas': 'Canaletas',
+    'capacetes-chazos': 'Capacetes y Chazos',
+    'cintas-aislantes': 'Cintas Aislantes',
+    'clavijas': 'Clavijas',
+    'conectores': 'Conectores',
+    'contactores-contadores': 'Contactores y Contadores',
+    'curvas-accesorios-tuberia': 'Curvas y Accesorios de Tubería',
+    'discos-pulidora': 'Discos para Pulidora',
+    'duchas': 'Duchas',
+    'extensiones-multitomas': 'Extensiones y Multitomas',
+    'hebillas-grapas-perchas': 'Hebillas, Grapas y Perchas',
+    'iluminacion': 'Iluminación',
+    'instrumentos-medicion': 'Instrumentos de Medición',
+    'interruptores-programadores': 'Interruptores y Programadores',
+    'otros-miscelaneos': 'Otros / Misceláneos',
+    'portalamparas-plafones': 'Portalamparas y Plafones',
+    'reflectores-fotoceldas': 'Reflectores y Fotoceldas',
+    'reles': 'Relés',
+    'rosetas': 'Rosetas',
+    'sensores-temporizadores': 'Sensores y Temporizadores',
+    'soldaduras': 'Soldaduras',
+    'soportes-pernos-herrajes': 'Soportes, Pernos y Herrajes',
+    'tableros-electricos': 'Tableros Eléctricos',
+    'tapas-accesorios-superficie': 'Tapas y Accesorios de Superficie',
+    'tensores': 'Tensores',
+    'terminales-uniones': 'Terminales y Uniones',
+    'timbres': 'Timbres',
+    'tomas-enchufes': 'Tomas y Enchufes',
+    'tuberia': 'Tuberia'
+  };
+
+  // Función para obtener la URL completa de la imagen
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) {
+      return null;
+    }
+    
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    let fullUrl;
+    if (imagePath.startsWith('/media/')) {
+      fullUrl = `${BASE_URL}${imagePath}`;
+    } else if (imagePath.startsWith('media/')) {
+      fullUrl = `${BASE_URL}/${imagePath}`;
+    } else {
+      fullUrl = `${BASE_URL}/media/${imagePath}`;
+    }
+    
+    return fullUrl;
+  };
+
   useEffect(() => {
     if (nombre) {
-      console.log('Buscando productos para categoría:', nombre);
+      console.log('Buscando productos para categoría URL:', nombre);
       setLoading(true);
       
-      axios
-        .get(`http://127.0.0.1:8000/api/productos/?categoria=${nombre}`)
-        .then((response) => {
-          console.log('Productos encontrados:', response.data.length);
-          setProductos(response.data);
-        })
-        .catch((error) => {
-          console.error('Error cargando productos:', error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+      // Obtener el nombre exacto de la categoría
+      const categoriaExacta = categoriasMap[nombre];
+      console.log('Categoria exacta mapeada:', categoriaExacta);
+      
+      if (categoriaExacta) {
+        // Usar el nombre exacto de categoría
+        axios
+          .get(`http://127.0.0.1:8000/api/productos/?categoria=${encodeURIComponent(categoriaExacta)}`)
+          .then((response) => {
+            console.log('Productos encontrados:', response.data.length);
+            if (response.data.length > 0) {
+              console.log('Primer producto:', response.data[0]);
+            }
+            setProductos(response.data);
+          })
+          .catch((error) => {
+            console.error('Error cargando productos:', error);
+            setProductos([]);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      } else {
+        // Si no hay mapeo, intentar con el nombre formateado
+        const nombreFormateado = formatearNombre(nombre);
+        console.log('Intentando con nombre formateado:', nombreFormateado);
+        
+        axios
+          .get(`http://127.0.0.1:8000/api/productos/?categoria=${encodeURIComponent(nombreFormateado)}`)
+          .then((response) => {
+            console.log('Productos encontrados con nombre formateado:', response.data.length);
+            setProductos(response.data);
+          })
+          .catch((error) => {
+            console.error('Error cargando productos:', error);
+            setProductos([]);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
+      }
     }
   }, [nombre]);
 
@@ -35,6 +130,11 @@ const CategoriasDetalle = () => {
       .split(' ')
       .map(palabra => palabra.charAt(0).toUpperCase() + palabra.slice(1))
       .join(' ');
+  };
+
+  // Obtener el nombre a mostrar
+  const getNombreDisplay = () => {
+    return categoriasMap[nombre] || formatearNombre(nombre);
   };
 
   if (loading) {
@@ -53,7 +153,7 @@ const CategoriasDetalle = () => {
         {/* Cuadro flotante dentro del área blanca */}
         <div style={{
           position: "absolute",
-          top: "5px",        // más arriba, pegado al inicio del contenido blanco
+          top: "5px",
           right: "30px",
           width: "300px",
           background: "#fff8e1",
@@ -96,53 +196,218 @@ const CategoriasDetalle = () => {
           </button>
         </div>
 
-        {/* Header */}
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h1 style={{ color: '#FFD700', fontSize: '2.5rem' }}>
-            {formatearNombre(nombre)}
+        {/* Header con espacio para el botón flotante */}
+        <div style={{ 
+          textAlign: 'center', 
+          marginBottom: '40px', 
+          paddingRight: '320px' // Espacio para el botón flotante
+        }}>
+          <h1 style={{ color: '#FFD700', fontSize: '2.5rem', marginBottom: '10px' }}>
+            {getNombreDisplay()}
           </h1>
-          <p style={{ color: '#666' }}>
+          <p style={{ color: '#666', fontSize: '1.1rem' }}>
             {productos.length} producto{productos.length !== 1 ? 's' : ''} encontrado{productos.length !== 1 ? 's' : ''}
           </p>
         </div>
 
-        {/* Productos */}
-        <div className="contenedor-productos">
+        {/* Productos con mejor grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+          gap: '25px',
+          padding: '0 20px'
+        }}>
           {productos.length === 0 ? (
             <div style={{ 
+              gridColumn: '1 / -1',
               textAlign: 'center', 
-              padding: '60px 20px',
+              padding: '80px 20px',
               backgroundColor: '#f8f9fa',
-              borderRadius: '10px'
+              borderRadius: '15px',
+              border: '2px dashed #dee2e6'
             }}>
-              <p style={{ color: '#666', fontSize: '1.3rem', marginBottom: '10px' }}>
-                No se encontraron productos en esta categoría.
+              <div style={{ fontSize: '4rem', marginBottom: '20px', opacity: '0.5' }}>📦</div>
+              <p style={{ color: '#666', fontSize: '1.4rem', marginBottom: '10px', fontWeight: '600' }}>
+                No se encontraron productos
               </p>
+              <p style={{ color: '#999', fontSize: '1rem' }}>
+                en la categoría "{getNombreDisplay()}"
+              </p>
+              <button
+                onClick={() => navigate('/')}
+                style={{
+                  marginTop: '20px',
+                  background: '#FFD700',
+                  color: '#000',
+                  border: 'none',
+                  padding: '12px 24px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '1rem',
+                  fontWeight: 'bold',
+                  transition: 'background 0.2s ease'
+                }}
+                onMouseOver={(e) => e.currentTarget.style.background = '#e6c200'}
+                onMouseOut={(e) => e.currentTarget.style.background = '#FFD700'}
+              >
+                Ver todas las categorías
+              </button>
             </div>
           ) : (
             productos.map((prod) => (
-              <div key={prod.id} className="producto-card">
-                {prod.imagen && (
-                  <div>
+              <div key={prod.id} style={{
+                backgroundColor: 'white',
+                borderRadius: '12px',
+                padding: '20px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                cursor: 'pointer',
+                border: '1px solid #f0f0f0'
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.transform = 'translateY(-5px)';
+                e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+              }}
+              >
+                {/* Imagen del producto */}
+                {prod.imagen ? (
+                  <div style={{ 
+                    marginBottom: '15px',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '200px',
+                    overflow: 'hidden',
+                    backgroundColor: '#fafafa',
+                    borderRadius: '8px'
+                  }}>
                     <img 
-                      src={prod.imagen} 
+                      src={getImageUrl(prod.imagen)} 
                       alt={prod.nombre || prod.name}
+                      style={{
+                        maxWidth: '100%',
+                        maxHeight: '100%',
+                        objectFit: 'contain',
+                        borderRadius: '6px'
+                      }}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        const parent = e.target.parentElement;
+                        if (parent && !parent.querySelector('.image-placeholder')) {
+                          const placeholder = document.createElement('div');
+                          placeholder.className = 'image-placeholder';
+                          placeholder.style.cssText = `
+                            width: 100%;
+                            height: 180px;
+                            background-color: #f3f4f6;
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            justify-content: center;
+                            border-radius: 6px;
+                            color: #9ca3af;
+                            font-size: 14px;
+                          `;
+                          placeholder.innerHTML = '<div style="font-size: 2rem; margin-bottom: 8px;">📷</div>Sin imagen disponible';
+                          parent.appendChild(placeholder);
+                        }
+                      }}
                     />
                   </div>
-                )}
-                <div>
-                  <h3>{prod.nombre || prod.name}</h3>
-                  {prod.descripcion && (
-                    <p>{prod.descripcion}</p>
-                  )}
-                  <div>
-                    <span>${(prod.precio || 0).toLocaleString()}</span>
+                ) : (
+                  <div style={{
+                    marginBottom: '15px',
+                    height: '200px',
+                    backgroundColor: '#f3f4f6',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderRadius: '8px',
+                    color: '#9ca3af',
+                    fontSize: '14px'
+                  }}>
+                    <div style={{ fontSize: '2.5rem', marginBottom: '10px' }}>📷</div>
+                    Sin imagen disponible
                   </div>
-                  {prod.cantidad !== undefined && (
-                    <p>
-                      {prod.cantidad > 0 ? `Stock: ${prod.cantidad}` : 'Agotado'}
+                )}
+
+                {/* Información del producto */}
+                <div>
+                  <h3 style={{ 
+                    color: '#001152', 
+                    marginBottom: '10px',
+                    fontSize: '1.1rem',
+                    lineHeight: '1.4',
+                    minHeight: '50px',
+                    fontWeight: '600'
+                  }}>
+                    {prod.nombre || prod.name}
+                  </h3>
+                  
+                  {prod.codigo && (
+                    <div style={{ 
+                      color: '#666', 
+                      fontSize: '0.85rem', 
+                      marginBottom: '10px',
+                      fontFamily: 'monospace',
+                      backgroundColor: '#f8f9fa',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      display: 'inline-block',
+                      border: '1px solid #e9ecef'
+                    }}>
+                      {prod.codigo}
+                    </div>
+                  )}
+                  
+                  {prod.descripcion && (
+                    <p style={{ 
+                      color: '#666', 
+                      fontSize: '0.9rem', 
+                      marginBottom: '15px',
+                      lineHeight: '1.4',
+                      maxHeight: '40px',
+                      overflow: 'hidden'
+                    }}>
+                      {prod.descripcion}
                     </p>
                   )}
+                  
+                  {/* Precio y stock */}
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between',
+                    gap: '10px',
+                    marginTop: '15px'
+                  }}>
+                    <span style={{ 
+                      fontWeight: 'bold', 
+                      fontSize: '1.3rem', 
+                      color: '#001152' 
+                    }}>
+                      ${(prod.precio || 0).toLocaleString('es-CO')}
+                    </span>
+                    
+                    {prod.cantidad !== undefined && (
+                      <span style={{
+                        backgroundColor: prod.cantidad > 0 ? '#22c55e' : '#ef4444',
+                        color: 'white',
+                        padding: '5px 10px',
+                        borderRadius: '15px',
+                        fontSize: '0.75rem',
+                        fontWeight: 'bold',
+                        whiteSpace: 'nowrap'
+                      }}>
+                        {prod.cantidad > 0 ? `Stock: ${prod.cantidad}` : 'Agotado'}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
             ))
