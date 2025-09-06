@@ -1,10 +1,21 @@
 # backend/products/views.py
+from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+
 from rest_framework.decorators import api_view
-from rest_framework import generics
 from rest_framework.response import Response
+from rest_framework import generics
+from rest_framework import status
+
 from .models import Product, Category, Cart, CartItem
-from .serializers import ProductSerializer, CategorySerializer, ProductoSerializer, CartSerializer
-from backend.serializers import ProductSerializer 
+from .serializers import (
+    ProductSerializer,
+    CategorySerializer,
+    ProductoSerializer,
+    CartSerializer
+)
+
 # -------------------
 # PRODUCTOS Y CATEGORÍAS
 # -------------------
@@ -21,11 +32,58 @@ class ProductListView(generics.ListCreateAPIView):
         if categoria_id:
             queryset = queryset.filter(categoria_id=categoria_id)
         
-        # Filtro por nombre de categoría (corregido)
+        # Filtro por nombre de categoría (mejorado para tu mapeo de URLs)
         categoria_nombre = self.request.query_params.get("categoria")
         if categoria_nombre:
-            nombre_formateado = categoria_nombre.replace('-', ' ')
-            queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
+            # Mapeo de URLs a nombres exactos (igual que en tu React)
+            categoriasMap = {
+                'automaticos-breakers': 'Automáticos / Breakers',
+                'alambres-cables': 'Alambres y Cables',
+                'abrazaderas-amarres': 'Abrazaderas y Amarres',
+                'accesorios-canaletas-emt-pvc': 'Accesorios para Canaletas / EMT / PVC',
+                'bornas-conectores': 'Bornas y Conectores',
+                'herramientas-accesorios-especiales': 'Herramientas y Accesorios Especiales',
+                'boquillas': 'Boquillas',
+                'cajas': 'Cajas',
+                'canaletas': 'Canaletas',
+                'capacetes-chazos': 'Capacetes y Chazos',
+                'cintas-aislantes': 'Cintas Aislantes',
+                'clavijas': 'Clavijas',
+                'conectores': 'Conectores',
+                'contactores-contadores': 'Contactores y Contadores',
+                'curvas-accesorios-tuberia': 'Curvas y Accesorios de Tubería',
+                'discos-pulidora': 'Discos para Pulidora',
+                'duchas': 'Duchas',
+                'extensiones-multitomas': 'Extensiones y Multitomas',
+                'hebillas-grapas-perchas': 'Hebillas, Grapas y Perchas',
+                'iluminacion': 'Iluminación',
+                'instrumentos-medicion': 'Instrumentos de Medición',
+                'interruptores-programadores': 'Interruptores y Programadores',
+                'otros-miscelaneos': 'Otros / Misceláneos',
+                'portalamparas-plafones': 'Portalamparas y Plafones',
+                'reflectores-fotoceldas': 'Reflectores y Fotoceldas',
+                'reles': 'Relés',
+                'rosetas': 'Rosetas',
+                'sensores-temporizadores': 'Sensores y Temporizadores',
+                'soldaduras': 'Soldaduras',
+                'soportes-pernos-herrajes': 'Soportes, Pernos y Herrajes',
+                'tableros-electricos': 'Tableros Eléctricos',
+                'tapas-accesorios-superficie': 'Tapas y Accesorios de Superficie',
+                'tensores': 'Tensores',
+                'terminales-uniones': 'Terminales y Uniones',
+                'timbres': 'Timbres',
+                'tomas-enchufes': 'Tomas y Enchufes',
+                'tuberia': 'Tuberia'
+            }
+            
+            # Usar el mapeo exacto o formatear el nombre
+            categoria_exacta = categoriasMap.get(categoria_nombre)
+            if categoria_exacta:
+                queryset = queryset.filter(categoria__name__iexact=categoria_exacta)
+            else:
+                # Fallback: formatear el nombre de la URL
+                nombre_formateado = categoria_nombre.replace('-', ' ').title()
+                queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
         
         # Filtro por estado activo
         only_active = self.request.query_params.get('only_active')
@@ -47,24 +105,107 @@ class CategoryListView(generics.ListCreateAPIView):
 
 @api_view(['GET'])
 def obtener_productos(request):
-    queryset = Product.objects.filter(is_active=True).order_by('-id')
+    """
+    Vista principal para obtener productos con filtros
+    Esta es la que usa tu componente React
+    """
+    try:
+        queryset = Product.objects.filter(is_active=True).order_by('-id')
+        
+        # Filtro por ID de categoría
+        categoria_id = request.query_params.get("categoria_id")
+        if categoria_id:
+            queryset = queryset.filter(categoria_id=categoria_id)
+        
+        # Filtro por nombre de categoría (mejorado para tu mapeo de URLs)
+        categoria_nombre = request.query_params.get("categoria")
+        if categoria_nombre:
+            # Mapeo de URLs a nombres exactos (igual que en tu React)
+            categoriasMap = {
+                'automaticos-breakers': 'Automáticos / Breakers',
+                'alambres-cables': 'Alambres y Cables',
+                'abrazaderas-amarres': 'Abrazaderas y Amarres',
+                'accesorios-canaletas-emt-pvc': 'Accesorios para Canaletas / EMT / PVC',
+                'bornas-conectores': 'Bornas y Conectores',
+                'herramientas-accesorios-especiales': 'Herramientas y Accesorios Especiales',
+                'boquillas': 'Boquillas',
+                'cajas': 'Cajas',
+                'canaletas': 'Canaletas',
+                'capacetes-chazos': 'Capacetes y Chazos',
+                'cintas-aislantes': 'Cintas Aislantes',
+                'clavijas': 'Clavijas',
+                'conectores': 'Conectores',
+                'contactores-contadores': 'Contactores y Contadores',
+                'curvas-accesorios-tuberia': 'Curvas y Accesorios de Tubería',
+                'discos-pulidora': 'Discos para Pulidora',
+                'duchas': 'Duchas',
+                'extensiones-multitomas': 'Extensiones y Multitomas',
+                'hebillas-grapas-perchas': 'Hebillas, Grapas y Perchas',
+                'iluminacion': 'Iluminación',
+                'instrumentos-medicion': 'Instrumentos de Medición',
+                'interruptores-programadores': 'Interruptores y Programadores',
+                'otros-miscelaneos': 'Otros / Misceláneos',
+                'portalamparas-plafones': 'Portalamparas y Plafones',
+                'reflectores-fotoceldas': 'Reflectores y Fotoceldas',
+                'reles': 'Relés',
+                'rosetas': 'Rosetas',
+                'sensores-temporizadores': 'Sensores y Temporizadores',
+                'soldaduras': 'Soldaduras',
+                'soportes-pernos-herrajes': 'Soportes, Pernos y Herrajes',
+                'tableros-electricos': 'Tableros Eléctricos',
+                'tapas-accesorios-superficie': 'Tapas y Accesorios de Superficie',
+                'tensores': 'Tensores',
+                'terminales-uniones': 'Terminales y Uniones',
+                'timbres': 'Timbres',
+                'tomas-enchufes': 'Tomas y Enchufes',
+                'tuberia': 'Tuberia'
+            }
+            
+            # Usar el mapeo exacto o formatear el nombre
+            categoria_exacta = categoriasMap.get(categoria_nombre)
+            if categoria_exacta:
+                queryset = queryset.filter(categoria__name__iexact=categoria_exacta)
+            else:
+                # Fallback: formatear el nombre de la URL
+                nombre_formateado = categoria_nombre.replace('-', ' ').title()
+                queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
+        
+        # Obtener parámetro de límite (opcional)
+        limite = request.query_params.get('limite')
+        if limite:
+            try:
+                limite = int(limite)
+                queryset = queryset[:limite]
+            except ValueError:
+                pass
+        else:
+            # Sin límite por defecto para mostrar todos los productos de la categoría
+            pass
+        
+        serializer = ProductoSerializer(queryset, many=True, context={'request': request})
+        return Response(serializer.data)
     
-    # Filtro por ID de categoría
-    categoria_id = request.query_params.get("categoria_id")
-    if categoria_id:
-        queryset = queryset.filter(categoria_id=categoria_id)
-    
-    # Filtro por nombre de categoría (corregido)
-    categoria_nombre = request.query_params.get("categoria")
-    if categoria_nombre:
-        nombre_formateado = categoria_nombre.replace('-', ' ')
-        queryset = queryset.filter(categoria__name__iexact=nombre_formateado)
-    
-    # Limitar a los últimos 15 productos
-    queryset = queryset[:15]
-    
-    serializer = ProductoSerializer(queryset, many=True, context={'request': request})
-    return Response(serializer.data)
+    except Exception as e:
+        return Response({
+            'error': 'Error al obtener productos',
+            'detail': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+def obtener_categorias(request):
+    """
+    Vista adicional para obtener todas las categorías
+    """
+    try:
+        categorias = Category.objects.all().order_by('name')
+        serializer = CategorySerializer(categorias, many=True, context={'request': request})
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({
+            'error': 'Error al obtener categorías',
+            'detail': str(e)
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 # -------------------
 # CARRITO
