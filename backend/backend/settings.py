@@ -67,6 +67,13 @@ DATABASES = {
     }
 }
 
+
+import os
+
+# Ruta donde se guardarán los archivos subidos
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+
 # Validación de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
     {
