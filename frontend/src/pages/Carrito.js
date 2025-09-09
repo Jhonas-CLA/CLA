@@ -42,6 +42,80 @@ const CATEGORIAS_NOMBRES = {
   '37': 'Tuberia',
 };
 
+// Función helper para manejar URLs de imágenes
+const getImageUrl = (imagenUrl) => {
+  if (!imagenUrl) {
+    return '/images/default-product.jpg';
+  }
+  
+  // Si la URL ya es completa (empieza con http), úsala tal como está
+  if (imagenUrl.startsWith('http')) {
+    return imagenUrl;
+  }
+  
+  // Si es una ruta relativa, construye la URL completa del backend
+  return `http://localhost:8000${imagenUrl}`;
+};
+
+// Componente de imagen que maneja errores
+const ProductImage = ({ src, alt, style, className }) => {
+  const [imgSrc, setImgSrc] = useState(getImageUrl(src));
+  const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const handleError = () => {
+    if (!hasError) {
+      setHasError(true);
+      setImgSrc('/default-product.jpg'); // Cambiado: imagen está en public/ directamente
+    }
+    setIsLoading(false);
+  };
+
+  const handleLoad = () => {
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    setImgSrc(getImageUrl(src));
+    setHasError(false);
+    setIsLoading(true);
+  }, [src]);
+
+  return (
+    <div style={{ position: 'relative', ...style }}>
+      {isLoading && (
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: '#f3f4f6',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          borderRadius: style?.borderRadius || '8px'
+        }}>
+          <span style={{ color: '#666', fontSize: '12px' }}>📷</span>
+        </div>
+      )}
+      <img
+        src={imgSrc}
+        alt={alt}
+        style={{
+          ...style,
+          opacity: isLoading ? 0 : 1,
+          transition: 'opacity 0.3s ease'
+        }}
+        className={className}
+        onError={handleError}
+        onLoad={handleLoad}
+        loading="lazy"
+      />
+    </div>
+  );
+};
+
 const CarritoCompras = () => {
   const [productos, setProductos] = useState([]);
   const [carrito, setCarrito] = useState({});
@@ -56,10 +130,19 @@ const CarritoCompras = () => {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/productos/?only_active=true') //le agrege una validacion de los poductos activos 
-      .then(res => {
-        const productosBack = res.data.map(p => {
+    let isMounted = true; // Para evitar actualizaciones si el componente se desmonta
+    
+    const cargarProductos = async () => {
+      try {
+        const timestamp = Date.now();
+        const response = await axios.get(`http://localhost:8000/api/productos/?only_active=true&_t=${timestamp}`);
+        
+        if (!isMounted) return; // Evitar actualización si el componente se desmontó
+        
+        const productosBack = response.data.map(p => {
           const idCategoria = String(p.categoria.id || p.categoria);
+          console.log('📊 Producto:', p.nombre, 'Imagen original:', p.imagen_url || p.imagen);
+          
           return {
             codigo: p.codigo,
             nombre: p.nombre,
@@ -67,17 +150,29 @@ const CarritoCompras = () => {
             categoriaId: idCategoria,
             precio: parseFloat(p.precio),
             stock: p.cantidad,
-            // le quite lo anterior por que nesecitaba que el carrito me muestre solo los productos activos 
+            // Mejorar la URL de imagen con timestamp para evitar caché
+            imagen_url: p.imagen_url || p.imagen || '', // Probar ambos campos
             is_active: p.is_active
           };
         });
+        
         setProductos(productosBack);
-      })
-      .catch(err => console.error("Error cargando productos:", err));
+      } catch (err) {
+        if (isMounted) {
+          console.error("Error cargando productos:", err);
+        }
+      }
+    };
+
+    cargarProductos();
+    
+    // Cleanup function
+    return () => {
+      isMounted = false;
+    };
   }, []);
 
-  // le agrege esto al carrito 
-
+  // Limpiar carrito de productos inactivos
   useEffect(() => {
     if (!productos || productos.length === 0) {
       return;
@@ -156,7 +251,7 @@ const CarritoCompras = () => {
 
   const vaciarCarrito = () => setCarrito({});
 
-  // FIXED: Función para enviar pedido con manejo de errores mejorado
+  // Función para enviar pedido con manejo de errores mejorado
   const enviarPedido = async () => {
     if (totalItems === 0) {
       alert('El carrito está vacío');
@@ -186,9 +281,8 @@ const CarritoCompras = () => {
         email: email
       };
 
-      console.log('Enviando pedido:', pedidoData); // Debug
+      console.log('Enviando pedido:', pedidoData);
 
-      // FIXED: URL corregida
       const response = await fetch("http://localhost:8000/accounts/api/whatsapp/pedido/", {
         method: "POST",
         headers: {
@@ -198,7 +292,7 @@ const CarritoCompras = () => {
       });
 
       const data = await response.json();
-      console.log('Respuesta del servidor:', data); // Debug
+      console.log('Respuesta del servidor:', data);
 
       if (response.ok) {
         setSuccess("✅ ¡Perfecto! Tu pedido está listo");
@@ -212,7 +306,6 @@ const CarritoCompras = () => {
         setShowEmailModal(false);
         setTimeout(() => setSuccess(""), 5000);
       } else {
-        // FIXED: Manejo de errores específicos
         console.error('Error del servidor:', data);
         
         switch (data.error) {
@@ -249,7 +342,6 @@ const CarritoCompras = () => {
     }
   };
 
-  // FIXED: Función separada para manejar el cambio del email con useCallback
   const handleEmailChange = useCallback((e) => {
     const newEmail = e.target.value;
     setEmail(newEmail);
@@ -258,14 +350,13 @@ const CarritoCompras = () => {
     }
   }, [error]);
 
-  // FIXED: Función para cerrar modal con useCallback
   const cerrarModal = useCallback(() => {
     setShowEmailModal(false);
     setError('');
     setEmail('');
   }, []);
 
-  // Componente Modal para solicitar email - FIXED con estado local
+  // Componente Modal para solicitar email
   const EmailModal = () => {
     const [localEmail, setLocalEmail] = useState(email);
     const [localError, setLocalError] = useState('');
@@ -556,41 +647,64 @@ const CarritoCompras = () => {
               ) : (
                 productosFiltrados.map(producto => (
                   <div key={producto.codigo} className="producto-card">
-                    <div>
-                      <h3 style={{ color: '#001152' }}>{producto.nombre}</h3>
-                      <p style={{ color: '#666' }}>{producto.codigo} • {producto.categoria}</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
-                        <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#001152' }}>
-                          ${producto.precio.toLocaleString()}
-                        </span>
-                        <span style={{
-                          backgroundColor: producto.stock > 0 ? '#22c55e' : '#ef4444',
-                          color: 'white',
-                          padding: '4px 8px',
-                          borderRadius: '12px',
-                          fontSize: '0.8rem',
-                          fontWeight: 'bold'
-                        }}>
-                          Stock: {producto.stock}
-                        </span>
+                    {/* CAMBIO: Movemos la imagen arriba */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                      {/* Imagen del producto arriba */}
+                      <div style={{ flexShrink: 0, alignSelf: 'center' }}>
+                        <ProductImage
+                          src={producto.imagen_url}
+                          alt={producto.nombre}
+                          style={{ 
+                            width: '200px', 
+                            height: '200px', 
+                            objectFit: 'cover',
+                            borderRadius: '8px',
+                            border: '2px solid #ddd'
+                          }}
+                        />
+                      </div>
+                      
+                      {/* Información del producto abajo */}
+                      <div style={{ flex: 1 }}>
+                        <h3 style={{ color: '#001152', margin: '0 0 5px 0' }}>{producto.nombre}</h3>
+                        <p style={{ color: '#666', margin: '0 0 10px 0' }}>{producto.codigo} • {producto.categoria}</p>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center',  gap: '10px', flexWrap: 'wrap' }}>
+                          <span style={{ fontWeight: 'bold', fontSize: '1.1rem', color: '#001152' }}>
+                            ${producto.precio.toLocaleString()}
+                          </span>
+                          <span style={{
+                            backgroundColor: producto.stock > 0 ? '#22c55e' : '#ef4444',
+                            color: 'white',
+                            padding: '4px 8px',
+                            borderRadius: '12px',
+                            fontSize: '0.8rem',
+                            fontWeight: 'bold'
+                          }}>
+                            Stock: {producto.stock}
+                          </span>
+                        </div>
+                        <button
+                          onClick={() => agregarAlCarrito(producto)}
+                          disabled={producto.stock === 0}
+                          style={{
+                            marginTop: '10px',
+                            marginLeft: 'auto',   // 👈
+                            marginRight: 'auto',  // 👈
+                            display: 'block', 
+                            backgroundColor: producto.stock === 0 ? '#ccc' : '#FFD700',
+                            color: '#001152',
+                            padding: '8px 16px',
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            fontSize: '0.9rem',
+                            cursor: producto.stock === 0 ? 'not-allowed' : 'pointer',
+                            border: 'none'
+                          }}
+                        >
+                          + Agregar
+                        </button>
                       </div>
                     </div>
-                    <button
-                      onClick={() => agregarAlCarrito(producto)}
-                      disabled={producto.stock === 0}
-                      style={{
-                        marginTop: '15px',
-                        backgroundColor: producto.stock === 0 ? '#ccc' : '#FFD700',
-                        color: '#001152',
-                        padding: '10px 20px',
-                        borderRadius: '8px',
-                        fontWeight: 'bold',
-                        fontSize: '1rem',
-                        cursor: producto.stock === 0 ? 'not-allowed' : 'pointer'
-                      }}
-                    >
-                      + Agregar
-                    </button>
                   </div>
                 ))
               )}
@@ -616,8 +730,32 @@ const CarritoCompras = () => {
               <>
                 {Object.values(carrito).map(item => (
                   <div key={item.codigo} className="carrito-item">
-                    <div style={{ fontWeight: 'bold', color: '#001152' }}>{item.nombre}</div>
-                    <div style={{ fontSize: '0.9rem', color: '#666' }}>{item.codigo}</div>
+                    <div style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
+                      {/* Imagen en el carrito con componente mejorado */}
+                      <ProductImage
+                        src={item.imagen_url}
+                        alt={item.nombre}
+                        style={{ 
+                          width: '50px', 
+                          height: '50px', 
+                          objectFit: 'cover',
+                          borderRadius: '6px',
+                          border: '1px solid #ddd'
+                        }}
+                      />
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 'bold', color: '#001152', fontSize: '0.9rem' }}>{item.nombre}</div>
+                        <div style={{ fontSize: '0.8rem', color: '#666' }}>{item.codigo}</div>
+                      </div>
+                      <button onClick={() => eliminarDelCarrito(item.codigo)} style={{
+                        border: 'none', 
+                        background: 'transparent', 
+                        color: '#dc2626', 
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                        alignSelf: 'flex-start'
+                      }}>❌</button>
+                    </div>
                     <div style={{
                       display: 'flex', alignItems: 'center',
                       justifyContent: 'space-between', marginTop: '5px'
@@ -628,9 +766,6 @@ const CarritoCompras = () => {
                         <button onClick={() => modificarCantidad(item.codigo, item.cantidad + 1)} className="cantidad-btn amarilla">+</button>
                       </div>
                       <span style={{ fontWeight: 'bold' }}>${(item.precio * item.cantidad).toLocaleString()}</span>
-                      <button onClick={() => eliminarDelCarrito(item.codigo)} style={{
-                        border: 'none', background: 'transparent', color: '#dc2626', cursor: 'pointer'
-                      }}>❌</button>
                     </div>
                   </div>
                 ))}
@@ -639,14 +774,13 @@ const CarritoCompras = () => {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                   <button onClick={vaciarCarrito} style={{
                     backgroundColor: '#ef4444', color: 'white', padding: '10px 20px',
-                    borderRadius: '8px', fontWeight: 'bold'
+                    borderRadius: '8px', fontWeight: 'bold', border: 'none', cursor: 'pointer'
                   }}>
                     🗑 Eliminar productos
                   </button>
                   <button onClick={enviarPedido} className="whatsapp-btn">
                     📲 Enviar pedido por WhatsApp
                   </button>
-                  
                 </div>
               </>
             )}

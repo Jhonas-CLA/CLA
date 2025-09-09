@@ -1,3 +1,4 @@
+# backend/backend/serializers.py
 from rest_framework import serializers
 from products.models import Product, Category
 import uuid
@@ -11,7 +12,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['id', 'codigo', 'nombre', 'descripcion', 'precio', 'cantidad', 'categoria','is_active']
+        fields = ['id', 'codigo', 'nombre', 'descripcion', 'imagen', 'precio', 'cantidad', 'categoria','is_active']
 
     def validate_precio(self, value):
         if isinstance(value, str):
