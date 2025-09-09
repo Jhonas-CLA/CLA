@@ -430,3 +430,61 @@ body {
     max-width: 1140px;
   }
 }
+/* ===== FIX QUIÉNES SOMOS DARK MODE ===== */
+.dark .seccion-mision,
+[data-theme="dark"] .seccion-mision {
+  background: linear-gradient(135deg, #0a1f2f 0%, #1e3a8a 100%);
+  color: #f1f1f1 !important;
+}
+
+.dark .seccion-mision .titulo-seccion,
+[data-theme="dark"] .seccion-mision .titulo-seccion {
+  color: #FFD700 !important; /* Amarillo dorado sobre fondo oscuro */
+}
+
+.dark .seccion-vision,
+[data-theme="dark"] .seccion-vision {
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+  color: #e5e7eb !important; /* Gris claro legible */
+}
+
+.dark .seccion-vision .titulo-seccion,
+[data-theme="dark"] .seccion-vision .titulo-seccion {
+  color: #4da6ff !important; /* Azul claro para destacar */
+}
+
+.dark .seccion-vision .texto,
+[data-theme="dark"] .seccion-vision .texto {
+  color: #d1d5db !important; /* Gris claro más fuerte */
+}
+
+.dark .seccion-gerente,
+[data-theme="dark"] .seccion-gerente {
+  background: linear-gradient(135deg, #0a1f2f 0%, #1e3a8a 100%);
+  color: #f9fafb !important;
+}
+
+.dark .seccion-gerente .titulo-seccion,
+[data-theme="dark"] .seccion-gerente .titulo-seccion {
+  color: #FFD700 !important;
+}
+/* ==== CORRECCIÓN DE COLORES DE TEXTO ==== */
+.seccion-mision .titulo-seccion,
+.seccion-mision .texto,
+.seccion-mision p,
+.seccion-mision h2,
+.seccion-mision h3,
+.seccion-mision h4,
+.seccion-gerente .titulo-seccion,
+.seccion-gerente .texto,
+.seccion-gerente p,
+.seccion-gerente h2,
+.seccion-gerente h3,
+.seccion-gerente h4 {
+  color: #ffffff !important; /* Letras blancas */
+}
+
+/* Para los subtítulos debajo del nombre */
+.seccion-gerente .texto {
+  color: #e0e7ff !important; /* Azul clarito */
+}

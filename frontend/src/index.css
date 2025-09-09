@@ -1,70 +1,1232 @@
-/* Estilos por defecto (modo claro) */
-body {
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  transition: background-color 0.3s ease, color 0.3s ease;
-  color: #121212;
+/* =========================
+   🎨 VARIABLES CORREGIDAS
+   ========================= */
+:root {
+  /* Modo claro */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --bg-accent: #e9ecef;
+  --text-primary: #212529;
+  --text-secondary: #495057;
+  --text-muted: hsl(208, 7%, 46%);
+  --border-color: #dee2e6;
+  --input-bg: #ffffff;
+  --input-text: #212529;
+  --input-placeholder: #6c757d;
+  --input-border: #ced4da;
+  --button-primary: #001152;
+  --button-primary-hover: #001152;
+  --button-success: #28a745;
+  --button-success-hover: #1e7e34;
+  --button-warning: #ffc107;
+  --button-danger: #dc3545;
+  --link-color: #ffffff;
+  --link-hover: #ffffff;
+  --shadow-light: rgba(0, 0, 0, 0.075);
+  --shadow-medium: rgba(0, 0, 0, 0.15);
+  --shadow-strong: rgba(0, 0, 0, 0.25);
+  --navbar-bg: #1e3a8a; /* Azul para navbar */
+  --footer-bg: #1e3a8a; /* Azul para footer */
+  
+}
+
+/* =========================
+   🌙 MODO OSCURO REAL - NEGRO
+   ========================= */
+.dark,
+[data-theme="dark"],
+body.dark,
+html.dark {
+  --bg-primary: #000000 !important;      /* Negro puro */
+  --bg-secondary: #111111 !important;    /* Negro suave */
+  --bg-accent: #222222 !important;       /* Negro medio */
+  --text-primary: #ffffff !important;    /* Blanco puro */
+  --text-secondary: #e0e0e0 !important;  /* Blanco suave */
+  --text-muted: #b0b0b0 !important;      /* Gris claro */
+  --border-color: #333333 !important;    /* Gris oscuro */
+  --input-bg: #1a1a1a !important;        /* Negro para inputs */
+  --input-text: #ffffff !important;      /* Texto blanco */
+  --input-placeholder: #888888 !important;
+  --input-border: #444444 !important;
+  --button-primary: #001152 !important;  /* Azul brillante */
+  --button-primary-hover: #001152 !important;
+  --button-success: #00cc44 !important;  /* Verde brillante */
+  --button-success-hover: #00aa38 !important;
+  --button-warning: #ffaa00 !important;
+  --button-danger: #ff4444 !important;
+  --link-color: #001152 !important;      /* Azul claro */
+  --link-hover: #001152 !important;
+  --shadow-light: rgba(255, 255, 255, 0.1) !important;
+  --shadow-medium: rgba(255, 255, 255, 0.15) !important;
+  --shadow-strong: rgba(255, 255, 255, 0.2) !important;
+  --navbar-bg: #1e3a8a !important;       /* Azul igual que claro */
+  --footer-bg: #1e3a8a !important;       /* Azul igual que claro */
+}
+
+/* =========================
+   🌍 BASE FORZADO
+   ========================= */
+html, body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  transition: all 0.3s ease;
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .app-container {
-  transition: background-color 0.3s, color 0.3s;
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  min-height: 100vh;
 }
 
-/* Modo oscuro */
-.app-container.dark {
-  background-color: #0a0a0a;
-  color: #f4f4f4;
-}
-
-/* Ejemplo: estilos para el navbar */
-.navbar {
-  background-color: #ffffff;
-  color: #121212;
-}
-
-.app-container.dark .navbar {
-  background-color: #121212;
-  color: #f4f4f4;
-}
-
-/* Estilos para las tarjetas u otros componentes */
-.card {
-  background-color: #ffffff;
-  color: #121212;
-  transition: background-color 0.3s, color 0.3s;
-}
-
-.app-container.dark .card {
-  background-color: #1e1e1e;
-  color: #ffffff;
-}
-:root {
-  --bg-color: #ffffff;
-  --text-color: #2c3e50;
-  --card-bg: #ffffff;
-  --navbar-bg: #f0f0f0;
-  --button-bg: #27ae60;
-}
-
+/* =========================
+   🌙 FORZAR MODO OSCURO REAL - CORREGIDO
+   ========================= */
 .dark {
-  --bg-color: #121212;
-  --text-color: #ffffff;
-  --card-bg: #1f1f1f;
-  --navbar-bg: #1a1a1a;
-  --button-bg: #27ae60; /* o blanco si quieres */
+  background-color: #000000 !important;
+  color: #ffffff !important;
 }
-/* Viñetas del carrusel en modo oscuro */
-.app-container.dark .slick-dots li button:before {
-  color: white !important;
+
+/* CAMBIO CRÍTICO: No aplicar estilos generales a todos los elementos */
+.dark *:not(.slick-slide):not(.slick-track):not(.slick-list):not(img):not(svg):not([class*="hero"]):not([class*="banner"]):not([id*="hero"]):not([id*="banner"]):not([class*="envios"]):not([class*="delivery"]):not([class*="shipping"]):not([id*="envios"]):not([id*="delivery"]):not([id*="shipping"]) {
+  background-color: inherit;
+  color: inherit;
+}
+
+/* =========================
+   📝 TEXTOS VISIBLES
+   ========================= */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary) !important;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+p {
+  color: var(--text-secondary) !important;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.text-muted, small, .small {
+  color: var(--text-muted) !important;
+}
+
+/* =========================
+   🧭 NAVBAR AZUL SIEMPRE
+   ========================= */
+.navbar {
+  background-color: var(--navbar-bg) !important;
+  color: #ffffff !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  padding: 1rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.navbar * {
+  color: #ffffff !important;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ffffff !important;
+}
+
+.nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  padding: 0.75rem 1.25rem;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Texto gris que puede desaparecer */
+.dark .text-muted,
+.dark .text-secondary,
+.dark .text-gray,
+.dark [class*="text-gray"],
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .text-secondary,
+[data-theme="dark"] .text-gray,
+[data-theme="dark"] [class*="text-gray"] {
+  color: #b0b0b0 !important;
   opacity: 1 !important;
 }
 
-/* Viñeta activa en modo oscuro */
-.app-container.dark .slick-dots li.slick-active button:before {
-  color: white !important;
+/* Headers que pueden volverse invisibles */
+.dark .header,
+.dark .page-header,
+.dark .section-header,
+[data-theme="dark"] .header,
+[data-theme="dark"] .page-header,
+[data-theme="dark"] .section-header {
+  color: #ffffff !important;
+  background-color: transparent !important;
+}
+
+/* Dividers/separadores */
+.dark hr,
+.dark .divider,
+.dark .separator,
+[data-theme="dark"] hr,
+[data-theme="dark"] .divider,
+[data-theme="dark"] .separator {
+  border-color: #333333 !important;
+  background-color: #333333 !important;
   opacity: 1 !important;
 }
 
-html, body {
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* Badges y etiquetas */
+.dark .badge,
+.dark .tag,
+.dark .label,
+[data-theme="dark"] .badge,
+[data-theme="dark"] .tag,
+[data-theme="dark"] .label {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+  border: 1px solid #555555 !important;
+}
+
+/* Dropdowns */
+.dark .dropdown-menu,
+.dark .select-dropdown,
+[data-theme="dark"] .dropdown-menu,
+[data-theme="dark"] .select-dropdown {
+  background-color: #222222 !important;
+  color: #ffffff !important;
+  border: 1px solid #444444 !important;
+}
+
+.dark .dropdown-item,
+[data-theme="dark"] .dropdown-item {
+  color: #ffffff !important;
+}
+
+.dark .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:hover {
+  background-color: #333333 !important;
+  color: #ffffff !important;
+}
+
+/* =========================
+   🎯 CORRECCIÓN ESPECÍFICA PARA "El camino está vacío"
+   ========================= */
+
+/* Cualquier texto que pueda estar invisible */
+.dark *:not(img):not(svg):not(.slick-slide img) {
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Mensajes de error o advertencia específicos */
+.dark .error-message,
+.dark .warning-message,
+.dark .empty-message,
+[data-theme="dark"] .error-message,
+[data-theme="dark"] .warning-message,
+[data-theme="dark"] .empty-message {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  padding: 1rem !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+/* =========================
+   🔧 CORRECCIONES ADICIONALES PARA SECCIÓN DE ENVÍOS
+   ========================= */
+
+/* Cualquier contenedor que esté tapado con negro */
+.dark section,
+.dark .section,
+.dark .container,
+.dark .container-fluid,
+.dark .row,
+.dark .col,
+.dark [class*="col-"],
+[data-theme="dark"] section,
+[data-theme="dark"] .section,
+[data-theme="dark"] .container,
+[data-theme="dark"] .container-fluid,
+[data-theme="dark"] .row,
+[data-theme="dark"] .col,
+[data-theme="dark"] [class*="col-"] {
+  background-color: transparent !important;
+  position: relative !important;
+  z-index: auto !important;
+}
+
+/* Overlay negro que puede estar tapando contenido - REMOVIDO */
+.dark *::before,
+.dark *::after,
+[data-theme="dark"] *::before,
+[data-theme="dark"] *::after {
+  background: none !important;
+  content: none !important;
+}
+
+/* Solo mantener overlays específicos cuando sean realmente necesarios */
+.dark .overlay-needed::before,
+[data-theme="dark"] .overlay-needed::before {
+  content: '';
+  position: absolute;
+  background: rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+/* Texto blanco sobre fondos claros en modo oscuro */
+.dark .text-on-light,
+.dark .hero-text,
+.dark .banner-text,
+[data-theme="dark"] .text-on-light,
+[data-theme="dark"] .hero-text,
+[data-theme="dark"] .banner-text {
+  color: #ffffff !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* =========================
+   💡 CORRECCIÓN PARA ELEMENTOS CON FONDO NEGRO NO DESEADO
+   ========================= */
+
+/* Remover fondos negros accidentales */
+.dark div,
+.dark section,
+.dark article,
+.dark main,
+.dark aside,
+[data-theme="dark"] div,
+[data-theme="dark"] section,
+[data-theme="dark"] article,
+[data-theme="dark"] main,
+[data-theme="dark"] aside {
+  background-color: transparent !important;
+}
+
+/* Solo aplicar fondo negro a elementos específicos */
+.dark body,
+.dark html,
+.dark .app,
+.dark .app-container,
+[data-theme="dark"] body,
+[data-theme="dark"] html,
+[data-theme="dark"] .app,
+[data-theme="dark"] .app-container {
+  background-color: #000000 !important;
+}
+
+/* Cards y elementos que SÍ necesitan fondo */
+.dark .card,
+.dark .modal,
+.dark .popup,
+.dark .dropdown-menu,
+[data-theme="dark"] .card,
+[data-theme="dark"] .modal,
+[data-theme="dark"] .popup,
+[data-theme="dark"] .dropdown-menu {
+  background-color: #111111 !important;
+}
+
+/* =========================
+   📱 RESPONSIVE
+   ========================= */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+  }
+ 
+  .card {
+    padding: 1.5rem;
+  }
+ 
+  .slick-prev {
+    left: 10px;
+  }
+ 
+  .slick-next {
+    right: 10px;
+  }
+ 
+  .slick-prev,
+  .slick-next {
+    width: 35px;
+    height: 35px;
+  }
+}
+
+/* =========================
+   🎛️ SCROLLBAR
+   ========================= */
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--text-muted);
+  border-radius: 6px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--button-primary);
+}
+
+/* =========================
+   🔧 Z-INDEX Y POSICIONAMIENTO
+   ========================= */
+
+/* Z-index para carrusel */
+.carousel-container {
+  position: relative;
+  z-index: 1;
+}
+
+.slick-slider {
+  z-index: 1;
+}
+
+.slick-prev, .slick-next {
+  z-index: 10;
+}
+
+/* =========================
+   🔧 CORRECCIÓN FINAL PARA MODO OSCURO
+   ========================= */
+
+/* Asegurar que NO haya overlays accidentales */
+.dark *:not(.overlay-needed):not(.needs-overlay)::before,
+.dark *:not(.overlay-needed):not(.needs-overlay)::after,
+[data-theme="dark"] *:not(.overlay-needed):not(.needs-overlay)::before,
+[data-theme="dark"] *:not(.overlay-needed):not(.needs-overlay)::after {
+  display: none !important;
+  content: none !important;
+  background: none !important;
+}
+
+/* Forzar visibilidad de todos los elementos de texto */
+.dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6,
+.dark p, .dark span, .dark div, .dark a, .dark li, .dark td, .dark th,
+[data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3,
+[data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6,
+[data-theme="dark"] p, [data-theme="dark"] span, [data-theme="dark"] div,
+[data-theme="dark"] a, [data-theme="dark"] li, [data-theme="dark"] td, [data-theme="dark"] th {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+}
+
+/* =========================
+   📦 CARDS CORREGIDAS
+   ========================= */
+.card {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px var(--shadow-light);
+  margin: 1rem 0;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px var(--shadow-medium);
+}
+
+.card * {
+  color: inherit !important;
+}
+
+/* =========================
+   🔘 BOTONES PERFECTOS
+   ========================= */
+.btn, button {
+  background-color: var(--button-primary) !important;
+  color: #ffffff !important;
+  border: none !important;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-block;
+  min-height: 48px;
+}
+
+.btn:hover, button:hover {
+  background-color: var(--button-primary-hover) !important;
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 102, 255, 0.3);
+}
+
+.btn-success {
+  background-color: var(--button-success) !important;
+}
+
+.btn-success:hover {
+  background-color: var(--button-success-hover) !important;
+}
+
+.btn-warning {
+  background-color: var(--button-warning) !important;
+  color: #000000 !important;
+}
+
+.btn-warning:hover {
+  background-color: #e0a800 !important;
+  color: #000000 !important;
+}
+
+.btn-danger {
+  background-color: var(--button-danger) !important;
+}
+
+.btn-danger:hover {
+  background-color: #cc3333 !important;
+}
+
+/* =========================
+   ✍️ FORMS VISIBLES
+   ========================= */
+.form-control, input, select, textarea {
+  background-color: var(--input-bg) !important;
+  color: var(--input-text) !important;
+  border: 2px solid var(--input-border) !important;
+  border-radius: 8px;
+  padding: 1rem;
+  font-size: 1rem;
+  width: 100%;
+  transition: all 0.3s ease;
+}
+
+.form-control:focus, input:focus, select:focus, textarea:focus {
+  border-color: var(--button-primary) !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+  outline: none;
+}
+
+.form-control::placeholder, input::placeholder, textarea::placeholder {
+  color: var(--input-placeholder) !important;
+  opacity: 1 !important;
+}
+
+label {
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* =========================
+   🎠 CARRUSEL CORREGIDO COMPLETO
+   ========================= */
+
+/* Contenedor del carrusel sin interferencias */
+.slick-slider {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  user-select: none;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.slick-list {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background: transparent !important;
+}
+
+.slick-track {
+  position: relative;
+  top: 0;
+  left: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  background: transparent !important;
+}
+
+.slick-slide {
+  display: none;
+  float: left;
+  height: 100%;
+  min-height: 1px;
+  background: transparent !important;
+  position: relative;
+}
+
+.slick-slide.slick-loading img {
+  display: none;
+}
+
+.slick-slide.dragging img {
+  pointer-events: none;
+}
+
+.slick-initialized .slick-slide {
+  display: block;
+}
+
+.slick-loading .slick-slide {
+  visibility: hidden;
+}
+
+.slick-vertical .slick-slide {
+  display: block;
+  height: auto;
+  border: 1px solid transparent;
+}
+
+/* =========================
+   🎠 CARRUSEL - TEXTOS SIEMPRE VISIBLES
+   ========================= */
+
+/* TODOS los textos del carrusel en modo claro */
+.slick-slide h1,
+.slick-slide h2,
+.slick-slide h3,
+.slick-slide h4,
+.slick-slide h5,
+.slick-slide h6,
+.slick-slide p,
+.slick-slide span,
+.slick-slide div,
+.slick-slide .btn,
+.slick-slide button {
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* FORZAR textos del carrusel en modo OSCURO - mantener legibles */
+.dark .slick-slide h1,
+.dark .slick-slide h2,
+.dark .slick-slide h3,
+.dark .slick-slide h4,
+.dark .slick-slide h5,
+.dark .slick-slide h6,
+[data-theme="dark"] .slick-slide h1,
+[data-theme="dark"] .slick-slide h2,
+[data-theme="dark"] .slick-slide h3,
+[data-theme="dark"] .slick-slide h4,
+[data-theme="dark"] .slick-slide h5,
+[data-theme="dark"] .slick-slide h6 {
+  color: #ffffff !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  font-weight: bold !important;
+}
+
+.dark .slick-slide p,
+.dark .slick-slide span,
+.dark .slick-slide div:not(.slick-slide):not(img),
+[data-theme="dark"] .slick-slide p,
+[data-theme="dark"] .slick-slide span,
+[data-theme="dark"] .slick-slide div:not(.slick-slide):not(img) {
+  color: #ffffff !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Botones del carrusel en modo oscuro */
+.dark .slick-slide .btn,
+.dark .slick-slide button,
+[data-theme="dark"] .slick-slide .btn,
+[data-theme="dark"] .slick-slide button {
+  background-color: var(--button-warning) !important;
+  color: #000000 !important;
+  border: 2px solid #ffffff !important;
+  font-weight: bold !important;
+  text-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.dark .slick-slide .btn:hover,
+.dark .slick-slide button:hover,
+[data-theme="dark"] .slick-slide .btn:hover,
+[data-theme="dark"] .slick-slide button:hover {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  transform: scale(1.05) !important;
+}
+
+/* =========================
+   🚫 OVERLAY REMOVIDO - PROBLEMA PRINCIPAL SOLUCIONADO
+   ========================= */
+
+/* CAMBIO CRÍTICO: Remover el overlay que estaba tapando el contenido */
+/* Este overlay era lo que causaba el fondo negro en la sección de envíos */
+
+/* .dark .slick-slide::before,
+[data-theme="dark"] .slick-slide::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3) !important;
+  z-index: 1;
+  pointer-events: none;
+} */
+
+/* Overlay condicional solo para slides que realmente lo necesiten */
+.dark .slick-slide.needs-overlay::before,
+[data-theme="dark"] .slick-slide.needs-overlay::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.2) !important;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Asegurar que el contenido esté por encima del overlay cuando existe */
+.dark .slick-slide > *,
+[data-theme="dark"] .slick-slide > * {
+  position: relative;
+  z-index: 2;
+}
+
+/* =========================
+   🚚 SECCIÓN DE ENVÍOS - CORRECCIÓN ESPECÍFICA
+   ========================= */
+
+/* Corrección específica para la sección de envíos */
+.dark .shipping-section,
+.dark .envios-section,
+.dark .delivery-section,
+.dark [class*="envios"],
+.dark [class*="shipping"],
+.dark [class*="delivery"],
+.dark [id*="envios"],
+.dark [id*="shipping"],
+.dark [id*="delivery"],
+[data-theme="dark"] .shipping-section,
+[data-theme="dark"] .envios-section,
+[data-theme="dark"] .delivery-section,
+[data-theme="dark"] [class*="envios"],
+[data-theme="dark"] [class*="shipping"],
+[data-theme="dark"] [class*="delivery"],
+[data-theme="dark"] [id*="envios"],
+[data-theme="dark"] [id*="shipping"],
+[data-theme="dark"] [id*="delivery"] {
+  background-color: transparent !important;
+  color: #ffffff !important;
+  position: relative !important;
+  z-index: 10 !important;
+}
+
+/* Asegurar que los textos de envíos sean visibles */
+.dark .shipping-section *,
+.dark .envios-section *,
+.dark .delivery-section *,
+.dark [class*="envios"] *,
+.dark [class*="shipping"] *,
+.dark [class*="delivery"] *,
+[data-theme="dark"] .shipping-section *,
+[data-theme="dark"] .envios-section *,
+[data-theme="dark"] .delivery-section *,
+[data-theme="dark"] [class*="envios"] *,
+[data-theme="dark"] [class*="shipping"] *,
+[data-theme="dark"] [class*="delivery"] * {
+  color: #ffffff !important;
+  background-color: transparent !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Botón de solicitar envío específicamente */
+.dark .shipping-section button,
+.dark .envios-section button,
+.dark [class*="envios"] button,
+.dark [class*="shipping"] button,
+[data-theme="dark"] .shipping-section button,
+[data-theme="dark"] .envios-section button,
+[data-theme="dark"] [class*="envios"] button,
+[data-theme="dark"] [class*="shipping"] button {
+  background-color: var(--button-warning) !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+  border: 2px solid #ffffff !important;
+}
+
+/* =========================
+   🚫 NUNCA MODIFICAR HERO/BANNER IMAGES - MANTENER ORIGINALES
+   ========================= */
+
+/* EXCLUIR completamente de modo oscuro las imágenes hero/banner */
+.dark img[class*="hero"],
+.dark img[class*="banner"],
+.dark img[id*="hero"],
+.dark img[id*="banner"],
+.dark [class*="hero"] img,
+.dark [class*="banner"] img,
+.dark [id*="hero"] img,
+.dark [id*="banner"] img,
+[data-theme="dark"] img[class*="hero"],
+[data-theme="dark"] img[class*="banner"],
+[data-theme="dark"] img[id*="hero"],
+[data-theme="dark"] img[id*="banner"],
+[data-theme="dark"] [class*="hero"] img,
+[data-theme="dark"] [class*="banner"] img,
+[data-theme="dark"] [id*="hero"] img,
+[data-theme="dark"] [id*="banner"] img {
+  filter: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+}
+
+/* EXCLUIR completamente las imágenes del carrusel - MANTENER ORIGINALES */
+.dark .slick-slide img,
+[data-theme="dark"] .slick-slide img {
+  filter: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+  position: relative;
+  z-index: 0;
+}
+
+/* EXCLUIR cualquier imagen en contenedores específicos */
+.dark .carousel img,
+.dark .slider img,
+.dark .hero img,
+.dark .banner img,
+[data-theme="dark"] .carousel img,
+[data-theme="dark"] .slider img,
+[data-theme="dark"] .hero img,
+[data-theme="dark"] .banner img {
+  filter: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  background: transparent !important;
+}
+
+/* =========================
+   🔧 SOLO MEJORAR ELEMENTOS GRÁFICOS PEQUEÑOS (no banners)
+   ========================= */
+
+/* Solo aplicar mejoras a SVGs pequeños e iconos */
+.dark svg:not([width*="100"]):not([height*="100"]):not([class*="hero"]):not([class*="banner"]),
+[data-theme="dark"] svg:not([width*="100"]):not([height*="100"]):not([class*="hero"]):not([class*="banner"]) {
+  filter: brightness(1.2) !important;
+  opacity: 1 !important;
+}
+
+/* Mejorar iconos oscuros específicamente */
+.dark svg *[fill="#333"],
+.dark svg *[fill="#444"],
+.dark svg *[fill="#555"],
+[data-theme="dark"] svg *[fill="#333"],
+[data-theme="dark"] svg *[fill="#444"],
+[data-theme="dark"] svg *[fill="#555"] {
+  fill: #ffffff !important;
+}
+
+/* =========================
+   ⬅️➡️ FLECHAS DEL CARRUSEL
+   ========================= */
+.slick-prev,
+.slick-next {
+  font-size: 0;
+  line-height: 0;
+  position: absolute;
+  top: 50%;
+  display: block;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  transform: translate(0, -50%);
+  cursor: pointer;
+  color: transparent;
+  border: none;
+  outline: none;
+  background: var(--button-primary) !important;
+  border-radius: 50%;
+  z-index: 100;
+  opacity: 0.8;
+  transition: all 0.3s ease;
+}
+
+.slick-prev:hover,
+.slick-next:hover {
+  color: transparent;
+  outline: none;
+  background: var(--button-primary-hover) !important;
+  opacity: 1;
+  transform: translate(0, -50%) scale(1.1);
+}
+
+.slick-prev:before,
+.slick-next:before {
+  font-family: 'slick';
+  font-size: 20px;
+  line-height: 1;
+  opacity: 1;
+  color: #ffffff !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.slick-prev {
+  left: 25px;
+}
+
+.slick-prev:before {
+  content: '←';
+}
+
+.slick-next {
+  right: 25px;
+}
+
+.slick-next:before {
+  content: '→';
+}
+
+/* =========================
+   ⚪ DOTS REMOVIDOS COMPLETAMENTE
+   ========================= */
+.slick-dots {
+  display: none !important;
+}
+
+.slick-dotted.slick-slider {
+  margin-bottom: 0 !important;
+}
+
+/* =========================
+   🔗 LINKS VISIBLES
+   ========================= */
+a {
+  color: var(--link-color) !important;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: var(--link-hover) !important;
+  text-decoration: underline;
+}
+
+/* =========================
+   📊 TABLAS VISIBLES
+   ========================= */
+.table, table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.table th, table th {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+  font-weight: 600;
+  padding: 1rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.table td, table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary) !important;
+}
+
+/* =========================
+   👣 FOOTER AZUL IGUAL AL NAVBAR
+   ========================= */
+.footer, footer {
+  background-color: #001152 !important; /* Azul solicitado */
+  color: #ffffff !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 3rem 2rem 2rem;
+  margin-top: auto;
+}
+
+.footer *, footer * {
+  color: #ffffff !important;
+}
+
+.footer a, footer a {
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.3s ease;
+}
+
+.footer a:hover, footer a:hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+/* =========================
+   🚨 ALERTS CORREGIDAS
+   ========================= */
+.alert {
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1) !important;
+  color: var(--button-success) !important;
+  border: 1px solid var(--button-success);
+}
+
+.alert-warning {
+  background-color: rgba(255, 193, 7, 0.1) !important;
+  color: var(--button-warning) !important;
+  border: 1px solid var(--button-warning);
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  color: var(--button-danger) !important;
+  border: 1px solid var(--button-danger);
+}
+
+.alert-info {
+  background-color: rgba(0, 123, 255, 0.1) !important;
+  color: var(--button-primary) !important;
+  border: 1px solid var(--button-primary);
+}
+
+/* =========================
+   🏷️ PRODUCTOS CORREGIDOS
+   ========================= */
+
+/* Asegurar que elementos específicos no hereden mal */
+.product-card, .product-item {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.product-title, .product-name {
+  color: var(--text-primary) !important;
+}
+
+.product-price, .price {
+  color: var(--button-success) !important;
+  font-weight: 600;
+}
+
+.product-description {
+  color: var(--text-secondary) !important;
+}
+
+/* =========================
+   🔍 ELEMENTOS INVISIBLES COMUNES - CORREGIDOS
+   ========================= */
+
+/* Texto que puede volverse invisible */
+.dark .text-dark,
+[data-theme="dark"] .text-dark {
+  color: var(--text-primary) !important;
+}
+
+.dark .bg-light,
+[data-theme="dark"] .bg-light {
+  background-color: var(--bg-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.dark .text-black,
+[data-theme="dark"] .text-black {
+  color: var(--text-primary) !important;
+}
+
+/* Elementos con bordes invisibles */
+.dark .border,
+.dark .border-top,
+.dark .border-bottom,
+.dark .border-left,
+.dark .border-right,
+[data-theme="dark"] .border,
+[data-theme="dark"] .border-top,
+[data-theme="dark"] .border-bottom,
+[data-theme="dark"] .border-left,
+[data-theme="dark"] .border-right {
+  border-color: var(--border-color) !important;
+}
+
+/* Placeholder y labels invisibles */
+.dark input::placeholder,
+.dark textarea::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--input-placeholder) !important;
+}
+
+/* Iconos y elementos gráficos pequeños que pueden desaparecer */
+.dark .icon,
+.dark .fa,
+.dark [class*="icon-"],
+.dark [class^="fa-"],
+[data-theme="dark"] .icon,
+[data-theme="dark"] .fa,
+[data-theme="dark"] [class*="icon-"],
+[data-theme="dark"] [class^="fa-"] {
+  color: var(--text-primary) !important;
+  opacity: 1 !important;
+}
+
+/* =========================
+   🎯 CORRECCIÓN ESPECÍFICA PARA TEXTOS INVISIBLES
+   ========================= */
+
+/* Cualquier texto que pueda estar invisible - MEJORADO */
+.dark *:not(img):not(svg):not(.slick-slide img):not([class*="envios"]):not([class*="delivery"]):not([class*="shipping"]) {
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* Mensajes específicos que pueden desaparecer */
+.dark .empty-message,
+.dark .warning-message,
+.dark .error-message,
+.dark .info-message,
+.dark .cart-empty,
+.dark .no-products,
+[data-theme="dark"] .empty-message,
+[data-theme="dark"] .warning-message,
+[data-theme="dark"] .error-message,
+[data-theme="dark"] .info-message,
+[data-theme="dark"] .cart-empty,
+[data-theme="dark"] .no-products {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  padding: 1rem !important;
+  border-radius: 8px !important;   /* 🔹 Aquí estaba el error */
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+/* =========================
+   🎨 AZUL GLOBAL #001152
+   ========================= */
+
+/* Navbar, Footer, Sidebar, Menús */
+.navbar,
+.navbar-wrapper,
+.footer,
+.sidebar,
+.menu,
+.sidebar-wrapper,
+.app-sidebar,
+.nav-sidebar,
+.footer .footer-top,
+.footer .footer-bottom,
+.footer .footer-widgets,
+.footer .footer-inner {
+  background-color: #001152 !important;
+  color: #ffffff !important;
+}
+
+/* Bloques internos, columnas y widgets: SOLO aplica en navbar, footer y sidebar */
+.footer *,
+.sidebar *,
+.navbar * {
+  background-color: #001152 !important;
+  color: #ffffff !important;
+  border: none !important;
+}
+
+/* Links */
+.footer a,
+.sidebar a,
+.navbar a {
+  color: rgba(255, 255, 255, 0.85) !important;
+  transition: all 0.3s ease;
+}
+
+.footer a:hover,
+.sidebar a:hover,
+.navbar a:hover {
+  color: #ffffff !important;
+  text-decoration: underline;
+}
+
+/* Bordes y divisores en blanco tenue */
+.footer hr,
+.sidebar hr,
+.navbar hr {
+  border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Iconos en blanco */
+.footer i,
+.sidebar i,
+.navbar i {
+  color: #ffffff !important;
+}
+/* ============================
+   🎯 TITULOS DEL MENÚ DESPLEGABLE
+   ============================ */
+.dropdown-group-title {
+  color: #ffffff !important;    /* Blanco puro */
+  font-weight: bold !important; 
+  font-size: 14px !important;   /* Ajusta según diseño */
+  text-transform: uppercase !important;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+}
+/* ============================
+   🎯 Fondo menú desplegable SOLO en modo oscuro
+   ============================ */
+.dark .dropdown-menu,
+.dark .dropdown-content,
+.dark .dropdown-group-items,
+.dark .dropdown-column {
+  background-color: #000000 !important;  /* Negro sólido */
+  backdrop-filter: none !important;      /* Quita transparencia */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); /* Sombras */
+}
+.forgot-link {
+  color: #000000 !important;  /* Azul */
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.register-link {
+  color: #000000 !important;  /* Azul */
+  font-weight: 600;
+  display: inline-block;
+  margin-top: 15px;
+  text-decoration: none;
 }
