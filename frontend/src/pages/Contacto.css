@@ -95,3 +95,32 @@
     width: 100%;
   }
 }
+/* --------- FORMULARIO EN MODO OSCURO --------- */
+#formulario {
+  background-color: #0d0d0d;     /* fondo negro grisáceo */
+  color: #f5f5f5;                /* texto claro */
+  border: 2px solid #ffffff;     /* borde blanco visible */
+  border-radius: 20px;
+  padding: 2rem 3rem;
+  max-width: 800px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); /* resplandor blanco */
+  font-family: 'Segoe UI', sans-serif;
+  font-size: calc(1rem + 0.3vw);
+  font-weight: 500;
+}
+
+/* Inputs y textarea */
+#formulario input,
+#formulario textarea {
+  background-color: #1c1c1c;
+  color: #f5f5f5;
+  border: 1px solid #555;
+  transition: all 0.3s ease;
+}
+
+#formulario input:focus,
+#formulario textarea:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 8px #ffffff;
+}

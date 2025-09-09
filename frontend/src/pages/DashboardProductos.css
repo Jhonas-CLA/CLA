@@ -876,4 +876,96 @@ td[data-label="Acciones"] {
 .text-responsive {
   contain: layout style;
 }
+/* 🌙 Fondo global en modo oscuro */
+html[data-theme="dark"],
+html[data-theme="dark"] body,
+html[data-theme="dark"] .app-container,
+html[data-theme="dark"] .dashboard,
+html[data-theme="dark"] .main-content {
+ 
+  background-image: none !important;
+  color: #e5e7eb !important;        /* Texto claro general */
+}
 
+/* 📦 Recuadro de la tabla (content-section) */
+html[data-theme="dark"] .content-section {
+  background: #0d1117 !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  max-width: 95%;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* 📦 Recuadro dashboard productos */
+html[data-theme="dark"] .dashboard-productos {
+  background: #0d1117 !important;
+  border: 2px solid #ffffff !important;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px auto;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* ✉️ Estilo SOLO para el formulario */
+html[data-theme="dark"] #formulario {
+  background-color: #00338d !important;  /* Azulito */
+  border: 2px solid #ffffff !important;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+}
+
+/* 🚨 Forzar visibilidad del h2 "Lista de productos" */
+html[data-theme="dark"] .dashboard-productos h2 {
+  display: block !important;       /* Si estaba oculto */
+  visibility: visible !important;
+  opacity: 1 !important;
+  position: relative !important;
+  z-index: 99999 !important;
+
+  color: #ffffff !important;       /* Blanco puro */
+  background: #0d1117 !important;  /* Fondo oscuro detrás */
+  padding: 10px 15px;              /* Espaciado */
+  border: 2px solid #ffffff;       /* Recuadro blanco */
+  border-radius: 8px;
+  font-size: 1.8rem !important;
+  font-weight: 700 !important;
+  text-align: center;
+}
+/* 💯 Forzar el título de Lista de productos a blanco visible */
+html[data-theme="dark"] .dashboard-productos h2 {
+  color: #ffffff !important;        /* Blanco puro fijo */
+  background: none !important;      /* Nada detrás */
+  text-shadow: none !important;     /* Quitar borroso */
+  font-weight: 800 !important;      /* Bien marcado */
+  font-size: 1.8rem !important;     
+  margin-bottom: 20px !important;
+  position: relative !important;
+  z-index: 9999 !important;         /* Que quede arriba de todo */
+}
+html[data-theme="dark"] .dashboard-productos h2 {
+  color: #ffffff !important;
+  background: red !important;
+}
+/* ✅ Título "Lista de productos" en blanco */
+html[data-theme="dark"] .dashboard-productos h2 {
+  color: #ffffff !important;     /* Blanco fijo */
+  background: none !important;   /* Sin fondo raro */
+  text-shadow: none !important;  /* Nada borroso */
+  font-weight: 800 !important;   /* Negrita */
+  font-size: 1.8rem !important;  /* Tamaño grande */
+  margin-bottom: 20px !important;
+  position: relative !important;
+  z-index: 9999 !important;
+}
+
+html[data-theme="dark"] .dashboard-productos h2 {
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  font-size: 1.8rem !important;
+  margin-bottom: 20px !important;
+  border-bottom: 2px solid #ffffff; /* Línea blanca debajo */
+  padding-bottom: 5px;
+}
