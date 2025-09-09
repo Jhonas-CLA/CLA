@@ -5,7 +5,7 @@ from .models import Product, Category, Cart, CartItem
 # -------------------
 # CATEGORÍAS
 # -------------------
-class CategorySerializer(serializers.ModelSerializer):
+class CategorySerializer2(serializers.ModelSerializer):
     # Agregar slug para URLs amigables
     slug = serializers.SerializerMethodField()
     
@@ -20,8 +20,8 @@ class CategorySerializer(serializers.ModelSerializer):
 # -------------------
 # PRODUCTOS
 # -------------------
-class ProductSerializer(serializers.ModelSerializer):
-    categoria = CategorySerializer(read_only=True)  # Anida la categoría
+class ProductSerializer2(serializers.ModelSerializer):
+    categoria = CategorySerializer2(read_only=True)  # Anida la categoría
     imagen_url = serializers.SerializerMethodField()
     
     class Meta:
@@ -63,7 +63,7 @@ class ProductoSerializer(serializers.ModelSerializer):
 # CARRITO
 # -------------------
 class CartItemSerializer(serializers.ModelSerializer):
-    product = ProductSerializer(read_only=True)  # Muestra datos del producto
+    product = ProductSerializer2(read_only=True)  # Muestra datos del producto
     subtotal = serializers.SerializerMethodField()
     
     class Meta:

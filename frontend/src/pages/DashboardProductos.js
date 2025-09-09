@@ -21,10 +21,12 @@ const DashboardProductos = () => {
   const [nuevaDescripcion, setNuevaDescripcion] = useState('');
   const [nuevoPrecio, setNuevoPrecio] = useState('');
   const [nuevaCantidad, setNuevaCantidad] = useState('');
+  const [nuevaImagen, setNuevaImagen] = useState(null);
 
   // --- para modal de edición ---
   const [mostrarModalEditar, setMostrarModalEditar] = useState(false);
   const [productoEditando, setProductoEditando] = useState(null);
+  const [imagenEditando, setImagenEditando] = useState(null);
 
   // --- para editar cantidad rápida ---
   const [cantidadesTemp, setCantidadesTemp] = useState({});
@@ -34,7 +36,7 @@ const DashboardProductos = () => {
     axios.get('http://localhost:8000/api/productos/')
       .then(response => {
         const productosOrdenados = response.data.sort((a, b) => a.id - b.id);
-        setProductos(response.data);
+        setProductos(productosOrdenados);
         setLoading(false);
       })
       .catch(error => {
@@ -73,6 +75,13 @@ const DashboardProductos = () => {
     if (paginaActual < totalPaginas) {
       setPaginaActual(paginaActual + 1);
     }
+  };
+
+  // --- función para obtener URL completa de imagen ---
+  const getImageUrl = (imagePath) => {
+    if (!imagePath) return null;
+    if (imagePath.startsWith('http')) return imagePath;
+    return `http://localhost:8000${imagePath}`;
   };
 
   // --- habilitar / deshabilitar producto ---
@@ -125,36 +134,53 @@ const DashboardProductos = () => {
 
   // --- preparar datos para crear producto ---
   const prepararProducto = () => {
-    return {
-      nombre: nuevoNombre.trim(),
-      codigo: nuevoCodigo.trim() || null,
-      descripcion: nuevaDescripcion.trim(),
-      precio: parseFloat(nuevoPrecio.toString().replace(',', '.')),
-      cantidad: parseInt(nuevaCantidad || 0, 10),
-      categoria: nuevaCategoria ? parseInt(nuevaCategoria, 10) : null,
-      is_active: true
-    };
+    const formData = new FormData();
+    formData.append('nombre', nuevoNombre.trim());
+    formData.append('descripcion', nuevaDescripcion.trim());
+    formData.append('precio', parseFloat(nuevoPrecio.toString().replace(',', '.')));
+    formData.append('cantidad', parseInt(nuevaCantidad || 0, 10));
+    formData.append('is_active', true);
+    
+    if (nuevoCodigo.trim()) {
+      formData.append('codigo', nuevoCodigo.trim());
+    }
+    
+    if (nuevaCategoria) {
+      formData.append('categoria', parseInt(nuevaCategoria, 10));
+    }
+    
+    if (nuevaImagen) {
+      formData.append('imagen', nuevaImagen);
+    }
+    
+    return formData;
   };
 
   // --- crear producto ---
   const handleCrearProducto = () => {
-    const producto = prepararProducto();
-
-    if (!producto.nombre || isNaN(producto.precio) || producto.precio <= 0) {
+    if (!nuevoNombre.trim() || !nuevoPrecio || isNaN(parseFloat(nuevoPrecio.toString().replace(',', '.')))) {
       alert('Debe ingresar un nombre y un precio válido');
       return;
     }
 
-    axios.post('http://localhost:8000/api/productos/', producto)
+    const formData = prepararProducto();
+
+    axios.post('http://localhost:8000/api/productos/', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
       .then(response => {
         setProductos(prev => [response.data, ...prev]);
         setMostrarModal(false);
+        // Limpiar formulario
         setNuevoNombre('');
         setNuevoCodigo('');
         setNuevaCategoria('');
         setNuevaDescripcion('');
         setNuevoPrecio('');
         setNuevaCantidad('');
+        setNuevaImagen(null);
       })
       .catch(err => {
         console.error('Error al crear producto:', err);
@@ -165,6 +191,7 @@ const DashboardProductos = () => {
   // --- abrir modal de edición ---
   const abrirModalEditar = (producto) => {
     setProductoEditando({ ...producto });
+    setImagenEditando(null);
     setMostrarModalEditar(true);
   };
 
@@ -174,18 +201,68 @@ const DashboardProductos = () => {
       alert('Debe ingresar un nombre y un precio válido');
       return;
     }
-    axios.put(`http://localhost:8000/api/productos/${productoEditando.id}/`, productoEditando)
+
+    const formData = new FormData();
+    formData.append('nombre', productoEditando.nombre);
+    formData.append('descripcion', productoEditando.descripcion || '');
+    formData.append('precio', parseFloat(productoEditando.precio.toString().replace(',', '.')));
+    formData.append('cantidad', parseInt(productoEditando.cantidad, 10));
+    formData.append('is_active', productoEditando.is_active);
+    
+    if (productoEditando.codigo) {
+      formData.append('codigo', productoEditando.codigo);
+    }
+    
+    if (productoEditando.categoria) {
+      formData.append('categoria', parseInt(productoEditando.categoria, 10));
+    }
+    
+    if (imagenEditando) {
+      formData.append('imagen', imagenEditando);
+    }
+
+    axios.put(`http://localhost:8000/api/productos/${productoEditando.id}/`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
       .then(response => {
         setProductos(prev =>
           prev.map(p => p.id === productoEditando.id ? response.data : p)
         );
         setMostrarModalEditar(false);
         setProductoEditando(null);
+        setImagenEditando(null);
       })
       .catch(err => {
         console.error('Error al editar producto:', err);
         alert('No se pudo editar el producto');
       });
+  };
+
+  // --- manejar selección de imagen ---
+  const handleImagenChange = (e, isEditing = false) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validar tipo de archivo
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Solo se permiten archivos de imagen (JPG, JPEG, PNG, GIF)');
+        return;
+      }
+      
+      // Validar tamaño (máximo 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        alert('La imagen no puede ser mayor a 5MB');
+        return;
+      }
+      
+      if (isEditing) {
+        setImagenEditando(file);
+      } else {
+        setNuevaImagen(file);
+      }
+    }
   };
 
   if (loading) return <div className="loading-container">Cargando productos...</div>;
@@ -215,6 +292,7 @@ const DashboardProductos = () => {
           setNuevaDescripcion('');
           setNuevoPrecio('');
           setNuevaCantidad('');
+          setNuevaImagen(null);
         }}
       >
         Agregar producto
