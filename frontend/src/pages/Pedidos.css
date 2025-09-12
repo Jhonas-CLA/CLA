@@ -1,0 +1,142 @@
+/* ===========================
+   Pedidos.css
+   Estilo moderno, elegante y ampliado
+   =========================== */
+
+.pedidos-section {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #f8fafc;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Roboto, sans-serif;
+}
+
+.pedidos-section h2 {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1e293b;
+  margin-bottom: 2rem;
+  letter-spacing: 0.5px;
+}
+
+.pedidos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pedido-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem 1.8rem;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #e2e8f0;
+  font-size: 1.05rem;
+}
+
+.pedido-card:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  border-color: #cbd5e1;
+}
+
+.pedido-card.open {
+  border-color: #3b82f6;
+  background: #f0f9ff;
+  transform: scale(1.02);
+}
+
+.pedido-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.pedido-header span {
+  font-size: 1rem;
+  color: #475569;
+  font-weight: normal;
+}
+
+.pedido-detalle {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #334155;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.pedido-detalle p {
+  margin: 0.4rem 0;
+}
+
+.pedido-detalle h4 {
+  margin-top: 0.6rem;
+  margin-bottom: 0.4rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.pedido-detalle ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+.pedido-detalle li {
+  background: #e2e8f0;
+  padding: 0.6rem 0.8rem;
+  border-radius: 10px;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+/* Mensaje de error */
+.error {
+  color: #ef4444;
+  font-weight: bold;
+  text-align: center;
+  margin: 1rem 0;
+  font-size: 1.1rem;
+}
+
+/* Animación */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===========================
+   Responsividad
+   =========================== */
+@media (max-width: 700px) {
+  .pedidos-section {
+    padding: 1.5rem;
+  }
+
+  .pedido-card {
+    padding: 1.2rem;
+    font-size: 1rem;
+  }
+
+  .pedido-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+}

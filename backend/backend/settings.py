@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'accounts',
     'products',
     'proveedores',
+    'pedidos',
 
     # Terceros
     'corsheaders',
@@ -106,7 +107,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'codigolatino123@gmail.com'
-EMAIL_HOST_PASSWORD = 'sspsfwaonhecprqi'  # Contraseña de aplicación de Gmail
+EMAIL_HOST_PASSWORD = 'ycax ybjy xoog jvqb'  # Contraseña de aplicación de Gmail
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CORS y CSRF
