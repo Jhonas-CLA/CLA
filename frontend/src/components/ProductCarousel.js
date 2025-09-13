@@ -8,19 +8,20 @@ function ProductCarousel({ productos }) {
   }
 
   const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: Math.min(productos.length, 4),
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 2500,
-    responsive: [
-      { breakpoint: 1024, settings: { slidesToShow: 3 } },
-      { breakpoint: 768, settings: { slidesToShow: 2 } },
-      { breakpoint: 480, settings: { slidesToShow: 1 } },
-    ],
-  };
+  dots: true,
+  infinite: true,
+  speed: 500,
+  slidesToShow: Math.min(productos.length, 5), // antes 6 → ahora 5 para que sean más grandes
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2500,
+  responsive: [
+    { breakpoint: 1400, settings: { slidesToShow: 4 } },
+    { breakpoint: 1024, settings: { slidesToShow: 3 } },
+    { breakpoint: 768, settings: { slidesToShow: 2 } },
+    { breakpoint: 480, settings: { slidesToShow: 1 } },
+  ],
+};
 
   return (
     <div className="carousel-container">

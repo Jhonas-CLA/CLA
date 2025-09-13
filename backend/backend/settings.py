@@ -114,7 +114,7 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",  # o donde esté tu frontend
+    "http://localhost:3000",  
     "http://127.0.0.1:3000"
 ]
 REST_FRAMEWORK = {

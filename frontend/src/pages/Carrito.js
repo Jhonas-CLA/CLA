@@ -170,9 +170,9 @@ const CarritoCompras = () => {
   // Filtro búsqueda + categoría
   const productosFiltrados = useMemo(() => {
     return productos.filter(prod =>
-    (busqueda === '' ||
-      prod.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-      prod.codigo.toLowerCase().includes(busqueda.toLowerCase()))
+      (busqueda === '' ||
+        prod.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+        prod.codigo.toLowerCase().includes(busqueda.toLowerCase()))
     );
   }, [productos, busqueda]);
 
@@ -568,7 +568,6 @@ const CarritoCompras = () => {
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{ color: '#FFD700', fontSize: '2.5rem' }}>Catálogo de Productos</h1>
         <p style={{ color: '#000' }}>Selecciona una categoría para ver los productos</p>
-
         {/* Mensaje de éxito */}
         {success && (
           <div style={{
@@ -583,7 +582,6 @@ const CarritoCompras = () => {
             {success}
           </div>
         )}
-
         {totalItems > 0 && (
           <div style={{
             marginTop: '20px',
@@ -727,7 +725,6 @@ const CarritoCompras = () => {
                   }}>
                     {item.codigo}
                   </div>
-
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -812,7 +809,6 @@ const CarritoCompras = () => {
                   </div>
                 </div>
               ))}
-
               <div style={{
                 borderTop: '2px solid #e2e8f0',
                 paddingTop: '15px',
@@ -827,7 +823,6 @@ const CarritoCompras = () => {
                 }}>
                   Total: ${totalCarrito.toLocaleString()}
                 </div>
-
                 <button
                   onClick={limpiarCarrito}
                   style={{
