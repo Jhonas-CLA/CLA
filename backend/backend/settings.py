@@ -106,14 +106,14 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'codigolatino123@gmail.com'
-EMAIL_HOST_PASSWORD = 'sspsfwaonhecprqi'  # Contraseña de aplicación de Gmail
+EMAIL_HOST_PASSWORD = 'ycax ybjy xoog jvqb'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CORS y CSRF
 CORS_ALLOW_ALL_ORIGINS = True
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:3000",  # o donde esté tu frontend
+    "http://localhost:3000",  
     "http://127.0.0.1:3000"
 ]
 REST_FRAMEWORK = {

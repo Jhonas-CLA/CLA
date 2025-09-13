@@ -1,80 +1,329 @@
+/* 🔥 ESTILOS ASAROSOS PARA CARRUSEL - QUE QUEDE UNA CHIMBA 🔥 */
+
 .carousel-container {
-  width: 90%;
-  margin: auto;
+  width: 100%;              /* que abarque toda la página */
+  max-width: 1600px;        /* límite para pantallas grandes */
+    margin-left: 0;      /* lo pega a la izquierda */
+  margin-right: auto;  /* opcional */
+  padding: 40px 0;          /* más respiración arriba/abajo */
 }
 
-/* Tarjeta */
+.slick-slide {
+  padding: 0 15px;          /* espacio entre tarjetas */
+}
+
+.slick-list {
+  margin: 0 -15px;          /* compensar padding para que quede alineado */
+}
+
+/* Tarjeta con efectos brutales */
 .product-card {
-  background-color: var(--card-bg);
+  background: var(--card-bg);
   color: var(--text-color);
-  border-radius: 12px;
-  padding: 15px;
+  border-radius: 20px;
+  padding: 20px;
   text-align: center;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-color);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+  cursor: pointer;
 }
 
+/* Efecto de brillo que se mueve */
+.product-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.1),
+    transparent
+  );
+  transition: left 0.6s ease;
+  z-index: 1;
+}
+
+.product-card:hover::before {
+  left: 100%;
+}
+
+/* Hover con efectos 3D brutales */
 .product-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+  transform: translateY(-15px) rotateX(5deg) rotateY(2deg) scale(1.02);
+  box-shadow: 
+    0 25px 50px rgba(0, 0, 0, 0.25),
+    0 0 0 1px var(--glow-color),
+    0 0 30px var(--glow-color);
 }
 
-/* Imagen */
+/* Contenedor de imagen con efectos asarosos */
 .product-image-container {
   width: 100%;
-  height: 220px;
-  background-color: var(--card-bg);
+  height: 240px;
+  background: var(--image-bg);
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 16px;
+  position: relative;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+}
+
+.product-image-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    var(--gradient-overlay) 100%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.product-card:hover .product-image-container::after {
+  opacity: 1;
 }
 
 .product-image {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: brightness(0.9) saturate(1.1);
 }
 
-/* Info */
+.product-card:hover .product-image {
+  transform: scale(1.1) rotate(2deg);
+  filter: brightness(1) saturate(1.3);
+}
+
+/* Info del producto con efectos chimba */
 .product-info {
-  margin-top: 10px;
+  margin-top: 15px;
+  position: relative;
+  z-index: 2;
 }
 
 .product-name {
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  background: var(--text-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.product-card:hover .product-name {
+  transform: translateY(-2px);
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .product-price {
-  font-size: 0.95rem;
-  color: var(--accent-color);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--price-color);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 8px 0;
+  position: relative;
+  display: inline-block;
 }
 
-/* Cantidad */
+.product-price::before {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--price-gradient);
+  transition: width 0.3s ease;
+}
+
+.product-card:hover .product-price::before {
+  width: 100%;
+}
+
+/* Stock con indicadores brutales */
 .product-stock {
-  font-size: 0.85rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  display: inline-block;
+  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .in-stock {
-  color: #28a745;
+  background: var(--success-gradient);
+  color: white;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.in-stock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
 }
 
 .out-of-stock {
-  color: #dc3545;
+  background: var(--danger-gradient);
+  color: white;
+  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
 }
 
-/* Variables modo claro */
+.out-of-stock:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+}
+
+/* Variables modo claro - Tema asaroso */
 :root {
-  --card-bg: #ffffff;
-  --text-color: #000000;
-  --accent-color: #1f6ba3;
+  --card-bg: linear-gradient(145deg, #ffffff, #f8f9fa);
+  --image-bg: linear-gradient(135deg, #f1f3f4, #e8eaed);
+  --text-color: #2c3e50;
+  --border-color: rgba(0, 0, 0, 0.1);
+  --glow-color: rgba(59, 130, 246, 0.5);
+  --gradient-overlay: rgba(59, 130, 246, 0.1);
+  --text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --price-color: #e74c3c;
+  --price-gradient: linear-gradient(90deg, #e74c3c, #c0392b);
+  --success-gradient: linear-gradient(135deg, #28a745, #20c997);
+  --danger-gradient: linear-gradient(135deg, #dc3545, #e83e8c);
 }
 
-/* Variables modo oscuro */
+/* Variables modo oscuro - Más asaroso aún */
 [data-theme="dark"] {
-  --card-bg: #1a1a1a;
-  --text-color: #f5f5f5;
-  --accent-color: #4ea8ff;
+  --card-bg: linear-gradient(145deg, #1e1e2e, #2d3748);
+  --image-bg: linear-gradient(135deg, #374151, #4b5563);
+  --text-color: #f7fafc;
+  --border-color: rgba(255, 255, 255, 0.1);
+  --glow-color: rgba(139, 92, 246, 0.6);
+  --gradient-overlay: rgba(139, 92, 246, 0.15);
+  --text-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  --price-color: #10b981;
+  --price-gradient: linear-gradient(90deg, #10b981, #059669);
+  --success-gradient: linear-gradient(135deg, #10b981, #059669);
+  --danger-gradient: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Animaciones adicionales para que quede más chimba */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+
+.product-card:nth-child(odd) {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: 0s;
+}
+
+.product-card:nth-child(even) {
+  animation: float 6s ease-in-out infinite;
+  animation-delay: -3s;
+}
+
+/* Efectos de carga asarosos */
+.product-card {
+  opacity: 0;
+  animation: slideUp 0.6s ease forwards;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+/* Efecto de pulso en el precio */
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.product-card:hover .product-price {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Responsive para que se vea chimba en mobile */
+@media (max-width: 768px) {
+  .product-card {
+    padding: 15px;
+    border-radius: 16px;
+  }
+  
+  .product-image-container {
+    height: 200px;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-10px) scale(1.01);
+  }
+}
+
+/* Extra: Efecto de partículas en hover (opcional) */
+.product-card::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+  transform: translate(-50%, -50%);
+  transition: all 0.6s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.product-card:hover::after {
+  width: 300px;
+  height: 300px;
+  opacity: 0.1;
+}
+/* 📦 Forzar todas las tarjetas a mismo tamaño */
+.product-card {
+  height: 420px; /* ajusta según lo que quieras */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* 🔲 Imagen con altura fija */
+.product-image-container {
+  height: 200px; /* todas las imágenes igual tamaño */
+}
+
+/* 📝 Info con flex para alinear bien */
+.product-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }

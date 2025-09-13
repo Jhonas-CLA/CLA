@@ -1230,3 +1230,87 @@ a:hover {
   margin-top: 15px;
   text-decoration: none;
 }
+/* ============================
+   🎯 TITULOS DEL MENÚ DESPLEGABLE
+   ============================ */
+.dropdown-group-title {
+  color: #ffffff !important;    /* Blanco puro */
+  font-weight: bold !important; 
+  font-size: 14px !important;   /* Ajusta según diseño */
+  text-transform: uppercase !important;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+  display: block;
+}
+/* ============================
+   🎯 Fondo menú desplegable SOLO en modo oscuro
+   ============================ */
+.forgot-link,
+.register-link {
+  color: #001152 !important;   /* Azul normal */
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.forgot-link:hover,
+.register-link:hover {
+  color: #0044cc !important;   /* Azul más fuerte al pasar el mouse */
+  text-decoration: underline;  /* Opcional, para que se note que es un link */
+}
+
+/* ============================
+   🎯 Fondo menú desplegable SOLO en modo oscuro
+   ============================ */
+.forgot-link,
+.register-link {
+  color: #001152 !important;   /* Azul normal */
+  font-weight: 500;
+  display: inline-block;
+  margin-top: 10px;
+  text-decoration: none;
+}
+
+.forgot-link:hover,
+.register-link:hover {
+  color: #0044cc !important;   /* Azul más fuerte al pasar el mouse */
+  text-decoration: underline;  /* Opcional, para que se note que es un link */
+}
+
+/* Título */
+.forgot-password-box h2 {
+  color: #ffffff !important;
+}
+
+/* Botón */
+.forgot-password-form button {
+  background-color: #ffd700 !important;
+  color: #000000 !important;
+}
+
+/* Mensaje correo enviado */
+.forgot-password-message {
+  color: #28a745 !important;
+}
+
+/* Link volver */
+.back-to-login a {
+  color: #ffd700 !important;
+}
+.forgot-password-box {
+  border: 2px solid white;   /* borde blanco */
+  border-radius: 10px;       /* esquinas redondeadas */
+  padding: 30px;             /* espacio interno */
+  max-width: 400px;          /* ancho máximo */
+  margin: 50px auto;         /* centrado en pantalla */
+  background-color: rgba(0, 0, 0, 0.6); /* fondo semi-transparente */
+}
+/* 🌙 Fondo negro para el modal de verificación en modo oscuro */
+html[data-theme="dark"] div[style*="background-color: white"] {
+  background-color: #000 !important;   /* Fondo negro */
+  color: #fff !important;              /* Texto blanco */
+  border: 2px solid #fff !important;   /* Borde blanco visible */
+  box-shadow: 0 0 25px rgba(255,255,255,0.3) !important;
+}
+
