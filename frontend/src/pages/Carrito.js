@@ -74,7 +74,10 @@ const CarritoCompras = () => {
   const [busqueda, setBusqueda] = useState('');
   const [categoriaFiltro, setCategoriaFiltro] = useState('');
   const [numeroWhatsApp, setNumeroWhatsApp] = useState(''); // número desde la BD
-  
+  // 1️⃣ Estado para el nombre del cliente
+  const [nombreCliente, setNombreCliente] = useState("");
+
+
   // Estados para la validación de usuario
   const [email, setEmail] = useState('');
   const [showEmailModal, setShowEmailModal] = useState(false);
@@ -128,7 +131,26 @@ const CarritoCompras = () => {
     cargarProductos();
   }, [categoriaFiltro]);
 
-  // le agrege esto al carrito 
+  // 2️⃣ Obtener nombre del cliente según el email
+  const obtenerNombreCliente = async (emailUsuario) => {
+    try {
+      const res = await fetch(`http://localhost:8000/api/pedidos/cliente/?email=${emailUsuario}`);
+      const data = await res.json();
+      if (data.nombre) {
+        setNombreCliente(data.nombre);
+      }
+    } catch (err) {
+      console.error("Error obteniendo nombre del cliente:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (email) {
+      obtenerNombreCliente(email);
+    }
+  }, [email]);
+
+  // le agrege esto al carrito
   useEffect(() => {
     if (!productos || productos.length === 0) {
       return;
@@ -220,17 +242,22 @@ const CarritoCompras = () => {
     try {
       // Preparar datos del pedido
       const pedidoData = {
+        email: email,
+        cliente: nombreCliente || "Cliente desconocido", // 👈 agregado
         productos: Object.values(carrito).map(item => ({
           nombre: item.nombre,
           codigo: item.codigo,
-          cantidad: item.cantidad,
-          precio: item.precio
+          cantidad: Number(item.cantidad),
+          precio: Number(item.precio),
         })),
-        total: totalCarrito,
-        email: email
+        total: Number(totalCarrito),
+        total_productos: Object.values(carrito).reduce((acc, item) => acc + item.cantidad, 0),
       };
 
       console.log('Enviando pedido:', pedidoData); // Debug
+
+      // ✅ Guardar pedido en backend
+      await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
       const response = await fetch("http://localhost:8000/accounts/api/whatsapp/pedido/", {
         method: "POST",
@@ -257,7 +284,7 @@ const CarritoCompras = () => {
       } else {
         // Manejo de errores específicos
         console.error('Error del servidor:', data);
-        
+
         switch (data.error) {
           case 'USER_NOT_REGISTERED':
             setError('❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero.');
@@ -331,7 +358,7 @@ const CarritoCompras = () => {
 
       // Actualizar el estado principal
       setEmail(localEmail);
-      
+
       // Proceder con el envío
       setLoading(true);
       setError('');
@@ -339,15 +366,20 @@ const CarritoCompras = () => {
 
       try {
         const pedidoData = {
+          email: localEmail, // 👈 usar el localEmail, no el email global
+          cliente: nombreCliente || "Cliente desconocido", // 👈 agregado
           productos: Object.values(carrito).map(item => ({
             nombre: item.nombre,
             codigo: item.codigo,
-            cantidad: item.cantidad,
-            precio: item.precio
+            cantidad: Number(item.cantidad),
+            precio: Number(item.precio),
           })),
-          total: totalCarrito,
-          email: localEmail
+          total: Number(totalCarrito),
+          total_productos: Object.values(carrito).reduce((acc, item) => acc + item.cantidad, 0),
         };
+
+        // ✅ Guardar pedido en backend
+        await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
         const response = await fetch("http://localhost:8000/accounts/api/whatsapp/pedido/", {
           method: "POST",
@@ -447,7 +479,7 @@ const CarritoCompras = () => {
           }}>
             Para enviar tu pedido por WhatsApp, necesitamos verificar que tienes una cuenta registrada en nuestro sistema.
           </p>
-          
+
           <div style={{ marginBottom: '20px' }}>
             <label style={{
               display: 'block',
@@ -536,7 +568,6 @@ const CarritoCompras = () => {
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <h1 style={{ color: '#FFD700', fontSize: '2.5rem' }}>Catálogo de Productos</h1>
         <p style={{ color: '#000' }}>Selecciona una categoría para ver los productos</p>
-        
         {/* Mensaje de éxito */}
         {success && (
           <div style={{
@@ -551,7 +582,6 @@ const CarritoCompras = () => {
             {success}
           </div>
         )}
-        
         {totalItems > 0 && (
           <div style={{
             marginTop: '20px',
@@ -657,11 +687,11 @@ const CarritoCompras = () => {
           maxHeight: '80vh',
           overflowY: 'auto'
         }}>
-          <h2 style={{ 
-            color: '#1e3a8a', 
-            fontSize: '1.5rem', 
-            fontWeight: 'bold', 
-            marginBottom: '20px' 
+          <h2 style={{
+            color: '#1e3a8a',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            marginBottom: '20px'
           }}>
             Tu Carrito
           </h2>
@@ -680,29 +710,28 @@ const CarritoCompras = () => {
                   marginBottom: '12px',
                   border: '1px solid #e2e8f0'
                 }}>
-                  <div style={{ 
-                    fontWeight: 'bold', 
-                    color: '#1e3a8a', 
+                  <div style={{
+                    fontWeight: 'bold',
+                    color: '#1e3a8a',
                     fontSize: '1rem',
                     marginBottom: '4px'
                   }}>
                     {item.nombre}
                   </div>
-                  <div style={{ 
-                    fontSize: '0.85rem', 
+                  <div style={{
+                    fontSize: '0.85rem',
                     color: '#64748b',
                     marginBottom: '10px'
                   }}>
                     {item.codigo}
                   </div>
-                  
                   <div style={{
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <button 
+                      <button
                         onClick={() => modificarCantidad(item.codigo, item.cantidad - 1)}
                         style={{
                           width: '32px',
@@ -721,15 +750,15 @@ const CarritoCompras = () => {
                       >
                         −
                       </button>
-                      <span style={{ 
-                        fontWeight: 'bold', 
+                      <span style={{
+                        fontWeight: 'bold',
                         fontSize: '1.1rem',
                         minWidth: '20px',
                         textAlign: 'center'
                       }}>
                         {item.cantidad}
                       </span>
-                      <button 
+                      <button
                         onClick={() => modificarCantidad(item.codigo, item.cantidad + 1)}
                         style={{
                           width: '32px',
@@ -749,9 +778,9 @@ const CarritoCompras = () => {
                         +
                       </button>
                     </div>
-                    
+
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <span style={{ 
+                      <span style={{
                         fontWeight: 'bold',
                         color: '#1e3a8a',
                         fontSize: '1rem'
@@ -780,22 +809,20 @@ const CarritoCompras = () => {
                   </div>
                 </div>
               ))}
-              
               <div style={{
                 borderTop: '2px solid #e2e8f0',
                 paddingTop: '15px',
                 marginTop: '20px'
               }}>
-                <div style={{ 
-                  fontSize: '1.2rem', 
-                  fontWeight: 'bold', 
+                <div style={{
+                  fontSize: '1.2rem',
+                  fontWeight: 'bold',
                   color: '#1e3a8a',
                   textAlign: 'center',
                   marginBottom: '15px'
                 }}>
                   Total: ${totalCarrito.toLocaleString()}
                 </div>
-                
                 <button
                   onClick={limpiarCarrito}
                   style={{
@@ -836,7 +863,7 @@ const CarritoCompras = () => {
           )}
         </div>
       </div>
-      
+
       {/* Modal de email */}
       {showEmailModal && <EmailModal />}
     </div>

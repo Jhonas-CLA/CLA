@@ -19,6 +19,7 @@ import ResetPassword from './components/ResetPassword';
 import Carrito from './pages/Carrito';
 import Proveedores from './pages/proveedores';
 import DashboardProductos from './pages/DashboardProductos';
+import Pedidos from "./pages/Pedidos";
 
 import AdminDashboard from './components/AdminDashboard';
 import UserDashboard from './components/UserDashboard';
@@ -58,6 +59,8 @@ function AppContent() {
           <Route path="/analiticas" element={<UserDashboard />} />
           <Route path="/proveedores" element={<Proveedores />} />
           <Route path="/dashboard/productos" element={<DashboardProductos />} />
+          <Route path="/pedidos" element={<Pedidos />} />
+          
 
         </Routes>
       </Router>

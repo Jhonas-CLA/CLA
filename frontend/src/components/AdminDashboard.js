@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './Dashboard.css';
 import Proveedores from '../pages/proveedores';
 import DashboardProductos from '../pages/DashboardProductos';
-
+import Pedidos from '../pages/Pedidos';
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -237,8 +237,7 @@ function AdminDashboard() {
       case 'pedidos':
         return (
           <div className="content-section">
-            <h2>Pedidos</h2>
-            <p>Aquí irá la gestión de pedidos</p>
+           <Pedidos />
           </div>
         );
       case 'configuracion':
