@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
+import { useAuth } from '../context/AuthContext';
 
 function SimplifiedDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
@@ -18,72 +19,38 @@ function SimplifiedDashboard() {
   });
 
   // Función para obtener el perfil del usuario
-  const fetchUserProfile = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      const userEmail = localStorage.getItem('userEmail');
-      
-      if (!token) {
-        setUserProfile(prev => ({ 
-          ...prev, 
-          loading: false, 
-          error: 'No se encontró token de autenticación' 
-        }));
-        return;
-      }
+  const { user, token, apiCall } = useAuth();
 
-      try {
-        const response = await fetch('http://localhost:8000/accounts/profile/', {
-          method: 'GET',
-          headers: {
-            'Authorization': `Token ${token}`,
-            'Content-Type': 'application/json',
-          }
-        });
+const fetchUserProfile = async () => {
+  if (!token) {
+    setUserProfile(prev => ({ ...prev, loading: false, error: 'No estás autenticado' }));
+    return;
+  }
 
-        if (response.ok) {
-          const data = await response.json();
-          setUserProfile({
-            email: data.email || userEmail || '',
-            firstName: data.first_name || '',
-            lastName: data.last_name || '',
-            phone: data.phone || '',
-            email_verified: data.email_verified ?? false,
-            loading: false,
-            error: null
-          });
-          return;
-        }
-      } catch (apiError) {
-        console.log('API no disponible, usando datos del localStorage');
-      }
+  setUserProfile(prev => ({ ...prev, loading: true, error: null }));
 
-      // Fallback a localStorage
+  try {
+    const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/');
+    if (response.ok) {
+      const data = await response.json();
       setUserProfile({
-        email: userEmail || '',
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email_verified: false,
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        phone: data.phone || '',
+        email_verified: data.email_verified ?? false,
         loading: false,
         error: null
       });
-
-    } catch (err) {
-      console.error('Error fetching user profile:', err);
-      const userEmail = localStorage.getItem('userEmail');
-      setUserProfile({
-        email: userEmail || '',
-        firstName: '',
-        lastName: '',
-        phone: '',
-        email_verified: false,
-        loading: false,
-        error: null
-      });
+    } else {
+      setUserProfile(prev => ({ ...prev, loading: false, error: 'No se pudo cargar perfil' }));
     }
-  };
-
+  } catch (err) {
+    console.error(err);
+    setUserProfile(prev => ({ ...prev, loading: false, error: 'Error al cargar perfil' }));
+  }
+};
+      
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
@@ -103,18 +70,20 @@ function SimplifiedDashboard() {
     setActiveSection(section);
   };
 
-  const logout = () => {
-    if (window.confirm('¿Estás seguro de que quieres salir?')) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-  };
+  const { logout } = useAuth();
+
+const handleLogout = () => {
+  if (window.confirm('¿Estás seguro de que quieres salir?')) {
+    logout();
+    window.location.href = '/login';
+  }
+};
 
   useEffect(() => {
-    if (activeSection === 'perfil') {
-      fetchUserProfile();
-    }
-  }, [activeSection]);
+  if (activeSection === 'perfil') {
+    fetchUserProfile();
+  }
+}, [activeSection, token]);
 
   const renderContent = () => {
     const baseStyle = {
@@ -256,9 +225,6 @@ function SimplifiedDashboard() {
                       <label>📧 Correo electrónico</label>
                       <div className="read-only-value">
                         {userProfile.email}
-                        {userProfile.email_verified && (  // 👈 solo mostrar si es true
-                          <span style={verifiedBadgeStyles}>✓ Verificado</span>
-                        )}
                       </div>
                     </div>
 
@@ -350,7 +316,7 @@ function SimplifiedDashboard() {
         {renderContent()}
       </main>
 
-      <style jsx>{`
+      <style>{`
         .dashboard {
           display: flex;
           min-height: 100vh;
