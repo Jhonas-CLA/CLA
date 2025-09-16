@@ -12,6 +12,7 @@ function SimplifiedDashboard() {
     firstName: '',
     lastName: '',
     phone: '',
+    email_verified: false,
     loading: true,
     error: null
   });
@@ -47,6 +48,7 @@ function SimplifiedDashboard() {
             firstName: data.first_name || '',
             lastName: data.last_name || '',
             phone: data.phone || '',
+            email_verified: data.email_verified ?? false,
             loading: false,
             error: null
           });
@@ -62,6 +64,7 @@ function SimplifiedDashboard() {
         firstName: '',
         lastName: '',
         phone: '',
+        email_verified: false,
         loading: false,
         error: null
       });
@@ -74,6 +77,7 @@ function SimplifiedDashboard() {
         firstName: '',
         lastName: '',
         phone: '',
+        email_verified: false,
         loading: false,
         error: null
       });
@@ -252,7 +256,9 @@ function SimplifiedDashboard() {
                       <label>📧 Correo electrónico</label>
                       <div className="read-only-value">
                         {userProfile.email}
-                        <span className="verified-badge">✓ Verificado</span>
+                        {userProfile.email_verified && (  // 👈 solo mostrar si es true
+                          <span style={verifiedBadgeStyles}>✓ Verificado</span>
+                        )}
                       </div>
                     </div>
 

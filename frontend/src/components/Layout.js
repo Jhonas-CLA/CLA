@@ -9,7 +9,6 @@ function Layout() {
 
   const hideLayoutRoutes = [
     '/admin/dashboard',
-    '/user/dashboard',
     '/usuario/dashboard'
   ];
 

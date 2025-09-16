@@ -57,7 +57,6 @@ function AppContent() {
 
           {/* Sin Layout */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        
           <Route path="/proveedores" element={<Proveedores />} />
           <Route path="/dashboard/productos" element={<DashboardProductos />} />
           <Route path="/pedidos" element={<Pedidos />} />
