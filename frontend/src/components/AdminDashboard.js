@@ -27,7 +27,7 @@ function AdminDashboard() {
 
   // 🔹 Estados para la paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const [usuariosPorPagina] = useState(1);
+  const [usuariosPorPagina] = useState(2);
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById("sidebar");
@@ -325,9 +325,6 @@ function AdminDashboard() {
             }}
             className="search-input"
           />
-          <button onClick={fetchUsuarios} className="refresh-btn">
-            Actualizar
-          </button>
         </div>
 
         {/* Tabla de usuarios */}

@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -25,6 +25,24 @@ class PedidoListCreateView(generics.ListCreateAPIView):
                 pass
 
         serializer.save(cliente=cliente_nombre, email=email)
+
+
+# ✅ Actualizar estado del pedido
+@api_view(['PATCH'])
+def actualizar_estado_pedido(request, pk):
+    try:
+        pedido = Pedido.objects.get(pk=pk)
+    except Pedido.DoesNotExist:
+        return Response({"error": "Pedido no encontrado"}, status=status.HTTP_404_NOT_FOUND)
+
+    nuevo_estado = request.data.get("estado")
+    if nuevo_estado not in dict(Pedido.ESTADOS):
+        return Response({"error": "Estado inválido"}, status=status.HTTP_400_BAD_REQUEST)
+
+    pedido.estado = nuevo_estado
+    pedido.save()
+    return Response(PedidoSerializer(pedido).data)
+
 
 
 # ✅ Traer información del cliente autenticado
