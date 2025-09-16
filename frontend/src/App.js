@@ -52,11 +52,12 @@ function AppContent() {
             <Route path="/categorias/:nombre" element={<CategoriaDetalle />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
+            <Route path="/analiticas" element={<UserDashboard />} />
           </Route>
 
           {/* Sin Layout */}
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/analiticas" element={<UserDashboard />} />
+        
           <Route path="/proveedores" element={<Proveedores />} />
           <Route path="/dashboard/productos" element={<DashboardProductos />} />
           <Route path="/pedidos" element={<Pedidos />} />

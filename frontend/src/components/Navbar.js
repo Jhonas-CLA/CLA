@@ -94,6 +94,9 @@ function Navbar() {
     closeMenu();
   };
 
+  // Detectar si está en la sección de analíticas/dashboard
+  const isDashboard = location.pathname.startsWith("/analiticas") || location.pathname.startsWith("/dashboard");
+
   return (
     <nav className={`custom-navbar ${darkMode ? 'dark-mode' : ''}`}>
       <div className="navbar-container">
@@ -104,55 +107,58 @@ function Navbar() {
           />
         </Link>
 
-        <button
-          className={`mobile-toggle ${isMenuOpen ? 'active' : ''}`}
-          onClick={toggleMenu}
-          aria-label="Toggle navigation"
-        >
-          <span></span><span></span><span></span>
-        </button>
-
-        <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
-          <Link className={`nav-link ${isActiveLink('/quienes-somos') ? 'active' : ''}`} to="/quienes-somos" onClick={closeMenu}>Quienes Somos</Link>
-
-          <div className="nav-dropdown">
-            <button className={`nav-link dropdown-btn ${isActiveLink('/categorias') ? 'active' : ''}`} onClick={toggleDropdown}>
-              Categorías <span className={`dropdown-arrow ${showDropdown ? 'active' : ''}`}>▼</span>
+        {!isDashboard && (
+          <>
+            <button
+              className={`mobile-toggle ${isMenuOpen ? 'active' : ''}`}
+              onClick={toggleMenu}
+              aria-label="Toggle navigation"
+            >
+              <span></span><span></span><span></span>
             </button>
-            {showDropdown && (
-              <div className="dropdown-content mega-dropdown">
-                <div className="dropdown-columns">
-                  {Object.entries(categorias).map(([grupo, items]) => (
-                    <div key={grupo} className="dropdown-column">
-                      <h4 className="dropdown-group-title">{grupo}</h4>
-                      <div className="dropdown-group-items">
-                        {items.map((item) => (
-                          <Link key={item.path} to={item.path} onClick={closeMenu} className="dropdown-item">
-                            <span className="item-icon">{item.icon}</span>
-                            <span className="item-name">{item.name}</span>
-                          </Link>
-                        ))}
-                      </div>
+
+            <div className={`nav-menu ${isMenuOpen ? 'active' : ''}`}>
+              <Link className={`nav-link ${isActiveLink('/quienes-somos') ? 'active' : ''}`} to="/quienes-somos" onClick={closeMenu}>Quienes Somos</Link>
+
+              <div className="nav-dropdown">
+                <button className={`nav-link dropdown-btn ${isActiveLink('/categorias') ? 'active' : ''}`} onClick={toggleDropdown}>
+                  Categorías <span className={`dropdown-arrow ${showDropdown ? 'active' : ''}`}>▼</span>
+                </button>
+                {showDropdown && (
+                  <div className="dropdown-content mega-dropdown">
+                    <div className="dropdown-columns">
+                      {Object.entries(categorias).map(([grupo, items]) => (
+                        <div key={grupo} className="dropdown-column">
+                          <h4 className="dropdown-group-title">{grupo}</h4>
+                          <div className="dropdown-group-items">
+                            {items.map((item) => (
+                              <Link key={item.path} to={item.path} onClick={closeMenu} className="dropdown-item">
+                                <span className="item-icon">{item.icon}</span>
+                                <span className="item-name">{item.name}</span>
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <Link className={`nav-link ${isActiveLink('/novedades') ? 'active' : ''}`} to="/novedades" onClick={closeMenu}>Novedades</Link>
-          <Link className={`nav-link ${isActiveLink('/contacto') ? 'active' : ''}`} to="/contacto" onClick={closeMenu}>Contacto</Link>
-        </div>
+              <Link className={`nav-link ${isActiveLink('/novedades') ? 'active' : ''}`} to="/novedades" onClick={closeMenu}>Novedades</Link>
+              <Link className={`nav-link ${isActiveLink('/contacto') ? 'active' : ''}`} to="/contacto" onClick={closeMenu}>Contacto</Link>
+            </div>
+          </>
+        )}
 
+        {/* Acciones (se muestran siempre) */}
         <div className="nav-actions">
           <Link to="/carrito" className={`action-icon cart-icon ${isActiveLink('/carrito') ? 'active' : ''}`} onClick={closeMenu} title="Carrito">
             <img src="https://cdn-icons-png.flaticon.com/512/8146/8146003.png" alt="Productos" style={{ width: '50px', height: '40px', objectFit: 'cover' }} />
           </Link>
 
-          {/* Sección de usuario - Cambia según si está autenticado */}
           {isAuthenticated ? (
             <div className="user-section" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {/* Usuario logueado */}
               <Link 
                 to="/analiticas" 
                 className={`action-icon profile-icon ${isActiveLink('/analiticas') ? 'active' : ''}`}
@@ -177,7 +183,6 @@ function Navbar() {
                 </div>
               </Link>
               
-              {/* Botón de logout */}
               <button 
                 onClick={handleLogout}
                 className="logout-btn"
@@ -197,7 +202,6 @@ function Navbar() {
               </button>
             </div>
           ) : (
-            /* Usuario no logueado */
             <Link 
               to="/Login" 
               className={`action-icon profile-icon ${isActiveLink('/Login') ? 'active' : ''}`} 
