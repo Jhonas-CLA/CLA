@@ -1,6 +1,6 @@
 /* ===========================
    Pedidos.css
-   Estilo moderno, elegante y ampliado
+   Estilo moderno, elegante y ampliado con estados visuales
    =========================== */
 
 .pedidos-section {
@@ -98,6 +98,50 @@
   margin-bottom: 0.5rem;
   font-size: 0.95rem;
   font-weight: 500;
+}
+
+/* ===========================
+   Estado visual
+   =========================== */
+.estado-container {
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.estado-container select {
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.estado-container select:focus {
+  outline: none;
+  border-color: #3b82f6;
+}
+
+/* Colores según estado */
+.pedido-card[data-estado="en_proceso"] {
+  border-left: 6px solid #facc15;
+}
+
+.pedido-card[data-estado="empaquetado"] {
+  border-left: 6px solid #3b82f6;
+}
+
+.pedido-card[data-estado="entregado"] {
+  border-left: 6px solid #22c55e;
+}
+
+.pedido-card[data-estado="cancelado"] {
+  border-left: 6px solid #ef4444;
+  opacity: 0.8;
 }
 
 /* Mensaje de error */
