@@ -97,26 +97,41 @@ def login_user(request):
         return Response({'error': 'Email y contraseña son requeridos'}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
+        # Buscar usuario por email
         user = User.objects.get(email=email)
-        user = authenticate(username=user.username, password=password)
+        
+        # Autenticar usando email como username
+        user = authenticate(username=email, password=password)
+        
+        if user:
+            # Verificar que la cuenta esté activa
+            if not user.is_active:
+                return Response({'error': 'Tu cuenta está inactiva. Contacta al administrador'}, 
+                              status=status.HTTP_401_UNAUTHORIZED)
+            
+            # Generar tokens JWT
+            refresh = RefreshToken.for_user(user)
+            
+            return Response({
+                'access': str(refresh.access_token),
+                'refresh': str(refresh),
+                'user': {
+                    'id': user.id,
+                    'email': user.email,
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'is_staff': user.is_staff,
+                    'rol': user.rol,
+                }
+            })
+        else:
+            return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+            
     except User.DoesNotExist:
         return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
-
-    if user:
-        refresh = RefreshToken.for_user(user)
-        return Response({
-            'access': str(refresh.access_token),
-            'refresh': str(refresh),
-            'user': {
-                'id': user.id,
-                'email': user.email,
-                'first_name': user.first_name,
-                'last_name': user.last_name,
-                'is_staff': user.is_staff,
-            }
-        })
-    else:
-        return Response({'error': 'Credenciales inválidas'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({'error': f'Error interno del servidor: {str(e)}'}, 
+                       status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['POST'])
@@ -302,6 +317,7 @@ def get_profile(request):
         'first_name': request.user.first_name,
         'last_name': request.user.last_name,
         'is_staff': request.user.is_staff,
+        'email_verified': getattr(request.user, 'email_verified', False),
     })
 
 
