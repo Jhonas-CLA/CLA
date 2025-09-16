@@ -135,16 +135,20 @@ def login_user(request):
 
 
 @api_view(['POST'])
-@permission_classes([IsAuthenticated])
+@permission_classes([AllowAny])
 def logout_user(request):
     """Logout con JWT (blacklist refresh token)"""
+    refresh_token = request.data.get("refresh")
+    if not refresh_token:
+        return Response({'error': 'No se proporcionó refresh token'}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
-        refresh_token = request.data["refresh"]
         token = RefreshToken(refresh_token)
         token.blacklist()
         return Response({'message': 'Logout exitoso'})
-    except Exception:
-        return Response({'error': 'Error al hacer logout'}, status=status.HTTP_400_BAD_REQUEST)
+    except Exception as e:
+        return Response({'error': f'Error al hacer logout: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 
 # -------------------------------------------------------------------
