@@ -86,29 +86,35 @@ export const AuthProvider = ({ children }) => {
   };
 
   // -------- LOGOUT --------
+
   const logout = async () => {
+  const refreshTokenValue = localStorage.getItem('refresh_token');
+  console.log('Refresh token en logout:', refreshTokenValue);
+
+  if (refreshTokenValue) {
     try {
-      const refreshTokenValue = localStorage.getItem('refresh_token');
-      if (refreshTokenValue && token) {
-        await apiCall('http://localhost:8000/accounts/api/auth/logout/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ refresh: refreshTokenValue }),
-        });
-      }
+      const res = await fetch('http://localhost:8000/accounts/api/auth/logout/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh: refreshTokenValue }),
+      });
+      const data = await res.json();
+      console.log('Logout response:', data);
     } catch (error) {
       console.error('Error en logout:', error);
     }
+  } else {
+    console.warn('No hay refresh token, solo limpiando localStorage');
+  }
 
-    // Limpiar
-    localStorage.removeItem('access_token');
-    localStorage.removeItem('refresh_token');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userEmail');
-    localStorage.removeItem('userData');
-    setToken(null);
-    setUser(null);
-  };
+  // Limpiar localStorage siempre
+  ['access_token', 'refresh_token', 'userRole', 'userEmail', 'userData'].forEach(item =>
+    localStorage.removeItem(item)
+  );
+  setToken(null);
+  setUser(null);
+};
+
 
   // -------- REFRESH TOKEN --------
   const refreshToken = async () => {
