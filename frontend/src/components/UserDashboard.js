@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import './Dashboard.css';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from "react-router-dom";
 
 function SimplifiedDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
-  const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('darkMode');
-    return saved ? JSON.parse(saved) : false;
-  });
+  const [darkMode, setDarkMode] = useState(false);
   const [userProfile, setUserProfile] = useState({
     email: '',
     firstName: '',
@@ -18,43 +15,175 @@ function SimplifiedDashboard() {
     error: null
   });
 
-  // Función para obtener el perfil del usuario
-  const { user, token, apiCall } = useAuth();
+  // Estados para formularios
+  const [profileForm, setProfileForm] = useState({
+    first_name: '',
+    last_name: '',
+    phone: '',
+    loading: false,
+    success: false,
+    error: ''
+  });
 
-const fetchUserProfile = async () => {
-  if (!token) {
-    setUserProfile(prev => ({ ...prev, loading: false, error: 'No estás autenticado' }));
-    return;
-  }
+  const [passwordForm, setPasswordForm] = useState({
+    current_password: '',
+    new_password: '',
+    confirm_password: '',
+    loading: false,
+    success: false,
+    error: ''
+  });
 
-  setUserProfile(prev => ({ ...prev, loading: true, error: null }));
+  // Contexto de autenticación real
+  const { user, token, apiCall, logout } = useAuth();
+  const navigate = useNavigate();
 
-  try {
-    const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/');
-    if (response.ok) {
-      const data = await response.json();
-      setUserProfile({
-        email: data.email,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        phone: data.phone || '',
-        email_verified: data.email_verified ?? false,
-        loading: false,
-        error: null
-      });
-    } else {
-      setUserProfile(prev => ({ ...prev, loading: false, error: 'No se pudo cargar perfil' }));
+  const handleLogout = () => {
+    if (window.confirm('¿Estás seguro de que quieres salir?')) {
+      logout();
+      navigate("/");
     }
-  } catch (err) {
-    console.error(err);
-    setUserProfile(prev => ({ ...prev, loading: false, error: 'Error al cargar perfil' }));
-  }
-};
+  };
+
+  const fetchUserProfile = async () => {
+    if (!token) {
+      setUserProfile(prev => ({ ...prev, loading: false, error: 'No estás autenticado' }));
+      return;
+    }
+
+    setUserProfile(prev => ({ ...prev, loading: true, error: null }));
+
+    try {
+      const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/');
+      if (response.ok) {
+        const data = await response.json();
+        setUserProfile({
+          email: data.email,
+          firstName: data.first_name,
+          lastName: data.last_name,
+          phone: data.phone || '',
+          email_verified: data.email_verified ?? false,
+          loading: false,
+          error: null
+        });
+        
+        // Actualizar formulario de perfil
+        setProfileForm(prev => ({
+          ...prev,
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          phone: data.phone || ''
+        }));
+      } else {
+        setUserProfile(prev => ({ ...prev, loading: false, error: 'No se pudo cargar perfil' }));
+      }
+    } catch (err) {
+      console.error(err);
+      setUserProfile(prev => ({ ...prev, loading: false, error: 'Error al cargar perfil' }));
+    }
+  };
+
+  const updateProfile = async (e) => {
+    e.preventDefault();
+    setProfileForm(prev => ({ ...prev, loading: true, error: '', success: false }));
+
+    try {
+      const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/update/', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name: profileForm.first_name,
+          last_name: profileForm.last_name,
+          phone: profileForm.phone
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setProfileForm(prev => ({ ...prev, loading: false, success: true }));
+        // Actualizar el perfil mostrado
+        setUserProfile(prev => ({
+          ...prev,
+          firstName: data.user.first_name,
+          lastName: data.user.last_name,
+          phone: data.user.phone
+        }));
+        
+        // Limpiar mensaje después de 3 segundos
+        setTimeout(() => {
+          setProfileForm(prev => ({ ...prev, success: false }));
+        }, 3000);
+      } else {
+        setProfileForm(prev => ({ 
+          ...prev, 
+          loading: false, 
+          error: data.error || 'Error al actualizar perfil' 
+        }));
+      }
+    } catch (err) {
+      setProfileForm(prev => ({ 
+        ...prev, 
+        loading: false, 
+        error: 'Error de conexión' 
+      }));
+    }
+  };
+
+  const changePassword = async (e) => {
+    e.preventDefault();
+    setPasswordForm(prev => ({ ...prev, loading: true, error: '', success: false }));
+
+    try {
+      const response = await apiCall('http://localhost:8000/accounts/api/auth/change-password/', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          current_password: passwordForm.current_password,
+          new_password: passwordForm.new_password,
+          confirm_password: passwordForm.confirm_password
+        })
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setPasswordForm({
+          current_password: '',
+          new_password: '',
+          confirm_password: '',
+          loading: false,
+          success: true,
+          error: ''
+        });
+        
+        // Limpiar mensaje después de 3 segundos
+        setTimeout(() => {
+          setPasswordForm(prev => ({ ...prev, success: false }));
+        }, 3000);
+      } else {
+        setPasswordForm(prev => ({ 
+          ...prev, 
+          loading: false, 
+          error: data.error || 'Error al cambiar contraseña' 
+        }));
+      }
+    } catch (err) {
+      setPasswordForm(prev => ({ 
+        ...prev, 
+        loading: false, 
+        error: 'Error de conexión' 
+      }));
+    }
+  };
       
   const toggleDarkMode = () => {
     const newDarkMode = !darkMode;
     setDarkMode(newDarkMode);
-    localStorage.setItem('darkMode', JSON.stringify(newDarkMode));
   };
 
   const toggleSidebar = () => {
@@ -70,20 +199,11 @@ const fetchUserProfile = async () => {
     setActiveSection(section);
   };
 
-  const { logout } = useAuth();
-
-const handleLogout = () => {
-  if (window.confirm('¿Estás seguro de que quieres salir?')) {
-    logout();
-    window.location.href = '/login';
-  }
-};
-
   useEffect(() => {
-  if (activeSection === 'perfil') {
-    fetchUserProfile();
-  }
-}, [activeSection, token]);
+    if (activeSection === 'perfil') {
+      fetchUserProfile();
+    }
+  }, [activeSection, token]);
 
   const renderContent = () => {
     const baseStyle = {
@@ -149,23 +269,70 @@ const handleLogout = () => {
             <div className="config-container">
               <div className="config-section">
                 <h3>Cambiar Contraseña</h3>
-                <form className="profile-form">
+                
+                {passwordForm.success && (
+                  <div className="success-message">
+                    ✅ Contraseña cambiada correctamente
+                  </div>
+                )}
+                
+                {passwordForm.error && (
+                  <div className="error-message">
+                    ⚠️ {passwordForm.error}
+                  </div>
+                )}
+                
+                <form className="profile-form" onSubmit={changePassword}>
                   <div className="field-group">
                     <label>🔒 Contraseña actual</label>
-                    <input type="password" placeholder="Ingresa tu contraseña actual" />
+                    <input 
+                      type="password" 
+                      placeholder="Ingresa tu contraseña actual"
+                      value={passwordForm.current_password}
+                      onChange={(e) => setPasswordForm(prev => ({
+                        ...prev, 
+                        current_password: e.target.value
+                      }))}
+                      required
+                    />
                   </div>
 
                   <div className="field-group">
                     <label>🔑 Nueva contraseña</label>
-                    <input type="password" placeholder="Ingresa tu nueva contraseña" />
+                    <input 
+                      type="password" 
+                      placeholder="Ingresa tu nueva contraseña"
+                      value={passwordForm.new_password}
+                      onChange={(e) => setPasswordForm(prev => ({
+                        ...prev, 
+                        new_password: e.target.value
+                      }))}
+                      minLength="6"
+                      required
+                    />
                   </div>
 
                   <div className="field-group">
                     <label>✅ Confirmar contraseña</label>
-                    <input type="password" placeholder="Repite tu nueva contraseña" />
+                    <input 
+                      type="password" 
+                      placeholder="Repite tu nueva contraseña"
+                      value={passwordForm.confirm_password}
+                      onChange={(e) => setPasswordForm(prev => ({
+                        ...prev, 
+                        confirm_password: e.target.value
+                      }))}
+                      required
+                    />
                   </div>
 
-                  <button type="submit" className="save-btn">Guardar cambios</button>
+                  <button 
+                    type="submit" 
+                    className="save-btn" 
+                    disabled={passwordForm.loading}
+                  >
+                    {passwordForm.loading ? 'Guardando...' : 'Guardar cambios'}
+                  </button>
                 </form>
               </div>
             </div>
@@ -220,30 +387,73 @@ const handleLogout = () => {
                     </div>
                   </div>
                   
-                  <form className="profile-details">
+                  {profileForm.success && (
+                    <div className="success-message">
+                      ✅ Perfil actualizado correctamente
+                    </div>
+                  )}
+                  
+                  {profileForm.error && (
+                    <div className="error-message">
+                      ⚠️ {profileForm.error}
+                    </div>
+                  )}
+                  
+                  <form className="profile-details" onSubmit={updateProfile}>
                     <div className="field-group">
                       <label>📧 Correo electrónico</label>
                       <div className="read-only-value">
                         {userProfile.email}
+                        <span className="read-only-note">No se puede modificar</span>
                       </div>
                     </div>
 
                     <div className="field-group">
                       <label>👤 Nombre</label>
-                      <input type="text" placeholder="Tu nombre" defaultValue={userProfile.firstName} />
+                      <input 
+                        type="text" 
+                        placeholder="Tu nombre"
+                        value={profileForm.first_name}
+                        onChange={(e) => setProfileForm(prev => ({
+                          ...prev, 
+                          first_name: e.target.value
+                        }))}
+                      />
+                    </div>
+
+                    <div className="field-group">
+                      <label>👤 Apellido</label>
+                      <input 
+                        type="text" 
+                        placeholder="Tu apellido"
+                        value={profileForm.last_name}
+                        onChange={(e) => setProfileForm(prev => ({
+                          ...prev, 
+                          last_name: e.target.value
+                        }))}
+                      />
                     </div>
 
                     <div className="field-group">
                       <label>📞 Teléfono</label>
-                      <input type="text" placeholder="Tu número de teléfono" defaultValue={userProfile.phone} />
+                      <input 
+                        type="text" 
+                        placeholder="Tu número de teléfono"
+                        value={profileForm.phone}
+                        onChange={(e) => setProfileForm(prev => ({
+                          ...prev, 
+                          phone: e.target.value
+                        }))}
+                      />
                     </div>
 
-                    <div className="field-group">
-                      <label>🏠 Dirección</label>
-                      <input type="text" placeholder="Tu dirección" />
-                    </div>
-
-                    <button type="submit" className="save-btn">Guardar cambios</button>
+                    <button 
+                      type="submit" 
+                      className="save-btn"
+                      disabled={profileForm.loading}
+                    >
+                      {profileForm.loading ? 'Guardando...' : 'Guardar cambios'}
+                    </button>
                   </form>
                 </div>
               </div>
@@ -299,7 +509,7 @@ const handleLogout = () => {
             </button>
           ))}
           
-          <button className="menu-item logout-btn" onClick={logout}>
+          <button className="menu-item logout-btn" onClick={handleLogout}>
             <div className="menu-icon">🚪</div>
             <span>Salir</span>
           </button>
@@ -598,6 +808,21 @@ const handleLogout = () => {
           color: #475569;
         }
 
+        .field-group input {
+          padding: 14px;
+          border: 2px solid #e2e8f0;
+          border-radius: 10px;
+          font-size: 15px;
+          transition: all 0.3s ease;
+          background: white;
+        }
+
+        .field-group input:focus {
+          outline: none;
+          border-color: #3b82f6;
+          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
         .read-only-value {
           padding: 14px;
           background: #f1f5f9;
@@ -606,6 +831,13 @@ const handleLogout = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          border: 2px solid #e2e8f0;
+        }
+
+        .read-only-note {
+          font-size: 12px;
+          color: #64748b;
+          font-style: italic;
         }
 
         .verified-badge {
@@ -627,9 +859,14 @@ const handleLogout = () => {
           transition: all 0.3s ease;
         }
 
-        .save-btn:hover {
+        .save-btn:hover:not(:disabled) {
           transform: translateY(-2px);
           box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .save-btn:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
         }
 
         .loading-container,
@@ -674,9 +911,110 @@ const handleLogout = () => {
           background: #2563eb;
         }
 
-        /* ⚡ Aquí la corrección para que quede debajo del navbar */
+        .config-container {
+          max-width: 600px;
+          margin: 0 auto;
+        }
+
+        .config-section {
+          background: ${darkMode ? '#0f172a' : 'white'};
+          border: 1px solid ${darkMode ? '#334155' : '#e2e8f0'};
+          border-radius: 16px;
+          padding: 32px;
+          margin-bottom: 24px;
+        }
+
+        .config-section h3 {
+          font-size: 20px;
+          font-weight: 700;
+          margin-bottom: 24px;
+          color: ${darkMode ? '#f1f5f9' : '#1e293b'};
+        }
+
+        .profile-form {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .success-message {
+          background: #dcfce7;
+          color: #166534;
+          padding: 12px 16px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          border: 1px solid #bbf7d0;
+          font-weight: 500;
+        }
+
+        .error-message {
+          background: #fef2f2;
+          color: #dc2626;
+          padding: 12px 16px;
+          border-radius: 8px;
+          margin-bottom: 20px;
+          border: 1px solid #fecaca;
+          font-weight: 500;
+        }
+
+        /* Dark mode adjustments for forms */
+        ${darkMode ? `
+          .field-group input {
+            background: #1e293b;
+            border-color: #475569;
+            color: #f1f5f9;
+          }
+          
+          .field-group input:focus {
+            border-color: #3b82f6;
+            background: #1e293b;
+          }
+          
+          .field-group label {
+            color: #cbd5e1;
+          }
+          
+          .read-only-value {
+            background: #1e293b;
+            border-color: #475569;
+            color: #f1f5f9;
+          }
+          
+          .read-only-note {
+            color: #94a3b8;
+          }
+        ` : ''}
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+          .sidebar {
+            width: 100%;
+            transform: translateX(-100%);
+          }
+          
+          .main-content {
+            margin-left: 0;
+            padding: 20px;
+          }
+          
+          .toggle-btn {
+            left: 20px;
+          }
+          
+          .content-section {
+            margin: 0;
+            padding: 20px;
+          }
+          
+          .profile-header {
+            flex-direction: column;
+            text-align: center;
+          }
+        }
+
+        /* Main content margin adjustment */
         .main-content {
-          margin-top: 80px; /* Ajusta este valor a la altura de tu navbar */
+          margin-top: 0;
         }
       `}</style>
     </div>
