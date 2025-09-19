@@ -456,3 +456,72 @@ p {
     padding: 20px;
   }
 }
+.btn-eliminar {
+  width: 100%;
+  background-color: #ef4444 !important; /* rojo */
+  color: white !important;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.btn-eliminar:hover {
+  background-color: #dc2626 !important; /* rojo más oscuro */
+}
+
+.btn-enviar {
+  width: 100%;
+  background-color: #22c55e !important; /* verde WhatsApp */
+  color: white !important;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.btn-enviar:hover {
+  background-color: #16a34a !important; /* verde más oscuro */
+}
+
+.btn-enviar:disabled {
+  background-color: #9ca3af !important; /* gris cuando loading */
+  cursor: not-allowed !important;
+}
+.btn-accion {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: linear-gradient(135deg, #2563eb, #1e40af); /* degradado azul */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+}
+
+.btn-accion:hover {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #1e40af, #172554);
+}
+
+.btn-x {
+  background: linear-gradient(135deg, #ef4444, #b91c1c); /* degradado rojo */
+}
+
+.btn-x:hover {
+  background: linear-gradient(135deg, #dc2626, #7f1d1d);
+}

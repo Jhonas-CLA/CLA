@@ -7,26 +7,29 @@ function ProductCarousel({ productos }) {
     return <p className="text-center mt-4">No hay productos disponibles.</p>;
   }
 
+  // 👇 Limitamos a solo 20 productos
+  const productosLimitados = productos.slice(0, 20);
+
   const settings = {
-  dots: true,
-  infinite: true,
-  speed: 500,
-  slidesToShow: Math.min(productos.length, 5), // antes 6 → ahora 5 para que sean más grandes
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 2500,
-  responsive: [
-    { breakpoint: 1400, settings: { slidesToShow: 4 } },
-    { breakpoint: 1024, settings: { slidesToShow: 3 } },
-    { breakpoint: 768, settings: { slidesToShow: 2 } },
-    { breakpoint: 480, settings: { slidesToShow: 1 } },
-  ],
-};
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: Math.min(productosLimitados.length, 5), // máximo 5 visibles
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2500,
+    responsive: [
+      { breakpoint: 1400, settings: { slidesToShow: 4 } },
+      { breakpoint: 1024, settings: { slidesToShow: 3 } },
+      { breakpoint: 768, settings: { slidesToShow: 2 } },
+      { breakpoint: 480, settings: { slidesToShow: 1 } },
+    ],
+  };
 
   return (
     <div className="carousel-container">
       <Slider {...settings}>
-        {productos.map((producto) => (
+        {productosLimitados.map((producto) => (
           <div key={producto.id} className="product-card">
             <div className="product-image-container">
               <img

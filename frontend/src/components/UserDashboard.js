@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
+import './UserDashboard.css';
 
-function SimplifiedDashboard() {
+function UserDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
   const [darkMode, setDarkMode] = useState(false);
   const [userProfile, setUserProfile] = useState({
@@ -14,6 +15,11 @@ function SimplifiedDashboard() {
     loading: true,
     error: null
   });
+
+  // ✅ Estados para pedidos
+  const [pedidos, setPedidos] = useState([]);
+  const [loadingPedidos, setLoadingPedidos] = useState(false);
+  const [errorPedidos, setErrorPedidos] = useState(null);
 
   // Estados para formularios
   const [profileForm, setProfileForm] = useState({
@@ -83,6 +89,27 @@ function SimplifiedDashboard() {
     }
   };
 
+  // ✅ Traer pedidos del usuario
+  const fetchPedidosUsuario = async () => {
+    if (!token) return;
+    setLoadingPedidos(true);
+    setErrorPedidos(null);
+
+    try {
+      const response = await apiCall('http://localhost:8000/api/pedidos/mis-pedidos/');
+      if (response.ok) {
+        const data = await response.json();
+        setPedidos(data.pedidos || []);
+      } else {
+        setErrorPedidos('No se pudieron cargar los pedidos');
+      }
+    } catch (err) {
+      setErrorPedidos('Error de conexión');
+    } finally {
+      setLoadingPedidos(false);
+    }
+  };
+
   const updateProfile = async (e) => {
     e.preventDefault();
     setProfileForm(prev => ({ ...prev, loading: true, error: '', success: false }));
@@ -90,9 +117,7 @@ function SimplifiedDashboard() {
     try {
       const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/update/', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           first_name: profileForm.first_name,
           last_name: profileForm.last_name,
@@ -139,9 +164,7 @@ function SimplifiedDashboard() {
     try {
       const response = await apiCall('http://localhost:8000/accounts/api/auth/change-password/', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           current_password: passwordForm.current_password,
           new_password: passwordForm.new_password,
@@ -203,6 +226,9 @@ function SimplifiedDashboard() {
     if (activeSection === 'perfil') {
       fetchUserProfile();
     }
+    if (activeSection === 'historial') {
+      fetchPedidosUsuario();
+    }
   }, [activeSection, token]);
 
   const renderContent = () => {
@@ -238,20 +264,45 @@ function SimplifiedDashboard() {
         return (
           <div className="content-section" style={baseStyle}>
             <div className="content-header">
-              <h2 style={{ color: darkMode ? '#f1f5f9' : '#1e293b' }}>📋 Historial</h2>
+              <h2 style={{ color: darkMode ? '#f1f5f9' : '#1e293b' }}>📋 Historial de Pedidos</h2>
               <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
-                Revisa tu actividad reciente y navegación anterior
+                Revisa todos tus pedidos realizados en la plataforma
               </p>
             </div>
-            <div className="empty-state" style={{
-              backgroundColor: darkMode ? '#0f172a' : '#f8fafc',
-              borderColor: darkMode ? '#334155' : '#cbd5e1'
-            }}>
-              <div className="empty-icon">🕐</div>
-              <h3 style={{ color: darkMode ? '#cbd5e1' : '#475569' }}>Historial vacío</h3>
-              <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
-                Tu historial de actividad se mostrará aquí conforme uses la aplicación
-              </p>
+
+            {loadingPedidos && <p>Cargando pedidos...</p>}
+            {errorPedidos && <p style={{ color: 'red' }}>{errorPedidos}</p>}
+            {!loadingPedidos && pedidos.length === 0 && (
+              <div className="empty-state" style={{
+                backgroundColor: darkMode ? '#0f172a' : '#f8fafc',
+                borderColor: darkMode ? '#334155' : '#cbd5e1'
+              }}>
+                <div className="empty-icon">🕐</div>
+                <h3 style={{ color: darkMode ? '#cbd5e1' : '#475569' }}>Sin pedidos</h3>
+                <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
+                  Cuando realices pedidos, aparecerán aquí
+                </p>
+              </div>
+            )}
+
+            <div className="pedidos-list">
+              {pedidos.map((pedido) => (
+                <div key={pedido.id} className={`pedido-card ${pedido.estado}`}>
+                  <p><strong>Fecha:</strong> {new Date(pedido.fecha).toLocaleString()}</p>
+                  <p><strong>Total:</strong> ${pedido.total}</p>
+                  <p><strong>Estado:</strong> {pedido.estado}</p>
+                  <div>
+                    <strong>Productos:</strong>
+                    <ul>
+                      {pedido.productos.map((prod, idx) => (
+                        <li key={idx}>
+                          {prod.nombre} (x{prod.cantidad}) - ${prod.precio}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         );
@@ -467,15 +518,9 @@ function SimplifiedDashboard() {
   };
 
   return (
-    <div className="dashboard" style={{
-      backgroundColor: darkMode ? '#0f172a' : '#f1f5f9'
-    }}>
+    <div className={`dashboard ${darkMode ? 'dark-mode' : ''}`}>
       {/* Sidebar */}
-      <div id="sidebar" className="sidebar" style={{
-        background: darkMode 
-          ? 'linear-gradient(180deg, #0f172a 0%, #1e293b 100%)'
-          : 'linear-gradient(180deg, #1e293b 0%, #334155 100%)'
-      }}>
+      <div id="sidebar" className={`sidebar ${darkMode ? 'dark-mode' : ''}`}>
         <div className="header">
           <div className="logo-section">
             <div className="logo">
@@ -520,505 +565,11 @@ function SimplifiedDashboard() {
       <button className="toggle-btn" onClick={toggleSidebar}>☰</button>
 
       {/* Main Content */}
-      <main className="main-content" style={{
-        backgroundColor: darkMode ? '#020617' : '#f8fafc'
-      }}>
+      <main className={`main-content ${darkMode ? 'dark-mode' : ''}`}>
         {renderContent()}
       </main>
-
-      <style>{`
-        .dashboard {
-          display: flex;
-          min-height: 100vh;
-          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-          position: relative;
-        }
-
-        .sidebar {
-          width: 280px;
-          color: #f1f5f9;
-          display: flex;
-          flex-direction: column;
-          position: fixed;
-          height: 100vh;
-          left: 0;
-          top: 0;
-          z-index: 1000;
-          transition: transform 0.3s ease;
-          box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .sidebar.closed {
-          transform: translateX(-100%);
-        }
-
-        .header {
-          padding: 28px 24px;
-          border-bottom: 1px solid rgba(148, 163, 184, 0.2);
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          background: rgba(255, 255, 255, 0.05);
-        }
-
-        .logo-section {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-        }
-
-        .logo {
-          padding: 8px;
-          border-radius: 12px;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-
-        .company-name {
-          font-size: 14px;
-          font-weight: 600;
-          color: #f8fafc;
-          line-height: 1.2;
-        }
-
-        .close-btn {
-          background: rgba(255, 255, 255, 0.1);
-          border: none;
-          color: #cbd5e1;
-          cursor: pointer;
-          padding: 8px;
-          border-radius: 8px;
-          transition: all 0.2s;
-        }
-
-        .close-btn:hover {
-          background: rgba(255, 255, 255, 0.2);
-        }
-
-        .menu {
-          flex: 1;
-          padding: 24px 0;
-          display: flex;
-          flex-direction: column;
-          gap: 6px;
-        }
-
-        .menu-item {
-          display: flex;
-          align-items: center;
-          gap: 16px;
-          padding: 14px 24px;
-          background: none;
-          border: none;
-          color: #cbd5e1;
-          font-size: 15px;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.2s;
-          text-align: left;
-          width: 100%;
-          border-radius: 0 25px 25px 0;
-          margin-right: 16px;
-        }
-
-        .menu-item:hover:not(.active) {
-          background-color: rgba(255, 255, 255, 0.08);
-          color: #f1f5f9;
-          transform: translateX(4px);
-        }
-
-        .menu-item.active {
-          background-color: rgba(59, 130, 246, 0.15);
-          color: #60a5fa;
-          font-weight: 600;
-          transform: translateX(8px);
-          box-shadow: inset 3px 0 0 #3b82f6;
-        }
-
-        .logout-btn {
-          margin-top: auto;
-          color: #f87171 !important;
-          border-top: 1px solid rgba(148, 163, 184, 0.2);
-          margin-top: 20px;
-          padding-top: 20px;
-          margin-right: 0;
-          border-radius: 0;
-        }
-
-        .logout-btn:hover {
-          background-color: rgba(248, 113, 113, 0.15) !important;
-          color: #fca5a5 !important;
-        }
-
-        .menu-icon {
-          font-size: 18px;
-          width: 24px;
-          text-align: center;
-        }
-
-        .toggle-btn {
-          position: fixed;
-          top: 24px;
-          left: 300px;
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          color: white;
-          border: none;
-          padding: 14px;
-          border-radius: 12px;
-          cursor: pointer;
-          z-index: 999;
-          transition: all 0.3s ease;
-          box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-        }
-
-        .toggle-btn:hover {
-          transform: scale(1.05);
-        }
-
-        .main-content {
-          flex: 1;
-          margin-left: 280px;
-          padding: 40px;
-          transition: margin-left 0.3s ease;
-          min-height: 100vh;
-        }
-
-        .dashboard:has(.sidebar.closed) .main-content {
-          margin-left: 0;
-        }
-
-        .dashboard:has(.sidebar.closed) .toggle-btn {
-          left: 20px;
-        }
-
-        .content-section {
-          background: white;
-          padding: 40px;
-          border-radius: 20px;
-          box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
-          border: 1px solid #e2e8f0;
-          margin: 40px;
-          flex: 1;
-        }
-
-        .content-header {
-          margin-bottom: 32px;
-        }
-
-        .content-header h2 {
-          font-size: 24px;
-          font-weight: 700;
-          margin-bottom: 8px;
-        }
-
-        .content-header p {
-          font-size: 15px;
-          color: #64748b;
-        }
-
-        .empty-state {
-          text-align: center;
-          padding: 60px 30px;
-          border: 2px dashed #cbd5e1;
-          border-radius: 16px;
-          background: #f8fafc;
-        }
-
-        .empty-icon {
-          font-size: 42px;
-          margin-bottom: 16px;
-        }
-
-        .empty-state h3 {
-          font-size: 18px;
-          font-weight: 600;
-          margin-bottom: 6px;
-        }
-
-        .empty-state p {
-          font-size: 14px;
-          color: #64748b;
-        }
-
-        .profile-container {
-          max-width: 800px;
-          margin: 0 auto;
-        }
-
-        .profile-card {
-          border-radius: 16px;
-          padding: 32px;
-          border: 1px solid #e2e8f0;
-        }
-
-        .profile-header {
-          display: flex;
-          align-items: center;
-          gap: 24px;
-          margin-bottom: 32px;
-        }
-
-        .avatar {
-          width: 90px;
-          height: 90px;
-          border-radius: 50%;
-          overflow: hidden;
-          border: 3px solid #3b82f6;
-          flex-shrink: 0;
-        }
-
-        .avatar img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-
-        .profile-info h3 {
-          font-size: 22px;
-          font-weight: 700;
-          margin-bottom: 4px;
-        }
-
-        .profile-badge {
-          background: #3b82f6;
-          color: white;
-          padding: 6px 14px;
-          border-radius: 999px;
-          font-size: 13px;
-          font-weight: 500;
-        }
-
-        .profile-details {
-          display: flex;
-          flex-direction: column;
-          gap: 24px;
-        }
-
-        .field-group {
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-
-        .field-group label {
-          font-size: 14px;
-          font-weight: 600;
-          color: #475569;
-        }
-
-        .field-group input {
-          padding: 14px;
-          border: 2px solid #e2e8f0;
-          border-radius: 10px;
-          font-size: 15px;
-          transition: all 0.3s ease;
-          background: white;
-        }
-
-        .field-group input:focus {
-          outline: none;
-          border-color: #3b82f6;
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .read-only-value {
-          padding: 14px;
-          background: #f1f5f9;
-          border-radius: 10px;
-          font-size: 15px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          border: 2px solid #e2e8f0;
-        }
-
-        .read-only-note {
-          font-size: 12px;
-          color: #64748b;
-          font-style: italic;
-        }
-
-        .verified-badge {
-          color: #22c55e;
-          font-weight: bold;
-          font-size: 12px;
-        }
-
-        .save-btn {
-          background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-          color: white;
-          padding: 14px;
-          border: none;
-          border-radius: 12px;
-          font-size: 15px;
-          font-weight: 600;
-          cursor: pointer;
-          margin-top: 8px;
-          transition: all 0.3s ease;
-        }
-
-        .save-btn:hover:not(:disabled) {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
-        }
-
-        .save-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .loading-container,
-        .error-container {
-          text-align: center;
-          padding: 60px 30px;
-        }
-
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 4px solid #e2e8f0;
-          border-top: 4px solid #3b82f6;
-          border-radius: 50%;
-          margin: 0 auto 16px;
-          animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        .error-content h3 {
-          font-size: 20px;
-          font-weight: 600;
-          margin-bottom: 8px;
-          color: #ef4444;
-        }
-
-        .retry-btn {
-          background: #3b82f6;
-          color: white;
-          border: none;
-          padding: 12px 24px;
-          border-radius: 8px;
-          margin-top: 16px;
-          cursor: pointer;
-          transition: all 0.3s;
-        }
-
-        .retry-btn:hover {
-          background: #2563eb;
-        }
-
-        .config-container {
-          max-width: 600px;
-          margin: 0 auto;
-        }
-
-        .config-section {
-          background: ${darkMode ? '#0f172a' : 'white'};
-          border: 1px solid ${darkMode ? '#334155' : '#e2e8f0'};
-          border-radius: 16px;
-          padding: 32px;
-          margin-bottom: 24px;
-        }
-
-        .config-section h3 {
-          font-size: 20px;
-          font-weight: 700;
-          margin-bottom: 24px;
-          color: ${darkMode ? '#f1f5f9' : '#1e293b'};
-        }
-
-        .profile-form {
-          display: flex;
-          flex-direction: column;
-          gap: 20px;
-        }
-
-        .success-message {
-          background: #dcfce7;
-          color: #166534;
-          padding: 12px 16px;
-          border-radius: 8px;
-          margin-bottom: 20px;
-          border: 1px solid #bbf7d0;
-          font-weight: 500;
-        }
-
-        .error-message {
-          background: #fef2f2;
-          color: #dc2626;
-          padding: 12px 16px;
-          border-radius: 8px;
-          margin-bottom: 20px;
-          border: 1px solid #fecaca;
-          font-weight: 500;
-        }
-
-        /* Dark mode adjustments for forms */
-        ${darkMode ? `
-          .field-group input {
-            background: #1e293b;
-            border-color: #475569;
-            color: #f1f5f9;
-          }
-          
-          .field-group input:focus {
-            border-color: #3b82f6;
-            background: #1e293b;
-          }
-          
-          .field-group label {
-            color: #cbd5e1;
-          }
-          
-          .read-only-value {
-            background: #1e293b;
-            border-color: #475569;
-            color: #f1f5f9;
-          }
-          
-          .read-only-note {
-            color: #94a3b8;
-          }
-        ` : ''}
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-          .sidebar {
-            width: 100%;
-            transform: translateX(-100%);
-          }
-          
-          .main-content {
-            margin-left: 0;
-            padding: 20px;
-          }
-          
-          .toggle-btn {
-            left: 20px;
-          }
-          
-          .content-section {
-            margin: 0;
-            padding: 20px;
-          }
-          
-          .profile-header {
-            flex-direction: column;
-            text-align: center;
-          }
-        }
-
-        /* Main content margin adjustment */
-        .main-content {
-          margin-top: 0;
-        }
-      `}</style>
     </div>
   );
 }
 
-export default SimplifiedDashboard;
+export default UserDashboard;
