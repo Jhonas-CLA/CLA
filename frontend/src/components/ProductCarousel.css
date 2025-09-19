@@ -1,38 +1,60 @@
-/* 🔥 ESTILOS ASAROSOS PARA CARRUSEL - QUE QUEDE UNA CHIMBA 🔥 */
+/* 🔥 ESTILOS MEJORADOS PARA CARRUSEL - MODO CLARO/OSCURO ELEGANTE 🔥 */
 
 .carousel-container {
-  width: 100%;              /* que abarque toda la página */
-  max-width: 1600px;        /* límite para pantallas grandes */
-    margin-left: 0;      /* lo pega a la izquierda */
-  margin-right: auto;  /* opcional */
-  padding: 40px 0;          /* más respiración arriba/abajo */
+  width: 100%;
+  max-width: 1600px;
+  margin-left: 0;
+  margin-right: auto;
+  padding: 40px 0;
+  background: var(--bg-main);
+  position: relative;
+}
+
+/* Patrón sutil en el fondo */
+.carousel-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--bg-pattern);
+  opacity: var(--pattern-opacity);
+  z-index: 0;
 }
 
 .slick-slide {
-  padding: 0 15px;          /* espacio entre tarjetas */
+  padding: 0 15px;
 }
 
 .slick-list {
-  margin: 0 -15px;          /* compensar padding para que quede alineado */
+  margin: 0 -15px;
+  position: relative;
+  z-index: 1;
 }
 
-/* Tarjeta con efectos brutales */
+/* 📦 Tarjeta con efectos elegantes */
 .product-card {
   background: var(--card-bg);
   color: var(--text-color);
-  border-radius: 20px;
-  padding: 20px;
+  border-radius: 24px;
+  padding: 24px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--border-color);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  backdrop-filter: blur(12px);
+  border: var(--card-border);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   transform-style: preserve-3d;
   cursor: pointer;
+  height: 450px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: var(--card-shadow);
 }
 
-/* Efecto de brillo que se mueve */
+/* Efecto de brillo mejorado */
 .product-card::before {
   content: '';
   position: absolute;
@@ -40,13 +62,8 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.1),
-    transparent
-  );
-  transition: left 0.6s ease;
+  background: var(--shine-gradient);
+  transition: left 0.8s ease;
   z-index: 1;
 }
 
@@ -54,30 +71,30 @@
   left: 100%;
 }
 
-/* Hover con efectos 3D brutales */
+/* Hover con efectos 3D mejorados */
 .product-card:hover {
-  transform: translateY(-15px) rotateX(5deg) rotateY(2deg) scale(1.02);
-  box-shadow: 
-    0 25px 50px rgba(0, 0, 0, 0.25),
-    0 0 0 1px var(--glow-color),
-    0 0 30px var(--glow-color);
+  transform: translateY(-20px) rotateX(8deg) rotateY(4deg) scale(1.03);
+  box-shadow: var(--card-hover-shadow);
+  border-color: var(--card-hover-border);
 }
 
-/* Contenedor de imagen con efectos asarosos */
+/* 🖼️ Contenedor de imagen mejorado */
 .product-image-container {
   width: 100%;
-  height: 240px;
+  height: 220px;
   background: var(--image-bg);
   display: flex;
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  border-radius: 16px;
+  border-radius: 20px;
   position: relative;
-  margin-bottom: 15px;
-  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  transition: all 0.4s ease;
+  border: var(--image-border);
 }
 
+/* Overlay en hover */
 .product-image-container::after {
   content: '';
   position: absolute;
@@ -85,14 +102,11 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    135deg,
-    transparent 30%,
-    var(--gradient-overlay) 100%
-  );
+  background: var(--image-overlay);
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s ease;
   pointer-events: none;
+  z-index: 2;
 }
 
 .product-card:hover .product-image-container::after {
@@ -103,133 +117,137 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  filter: brightness(0.9) saturate(1.1);
+  transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  filter: var(--image-filter);
 }
 
 .product-card:hover .product-image {
-  transform: scale(1.1) rotate(2deg);
-  filter: brightness(1) saturate(1.3);
+  transform: scale(1.15) rotate(2deg);
+  filter: var(--image-hover-filter);
 }
 
-/* Info del producto con efectos chimba */
+/* 📝 Info del producto mejorada */
 .product-info {
-  margin-top: 15px;
+  margin-top: auto;
   position: relative;
-  z-index: 2;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
 }
 
 .product-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 8px;
-  background: var(--text-gradient);
+  font-size: 1.2rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+  background: var(--name-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
+  text-shadow: var(--text-shadow);
+  transition: all 0.4s ease;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .product-card:hover .product-name {
-  transform: translateY(-2px);
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px) scale(1.02);
+  text-shadow: var(--text-hover-shadow);
+  letter-spacing: 1px;
 }
 
+/* 💰 Precio con efectos mejorados */
 .product-price {
-  font-size: 1.2rem;
-  font-weight: 800;
+  font-size: 1.3rem;
+  font-weight: 900;
   color: var(--price-color);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin: 8px 0;
+  text-shadow: var(--price-shadow);
+  margin: 12px 0;
   position: relative;
   display: inline-block;
+  font-family: 'Arial', monospace;
 }
 
 .product-price::before {
   content: '';
   position: absolute;
-  bottom: -2px;
+  bottom: -3px;
   left: 0;
   width: 0;
-  height: 2px;
-  background: var(--price-gradient);
-  transition: width 0.3s ease;
+  height: 3px;
+  background: var(--price-underline);
+  transition: width 0.4s ease;
+  border-radius: 2px;
 }
 
 .product-card:hover .product-price::before {
   width: 100%;
 }
 
-/* Stock con indicadores brutales */
+.product-card:hover .product-price {
+  animation: priceGlow 1.5s ease-in-out infinite;
+  color: var(--price-hover-color);
+}
+
+/* 📊 Stock con diseño mejorado */
 .product-stock {
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 6px 12px;
-  border-radius: 20px;
-  display: inline-block;
-  margin-top: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px 16px;
+  border-radius: 25px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
   position: relative;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.4s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 2px solid transparent;
 }
 
 .in-stock {
-  background: var(--success-gradient);
-  color: white;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  background: var(--success-bg);
+  color: var(--success-text);
+  border-color: var(--success-border);
+  box-shadow: var(--success-shadow);
+}
+
+.in-stock::before {
+  content: '●';
+  color: var(--success-dot);
+  font-size: 1.1rem;
+  animation: pulse 2s infinite ease-in-out;
 }
 
 .in-stock:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: var(--success-hover-shadow);
 }
 
 .out-of-stock {
-  background: var(--danger-gradient);
-  color: white;
-  box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+  background: var(--danger-bg);
+  color: var(--danger-text);
+  border-color: var(--danger-border);
+  box-shadow: var(--danger-shadow);
+}
+
+.out-of-stock::before {
+  content: '●';
+  color: var(--danger-dot);
+  font-size: 1.1rem;
 }
 
 .out-of-stock:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: var(--danger-hover-shadow);
 }
 
-/* Variables modo claro - Tema asaroso */
-:root {
-  --card-bg: linear-gradient(145deg, #ffffff, #f8f9fa);
-  --image-bg: linear-gradient(135deg, #f1f3f4, #e8eaed);
-  --text-color: #2c3e50;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --glow-color: rgba(59, 130, 246, 0.5);
-  --gradient-overlay: rgba(59, 130, 246, 0.1);
-  --text-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --price-color: #e74c3c;
-  --price-gradient: linear-gradient(90deg, #e74c3c, #c0392b);
-  --success-gradient: linear-gradient(135deg, #28a745, #20c997);
-  --danger-gradient: linear-gradient(135deg, #dc3545, #e83e8c);
-}
-
-/* Variables modo oscuro - Más asaroso aún */
-[data-theme="dark"] {
-  --card-bg: linear-gradient(145deg, #1e1e2e, #2d3748);
-  --image-bg: linear-gradient(135deg, #374151, #4b5563);
-  --text-color: #f7fafc;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --glow-color: rgba(139, 92, 246, 0.6);
-  --gradient-overlay: rgba(139, 92, 246, 0.15);
-  --text-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
-  --price-color: #10b981;
-  --price-gradient: linear-gradient(90deg, #10b981, #059669);
-  --success-gradient: linear-gradient(135deg, #10b981, #059669);
-  --danger-gradient: linear-gradient(135deg, #ef4444, #dc2626);
-}
-
-/* Animaciones adicionales para que quede más chimba */
+/* 🎬 Animaciones mejoradas */
 @keyframes float {
   0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(1deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
 }
 
 .product-card:nth-child(odd) {
@@ -242,51 +260,44 @@
   animation-delay: -3s;
 }
 
-/* Efectos de carga asarosos */
-.product-card {
-  opacity: 0;
-  animation: slideUp 0.6s ease forwards;
-}
-
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(40px) rotateX(10deg);
   }
   to {
     opacity: 1;
-    transform: translateY(0px);
+    transform: translateY(0px) rotateX(0deg);
   }
 }
 
-/* Efecto de pulso en el precio */
-@keyframes pulse {
-  0% { transform: scale(1); }
+.product-card {
+  opacity: 0;
+  animation: slideUp 0.8s ease forwards;
+}
+
+.product-card:nth-child(1) { animation-delay: 0.1s; }
+.product-card:nth-child(2) { animation-delay: 0.2s; }
+.product-card:nth-child(3) { animation-delay: 0.3s; }
+.product-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes priceGlow {
+  0%, 100% { transform: scale(1); }
   50% { transform: scale(1.05); }
-  100% { transform: scale(1); }
 }
 
-.product-card:hover .product-price {
-  animation: pulse 1.5s ease-in-out infinite;
-}
-
-/* Responsive para que se vea chimba en mobile */
-@media (max-width: 768px) {
-  .product-card {
-    padding: 15px;
-    border-radius: 16px;
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
   }
-  
-  .product-image-container {
-    height: 200px;
-  }
-  
-  .product-card:hover {
-    transform: translateY(-10px) scale(1.01);
+  50% { 
+    transform: scale(1.2);
+    opacity: 0.8;
   }
 }
 
-/* Extra: Efecto de partículas en hover (opcional) */
+/* Efecto de partículas mejorado */
 .product-card::after {
   content: '';
   position: absolute;
@@ -295,35 +306,181 @@
   width: 0;
   height: 0;
   border-radius: 50%;
-  background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
+  background: var(--particle-bg);
   transform: translate(-50%, -50%);
-  transition: all 0.6s ease;
+  transition: all 0.8s ease;
   pointer-events: none;
   z-index: -1;
 }
 
 .product-card:hover::after {
-  width: 300px;
-  height: 300px;
-  opacity: 0.1;
-}
-/* 📦 Forzar todas las tarjetas a mismo tamaño */
-.product-card {
-  height: 420px; /* ajusta según lo que quieras */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  width: 350px;
+  height: 350px;
+  opacity: var(--particle-opacity);
 }
 
-/* 🔲 Imagen con altura fija */
-.product-image-container {
-  height: 200px; /* todas las imágenes igual tamaño */
+/* 🌞 MODO CLARO - SÚPER LIMPIO Y ELEGANTE */
+:root {
+  /* Fondo */
+  --bg-main: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  --bg-pattern: radial-gradient(circle at 20% 50%, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+  --pattern-opacity: 1;
+  
+  /* Tarjeta */
+  --card-bg: rgba(255, 255, 255, 0.95);
+  --card-border: 1px solid rgba(0, 0, 0, 0.08);
+  --card-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.08),
+    0 3px 10px rgba(0, 0, 0, 0.05);
+  --card-hover-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(0, 0, 0, 0.1),
+    0 0 40px rgba(0, 0, 0, 0.05);
+  --card-hover-border: rgba(0, 0, 0, 0.2);
+  --shine-gradient: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  
+  /* Imagen */
+  --image-bg: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  --image-border: 1px solid rgba(0, 0, 0, 0.06);
+  --image-overlay: linear-gradient(135deg, rgba(0, 0, 0, 0.05), rgba(0, 0, 0, 0.1));
+  --image-filter: brightness(0.98) saturate(1.05);
+  --image-hover-filter: brightness(1.05) saturate(1.2);
+  
+  /* Texto */
+  --text-color: #1e293b;
+  --name-gradient: linear-gradient(135deg, #334155 0%, #475569 100%);
+  --text-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --text-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  
+  /* Precio */
+  --price-color: #dc2626;
+  --price-hover-color: #b91c1c;
+  --price-shadow: 0 2px 8px rgba(220, 38, 38, 0.2);
+  --price-underline: linear-gradient(90deg, #dc2626, #b91c1c);
+  
+  /* Stock disponible */
+  --success-bg: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  --success-text: #166534;
+  --success-border: rgba(34, 197, 94, 0.3);
+  --success-dot: #16a34a;
+  --success-shadow: 0 6px 20px rgba(34, 197, 94, 0.15);
+  --success-hover-shadow: 0 10px 30px rgba(34, 197, 94, 0.25);
+  
+  /* Stock agotado */
+  --danger-bg: linear-gradient(135deg, #fee2e2, #fecaca);
+  --danger-text: #7f1d1d;
+  --danger-border: rgba(239, 68, 68, 0.3);
+  --danger-dot: #dc2626;
+  --danger-shadow: 0 6px 20px rgba(239, 68, 68, 0.15);
+  --danger-hover-shadow: 0 10px 30px rgba(239, 68, 68, 0.25);
+  
+  /* Partículas */
+  --particle-bg: radial-gradient(circle, rgba(0, 0, 0, 0.05) 0%, transparent 70%);
+  --particle-opacity: 0.3;
 }
 
-/* 📝 Info con flex para alinear bien */
-.product-info {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
+/* 🌙 MODO OSCURO - SÚPER DARK Y ELEGANTE */
+[data-theme="dark"] {
+  /* Fondo */
+  --bg-main: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  --bg-pattern: radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  --pattern-opacity: 1;
+  
+  /* Tarjeta */
+  --card-bg: rgba(30, 41, 59, 0.95);
+  --card-border: 1px solid rgba(255, 255, 255, 0.1);
+  --card-shadow: 
+    0 8px 25px rgba(0, 0, 0, 0.4),
+    0 3px 10px rgba(0, 0, 0, 0.3);
+  --card-hover-shadow: 
+    0 30px 60px rgba(0, 0, 0, 0.6),
+    0 0 0 1px rgba(255, 255, 255, 0.2),
+    0 0 40px rgba(255, 255, 255, 0.05);
+  --card-hover-border: rgba(255, 255, 255, 0.3);
+  --shine-gradient: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  
+  /* Imagen */
+  --image-bg: linear-gradient(135deg, #374151, #4b5563);
+  --image-border: 1px solid rgba(255, 255, 255, 0.08);
+  --image-overlay: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+  --image-filter: brightness(0.9) saturate(1.1);
+  --image-hover-filter: brightness(1.1) saturate(1.3);
+  
+  /* Texto */
+  --text-color: #f1f5f9;
+  --name-gradient: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  --text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+  --text-hover-shadow: 0 4px 16px rgba(0, 0, 0, 0.7);
+  
+  /* Precio */
+  --price-color: #10b981;
+  --price-hover-color: #059669;
+  --price-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+  --price-underline: linear-gradient(90deg, #10b981, #059669);
+  
+  /* Stock disponible */
+  --success-bg: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.3));
+  --success-text: #a7f3d0;
+  --success-border: rgba(16, 185, 129, 0.4);
+  --success-dot: #10b981;
+  --success-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+  --success-hover-shadow: 0 10px 30px rgba(16, 185, 129, 0.5);
+  
+  /* Stock agotado */
+  --danger-bg: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.3));
+  --danger-text: #fca5a5;
+  --danger-border: rgba(239, 68, 68, 0.4);
+  --danger-dot: #ef4444;
+  --danger-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+  --danger-hover-shadow: 0 10px 30px rgba(239, 68, 68, 0.5);
+  
+  /* Partículas */
+  --particle-bg: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
+  --particle-opacity: 0.2;
+}
+
+/* 📱 RESPONSIVE MEJORADO */
+@media (max-width: 768px) {
+  .carousel-container {
+    padding: 30px 0;
+  }
+  
+  .product-card {
+    padding: 20px;
+    border-radius: 20px;
+    height: 400px;
+  }
+  
+  .product-image-container {
+    height: 180px;
+    border-radius: 16px;
+  }
+  
+  .product-card:hover {
+    transform: translateY(-15px) scale(1.02);
+  }
+  
+  .product-name {
+    font-size: 1rem;
+  }
+  
+  .product-price {
+    font-size: 1.1rem;
+  }
+  
+  .product-stock {
+    font-size: 0.85rem;
+    padding: 8px 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-card {
+    height: 360px;
+    padding: 16px;
+  }
+  
+  .product-image-container {
+    height: 150px;
+  }
 }
