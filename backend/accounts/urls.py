@@ -15,6 +15,11 @@ urlpatterns = [
     path('usuarios/<int:user_id>/editar/', views.editar_usuario, name='editar_usuario'),
     path('usuarios/<int:user_id>/toggle-estado/', views.toggle_usuario_estado, name='toggle_usuario_estado'),
 
+    # Dashboard de usuarios
+    path('api/auth/profile/', views.get_profile, name='get_profile'),
+    path('api/auth/profile/update/', views.update_profile, name='update_profile'),
+    path('api/auth/change-password/', views.change_password, name='change_password'),
+
     # Autenticación con JWT
     path('api/auth/login/', views.login_user, name='login_user'),
     path('api/auth/logout/', views.logout_user, name='logout_user'),

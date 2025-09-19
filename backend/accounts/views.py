@@ -445,3 +445,99 @@ def crear_mensaje_whatsapp_detallado(productos, total, usuario):
     mensaje += f"📦 *Total de productos:* {len(productos)}"
 
     return mensaje
+
+
+# -------------------------------------------------------------------
+# 🔹 ACTUALIZAR PERFIL Y CAMBIAR CONTRASEÑA
+# -------------------------------------------------------------------
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    """Actualizar información del perfil del usuario autenticado"""
+    try:
+        user = request.user
+        data = request.data
+
+        # Campos que se pueden actualizar (sin email)
+        if 'first_name' in data:
+            user.first_name = data['first_name'].strip()
+        
+        if 'last_name' in data:
+            user.last_name = data['last_name'].strip()
+        
+        if 'phone' in data:
+            user.phone = data['phone'].strip()
+
+        user.save()
+
+        return Response({
+            'success': True,
+            'message': 'Perfil actualizado correctamente',
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'first_name': user.first_name,
+                'last_name': user.last_name,
+                'phone': getattr(user, 'phone', ''),
+                'email_verified': getattr(user, 'email_verified', False),
+            }
+        })
+
+    except Exception as e:
+        return Response({
+            'success': False,
+            'error': f'Error al actualizar perfil: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    """Cambiar contraseña del usuario autenticado"""
+    try:
+        user = request.user
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        confirm_password = request.data.get('confirm_password')
+
+        # Validaciones
+        if not current_password or not new_password or not confirm_password:
+            return Response({
+                'success': False,
+                'error': 'Todos los campos son requeridos'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if new_password != confirm_password:
+            return Response({
+                'success': False,
+                'error': 'Las contraseñas nuevas no coinciden'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if len(new_password) < 6:
+            return Response({
+                'success': False,
+                'error': 'La contraseña debe tener al menos 6 caracteres'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Verificar contraseña actual
+        if not user.check_password(current_password):
+            return Response({
+                'success': False,
+                'error': 'La contraseña actual es incorrecta'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Cambiar contraseña
+        user.set_password(new_password)
+        user.save()
+
+        return Response({
+            'success': True,
+            'message': 'Contraseña cambiada correctamente'
+        })
+
+    except Exception as e:
+        return Response({
+            'success': False,
+            'error': f'Error al cambiar contraseña: {str(e)}'
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
