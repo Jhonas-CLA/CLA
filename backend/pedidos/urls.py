@@ -5,6 +5,7 @@ from .views import (
     get_cliente_info,
     actualizar_estado_pedido,
     get_pedidos_usuario,  # ✅ nueva vista
+    analiticas_pedidos,
 )
 
 urlpatterns = [
@@ -13,4 +14,5 @@ urlpatterns = [
     path('cliente/info/', get_cliente_info, name='get_cliente_info'),
     path('<int:pk>/estado/', actualizar_estado_pedido, name='actualizar_estado_pedido'),
     path('mis-pedidos/', get_pedidos_usuario, name='get_pedidos_usuario'),  # ✅ User (solo sus pedidos)
+    path('analiticas/', analiticas_pedidos, name='analiticas_pedidos'),
 ]

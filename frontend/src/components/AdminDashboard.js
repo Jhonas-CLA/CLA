@@ -5,6 +5,7 @@ import DashboardProductos from "../pages/DashboardProductos";
 import Pedidos from "../pages/Pedidos";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import Analiticas from "../pages/Analiticas";
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -247,8 +248,7 @@ function AdminDashboard() {
       case "analiticos":
         return (
           <div className="content-section">
-            <h2>Analíticos</h2>
-            <p>Aquí irán las estadísticas y gráficos</p>
+            <Analiticas />
           </div>
         );
       case "productos":
@@ -381,14 +381,12 @@ function AdminDashboard() {
                   <td>
                     <div className="estado-info">
                       <div
-                        className={`estado-dot ${
-                          usuario.is_active ? "activo" : "inactivo"
-                        }`}
+                        className={`estado-dot ${usuario.is_active ? "activo" : "inactivo"
+                          }`}
                       ></div>
                       <span
-                        className={`estado-text ${
-                          usuario.is_active ? "activo" : "inactivo"
-                        }`}
+                        className={`estado-text ${usuario.is_active ? "activo" : "inactivo"
+                          }`}
                       >
                         {usuario.is_active ? "Activo" : "Inactivo"}
                       </span>
@@ -409,16 +407,15 @@ function AdminDashboard() {
                         ✏️
                       </button>
                       <button
-                        className={`btn-toggle ${
-                          usuario.is_active
+                        className={`btn-toggle ${usuario.is_active
                             ? "btn-inhabilitar"
                             : "btn-habilitar"
-                        }`}
+                          }`}
                         onClick={() =>
                           toggleEstadoUsuario(
                             usuario.id,
                             usuario.full_name ||
-                              `${usuario.first_name} ${usuario.last_name}`
+                            `${usuario.first_name} ${usuario.last_name}`
                           )
                         }
                         title={
@@ -600,54 +597,48 @@ function AdminDashboard() {
 
         <nav className="menu">
           <button
-            className={`menu-item ${
-              activeSection === "usuarios" ? "active" : ""
-            }`}
+            className={`menu-item ${activeSection === "usuarios" ? "active" : ""
+              }`}
             onClick={(e) => setActive(e.target, "usuarios")}
           >
             <div className="menu-icon">👤</div>
             <span>Usuarios</span>
           </button>
           <button
-            className={`menu-item ${
-              activeSection === "proveedores" ? "active" : ""
-            }`}
+            className={`menu-item ${activeSection === "proveedores" ? "active" : ""
+              }`}
             onClick={(e) => setActive(e.target, "proveedores")}
           >
             <div className="menu-icon">👥</div>
             <span>Proveedores</span>
           </button>
           <button
-            className={`menu-item ${
-              activeSection === "analiticos" ? "active" : ""
-            }`}
+            className={`menu-item ${activeSection === "analiticos" ? "active" : ""
+              }`}
             onClick={(e) => setActive(e.target, "analiticos")}
           >
             <div className="menu-icon">📊</div>
-            <span>Analíticos</span>
+            <span>Analíticas</span>
           </button>
           <button
-            className={`menu-item ${
-              activeSection === "productos" ? "active" : ""
-            }`}
+            className={`menu-item ${activeSection === "productos" ? "active" : ""
+              }`}
             onClick={(e) => setActive(e.target, "productos")}
           >
             <div className="menu-icon">📦</div>
             <span>Productos</span>
           </button>
           <button
-            className={`menu-item ${
-              activeSection === "pedidos" ? "active" : ""
-            }`}
+            className={`menu-item ${activeSection === "pedidos" ? "active" : ""
+              }`}
             onClick={(e) => setActive(e.target, "pedidos")}
           >
             <div className="menu-icon">🛒</div>
             <span>Pedidos</span>
           </button>
           <button
-            className={`menu-item ${
-              activeSection === "configuracion" ? "active" : ""
-            }`}
+            className={`menu-item ${activeSection === "configuracion" ? "active" : ""
+              }`}
             onClick={(e) => setActive(e.target, "configuracion")}
           >
             <div className="menu-icon">⚙️</div>
