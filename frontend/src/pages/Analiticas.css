@@ -1,0 +1,112 @@
+/* Analiticas.css - Tu estilo original con solo los ajustes pedidos */
+
+.analiticas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 1rem;
+  max-width: 800px;
+  margin: 1rem auto;
+  background-color: white;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.titulo-analiticas {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+  color: #1f2937;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 1rem;
+  width: 100%;
+}
+
+.grafico-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 450px;  /* 🔥 Agrandado de 350px a 450px */
+  height: 450px; /* 🔥 Agrandado de 350px a 450px */
+  margin: 0 auto;
+}
+
+.recharts-responsive-container {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.mensaje-cargando,
+.mensaje-error,
+.mensaje-vacio {
+  text-align: center;
+  font-size: 1rem;
+  color: #555;
+}
+
+/* Solo lo mínimo para evitar elementos que se salgan */
+.recharts-wrapper {
+  overflow: hidden;
+}
+
+.recharts-surface {
+  background-color: white;
+}
+
+/* Para que se vean mejor las letras y porcentajes con sus colores correspondientes */
+.recharts-pie-label-text {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+/* Colores específicos para cada estado en las etiquetas */
+.recharts-pie-label-text[fill="#facc15"] {
+  fill: #facc15 !important; /* Amarillo para en_proceso */
+}
+
+.recharts-pie-label-text[fill="#3b82f6"] {
+  fill: #3b82f6 !important; /* Azul para empaquetado */
+}
+
+.recharts-pie-label-text[fill="#22c55e"] {
+  fill: #22c55e !important; /* Verde para entregado */
+}
+
+.recharts-pie-label-text[fill="#ef4444"] {
+  fill: #ef4444 !important; /* Rojo para cancelado */
+}
+
+/* Estilo para la leyenda */
+.recharts-legend-wrapper {
+  padding-top: 1.5rem !important;
+}
+
+.recharts-legend-item {
+  margin: 0.5rem !important;
+  font-weight: 500 !important;
+  color: #374151 !important;
+}
+
+/* Tooltip más elegante */
+.recharts-tooltip-wrapper {
+  background-color: white !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+.recharts-default-tooltip {
+  background-color: white !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 0.75rem !important;
+}
+
+/* 🔥 Ajuste para que se vean mejor los nombres y porcentajes */
+.recharts-pie-label-text {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  fill: #333 !important;
+}

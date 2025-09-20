@@ -5,6 +5,7 @@ from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from .models import Pedido
 from .serializers import PedidoSerializer
+from django.db.models import Count
 
 User = get_user_model()
 
@@ -89,3 +90,45 @@ def get_pedidos_usuario(request):
             'error': 'Error al obtener los pedidos',
             'detail': str(e)
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# ✅ Nueva vista: Analíticas de pedidos por estado
+@api_view(['GET'])
+def analiticas_pedidos(request):
+    """
+    Devuelve el porcentaje de pedidos por estado.
+    """
+    # Contamos los pedidos agrupados por estado
+    total_pedidos = Pedido.objects.count()
+    conteo_por_estado = Pedido.objects.values('estado').annotate(total=Count('estado'))
+
+    # Si no hay pedidos, devolvemos 0 para todos
+    if total_pedidos == 0:
+        return Response({
+            "en_proceso": {"count": 0, "porcentaje": 0},
+            "empaquetado": {"count": 0, "porcentaje": 0},
+            "entregado": {"count": 0, "porcentaje": 0},
+            "cancelado": {"count": 0, "porcentaje": 0},
+            "total_pedidos": 0
+        })
+
+    # Generamos el diccionario con porcentajes
+    analiticas = {
+        "en_proceso": {"count": 0, "porcentaje": 0},
+        "empaquetado": {"count": 0, "porcentaje": 0},
+        "entregado": {"count": 0, "porcentaje": 0},
+        "cancelado": {"count": 0, "porcentaje": 0},
+        "total_pedidos": total_pedidos
+    }
+
+    for estado_data in conteo_por_estado:
+        estado = estado_data['estado']
+        cantidad = estado_data['total']
+        porcentaje = round((cantidad / total_pedidos) * 100, 2)
+
+        analiticas[estado] = {
+            "count": cantidad,
+            "porcentaje": porcentaje
+        }
+
+    return Response(analiticas)
