@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/productos/', obtener_productos, name='obtener_productos'),
     path("api/whatsapp/", include("whatsapp.urls")),
+    path('api/favoritos/', include('favoritos.urls')),
 ]
 
 if settings.DEBUG:
