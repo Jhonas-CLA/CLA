@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from "axios";
+import FavoriteButton from '../components/FavoriteButton';
 import "./Categorias.css";
 
 // URL base para las imágenes
@@ -262,7 +263,8 @@ const CategoriasDetalle = () => {
                 boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 cursor: 'pointer',
-                border: '1px solid #f0f0f0'
+                border: '1px solid #f0f0f0',
+                position: 'relative'  // Agregado para posicionar el botón
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-5px)';
@@ -273,6 +275,19 @@ const CategoriasDetalle = () => {
                 e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
               }}
               >
+                {/* Botón de favorito en la esquina superior derecha */}
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '12px', 
+                  right: '12px', 
+                  zIndex: 10 
+                }}>
+                  <FavoriteButton 
+                    producto={prod} 
+                    size="small"
+                  />
+                </div>
+
                 {/* Imagen del producto */}
                 {prod.imagen ? (
                   <div style={{ 
