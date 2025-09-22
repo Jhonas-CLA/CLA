@@ -26,6 +26,18 @@ function AdminDashboard() {
   });
   const [loadingAction, setLoadingAction] = useState(false);
 
+  // Estados para configuración del admin
+  const [adminData, setAdminData] = useState(null);
+  const [loadingAdmin, setLoadingAdmin] = useState(false);
+  const [editandoPerfil, setEditandoPerfil] = useState(false);
+  const [perfilFormData, setPerfilFormData] = useState({
+    first_name: "",
+    last_name: "",
+    phone: "",
+    email: "",
+    rol: "",
+  });
+
   // 🔹 Estados para la paginación
   const [paginaActual, setPaginaActual] = useState(1);
   const [usuariosPorPagina] = useState(2);
@@ -48,8 +60,85 @@ function AdminDashboard() {
 
   const handleLogout = async () => {
     if (window.confirm("¿Estás seguro de que quieres salir?")) {
-      await logout(); // Llama al logout del AuthContext
-      navigate("/"); // Redirige a la página principal
+      try {
+        await logout();
+        navigate("/");
+      } catch (error) {
+        console.error("Error al cerrar sesión:", error);
+        navigate("/");
+      }
+    }
+  };
+
+  const fetchAdminData = async () => {
+    try {
+      setLoadingAdmin(true);
+      const token = localStorage.getItem("token");
+      
+      const response = await fetch("http://localhost:8000/accounts/perfil-admin/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAdminData(data.admin);
+        setPerfilFormData({
+          first_name: data.admin.first_name,
+          last_name: data.admin.last_name,
+          phone: data.admin.phone || "",
+          email: data.admin.email,
+          rol: data.admin.rol,
+        });
+      } else {
+        setError("Error al cargar datos del administrador");
+      }
+    } catch (err) {
+      setError("Error de conexión con el servidor");
+      console.error("Error:", err);
+    } finally {
+      setLoadingAdmin(false);
+    }
+  };
+
+  const guardarPerfilAdmin = async () => {
+    try {
+      setLoadingAction(true);
+      const token = localStorage.getItem("token");
+
+      const datosEditables = {
+        first_name: perfilFormData.first_name,
+        last_name: perfilFormData.last_name,
+        phone: perfilFormData.phone
+      };
+
+      const response = await fetch("http://localhost:8000/accounts/actualizar-perfil-admin/", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(datosEditables),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setAdminData({ ...adminData, ...data.admin });
+        setEditandoPerfil(false);
+        alert("Perfil actualizado correctamente");
+      } else {
+        alert(data.error || "Error al actualizar perfil");
+      }
+    } catch (err) {
+      alert("Error de conexión con el servidor");
+      console.error("Error:", err);
+    } finally {
+      setLoadingAction(false);
     }
   };
 
@@ -82,7 +171,6 @@ function AdminDashboard() {
     }
   };
 
-  // Función para abrir modal de edición
   const abrirModalEdicion = (usuario) => {
     setUsuarioEditando(usuario);
     setFormData({
@@ -95,7 +183,6 @@ function AdminDashboard() {
     setShowEditModal(true);
   };
 
-  // Función para cerrar modal
   const cerrarModal = () => {
     setShowEditModal(false);
     setUsuarioEditando(null);
@@ -108,10 +195,15 @@ function AdminDashboard() {
     });
   };
 
-  // Función para guardar cambios
   const guardarCambios = async () => {
     try {
       setLoadingAction(true);
+
+      const datosEditables = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        phone: formData.phone
+      };
 
       const response = await fetch(
         `http://localhost:8000/accounts/usuarios/${usuarioEditando.id}/editar/`,
@@ -120,14 +212,13 @@ function AdminDashboard() {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(datosEditables),
         }
       );
 
       const data = await response.json();
 
       if (data.success) {
-        // Actualizar la lista de usuarios
         setUsuarios(
           usuarios.map((usuario) =>
             usuario.id === usuarioEditando.id
@@ -148,7 +239,6 @@ function AdminDashboard() {
     }
   };
 
-  // Función para toggle estado del usuario
   const toggleEstadoUsuario = async (usuarioId, nombreUsuario) => {
     const usuario = usuarios.find((u) => u.id === usuarioId);
     const accion = usuario.is_active ? "inhabilitar" : "habilitar";
@@ -174,7 +264,6 @@ function AdminDashboard() {
         const data = await response.json();
 
         if (data.success) {
-          // Actualizar la lista de usuarios
           setUsuarios(
             usuarios.map((usuario) =>
               usuario.id === usuarioId
@@ -198,6 +287,8 @@ function AdminDashboard() {
   useEffect(() => {
     if (activeSection === "usuarios") {
       fetchUsuarios();
+    } else if (activeSection === "configuracion") {
+      fetchAdminData();
     }
   }, [activeSection]);
 
@@ -209,7 +300,6 @@ function AdminDashboard() {
       usuario.rol.toLowerCase().includes(filtro.toLowerCase())
   );
 
-  // 🔹 Cálculo de paginación
   const indiceUltimo = paginaActual * usuariosPorPagina;
   const indicePrimero = indiceUltimo - usuariosPorPagina;
   const usuariosActuales = usuariosFiltrados.slice(indicePrimero, indiceUltimo);
@@ -238,7 +328,6 @@ function AdminDashboard() {
     }
   };
 
-  // ⬇️ FUNCIÓN RENDERCONTENT ACTUALIZADA CON EL CAMBIO
   const renderContent = () => {
     switch (activeSection) {
       case "usuarios":
@@ -252,7 +341,6 @@ function AdminDashboard() {
           </div>
         );
       case "productos":
-        // ⬇️ AQUÍ EL CAMBIO: ahora muestra el componente DashboardProductos
         return (
           <div className="content-section">
             <DashboardProductos />
@@ -265,15 +353,210 @@ function AdminDashboard() {
           </div>
         );
       case "configuracion":
-        return (
-          <div className="content-section">
-            <h2>Configuración</h2>
-            <p>Aquí irá la configuración del sistema</p>
-          </div>
-        );
+        return renderConfiguracion();
       default:
         return renderUsuarios();
     }
+  };
+
+  const renderConfiguracion = () => {
+    if (loadingAdmin) {
+      return (
+        <div className="loading-container">
+          <div className="spinner"></div>
+          <span>Cargando configuración...</span>
+        </div>
+      );
+    }
+
+    if (!adminData) {
+      return (
+        <div className="error-container">
+          <div className="error-content">
+            <h3>Error</h3>
+            <p>No se pudo cargar la configuración del administrador</p>
+            <button onClick={fetchAdminData} className="retry-btn">
+              Reintentar
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="configuracion-section">
+        <div className="config-header">
+          <div>
+            <h2>Configuración del Administrador</h2>
+            <p>Gestiona tu perfil y configuración personal</p>
+          </div>
+        </div>
+
+        <div className="admin-profile-card">
+          <div className="profile-header">
+            <div className="profile-avatar">
+              {adminData.profile_image ? (
+                <img src={adminData.profile_image} alt={adminData.full_name} />
+              ) : (
+                <div className="avatar-placeholder-large">
+                  {adminData.first_name?.charAt(0)}
+                  {adminData.last_name?.charAt(0)}
+                </div>
+              )}
+            </div>
+            <div className="profile-info">
+              <h3>{adminData.full_name}</h3>
+              <p>{adminData.email}</p>
+              <span className={`rol-badge ${getRolBadgeColor(adminData.rol)}`}>
+                {adminData.rol === "admin" ? "Administrador" : "Usuario"}
+              </span>
+            </div>
+            <div className="profile-actions">
+              {!editandoPerfil ? (
+                <button 
+                  className="btn-edit-profile"
+                  onClick={() => setEditandoPerfil(true)}
+                >
+                  ✏️ Editar Perfil
+                </button>
+              ) : (
+                <div className="edit-actions">
+                  <button 
+                    className="btn-cancel"
+                    onClick={() => {
+                      setEditandoPerfil(false);
+                      setPerfilFormData({
+                        first_name: adminData.first_name,
+                        last_name: adminData.last_name,
+                        phone: adminData.phone || "",
+                        email: adminData.email,
+                        rol: adminData.rol,
+                      });
+                    }}
+                    disabled={loadingAction}
+                  >
+                    Cancelar
+                  </button>
+                  <button 
+                    className="btn-save"
+                    onClick={guardarPerfilAdmin}
+                    disabled={loadingAction}
+                  >
+                    {loadingAction ? "Guardando..." : "Guardar"}
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {editandoPerfil && (
+            <div className="profile-edit-form">
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Nombre <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <input
+                    type="text"
+                    value={perfilFormData.first_name}
+                    onChange={(e) =>
+                      setPerfilFormData({ 
+                        ...perfilFormData, 
+                        first_name: e.target.value 
+                      })
+                    }
+                    placeholder="Tu nombre"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Apellido <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <input
+                    type="text"
+                    value={perfilFormData.last_name}
+                    onChange={(e) =>
+                      setPerfilFormData({ 
+                        ...perfilFormData, 
+                        last_name: e.target.value 
+                      })
+                    }
+                    placeholder="Tu apellido"
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Teléfono <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <input
+                    type="text"
+                    value={perfilFormData.phone}
+                    onChange={(e) =>
+                      setPerfilFormData({ 
+                        ...perfilFormData, 
+                        phone: e.target.value 
+                      })
+                    }
+                    placeholder="Tu número de teléfono"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Email <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <input
+                    type="email"
+                    value={perfilFormData.email}
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: '#f5f5f5',
+                      cursor: 'not-allowed',
+                      opacity: '0.6'
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Rol <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <input
+                    type="text"
+                    value={perfilFormData.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: '#f5f5f5',
+                      cursor: 'not-allowed',
+                      opacity: '0.6'
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {!editandoPerfil && (
+            <div className="profile-details">
+              <div className="detail-item">
+                <strong>Teléfono:</strong>
+                <span>{adminData.phone || "No especificado"}</span>
+              </div>
+              <div className="detail-item">
+                <strong>Registro:</strong>
+                <span>{formatearFecha(adminData.date_joined)}</span>
+              </div>
+              <div className="detail-item">
+                <strong>Último acceso:</strong>
+                <span>{formatearFecha(adminData.last_login)}</span>
+              </div>
+              <div className="detail-item">
+                <strong>Estado:</strong>
+                <span className={`estado-text ${adminData.is_active ? "activo" : "inactivo"}`}>
+                  {adminData.is_active ? "Activo" : "Inactivo"}
+                </span>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   const renderUsuarios = () => {
@@ -302,7 +585,6 @@ function AdminDashboard() {
 
     return (
       <div className="usuarios-section">
-        {/* Header de usuarios */}
         <div className="usuarios-header">
           <div>
             <h2>Lista de Usuarios</h2>
@@ -313,7 +595,6 @@ function AdminDashboard() {
           </div>
         </div>
 
-        {/* Filtros */}
         <div className="usuarios-filters">
           <input
             type="text"
@@ -321,13 +602,12 @@ function AdminDashboard() {
             value={filtro}
             onChange={(e) => {
               setFiltro(e.target.value);
-              setPaginaActual(1); // Reinicia a la primera página al filtrar
+              setPaginaActual(1);
             }}
             className="search-input"
           />
         </div>
 
-        {/* Tabla de usuarios */}
         <div className="tabla-container">
           <table className="tabla-usuarios">
             <thead>
@@ -402,7 +682,6 @@ function AdminDashboard() {
                         onClick={() => abrirModalEdicion(usuario)}
                         title="Editar usuario"
                         disabled={loadingAction}
-                        style={{ display: "none" }}
                       >
                         ✏️
                       </button>
@@ -446,7 +725,6 @@ function AdminDashboard() {
           )}
         </div>
 
-        {/* 🔹 Paginación */}
         {totalPaginas > 1 && (
           <div className="paginacion">
             <button
@@ -475,7 +753,6 @@ function AdminDashboard() {
           </div>
         )}
 
-        {/* Modal de edición */}
         {showEditModal && (
           <div className="modal-overlay" onClick={cerrarModal}>
             <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -488,7 +765,7 @@ function AdminDashboard() {
 
               <div className="modal-body">
                 <div className="form-group">
-                  <label>Nombre:</label>
+                  <label>Nombre: <span style={{color: 'green'}}>✓ Editable</span></label>
                   <input
                     type="text"
                     value={formData.first_name}
@@ -500,7 +777,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Apellido:</label>
+                  <label>Apellido: <span style={{color: 'green'}}>✓ Editable</span></label>
                   <input
                     type="text"
                     value={formData.last_name}
@@ -512,19 +789,7 @@ function AdminDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Email:</label>
-                  <input
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) =>
-                      setFormData({ ...formData, email: e.target.value })
-                    }
-                    placeholder="Email del usuario"
-                  />
-                </div>
-
-                <div className="form-group">
-                  <label>Teléfono:</label>
+                  <label>Teléfono: <span style={{color: 'green'}}>✓ Editable</span></label>
                   <input
                     type="text"
                     value={formData.phone}
@@ -536,16 +801,33 @@ function AdminDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Rol:</label>
-                  <select
-                    value={formData.rol}
-                    onChange={(e) =>
-                      setFormData({ ...formData, rol: e.target.value })
-                    }
-                  >
-                    <option value="usuario">Usuario</option>
-                    <option value="admin">Administrador</option>
-                  </select>
+                  <label>Email: <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: '#f5f5f5',
+                      cursor: 'not-allowed',
+                      opacity: '0.6'
+                    }}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Rol: <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <input
+                    type="text"
+                    value={formData.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: '#f5f5f5',
+                      cursor: 'not-allowed',
+                      opacity: '0.6'
+                    }}
+                  />
                 </div>
               </div>
 
@@ -574,7 +856,6 @@ function AdminDashboard() {
 
   return (
     <div className="dashboard">
-      {/* Sidebar */}
       <div id="sidebar" className="sidebar">
         <div className="header">
           <div className="logo-section">
@@ -646,7 +927,7 @@ function AdminDashboard() {
           </button>
           <button
             className="menu-item logout-btn"
-            onClick={handleLogout} // 👈 reemplazamos logout por handleLogout
+            onClick={handleLogout}
           >
             <div className="menu-icon">🚪</div>
             <span>Salir</span>
@@ -654,12 +935,10 @@ function AdminDashboard() {
         </nav>
       </div>
 
-      {/* Toggle Button */}
       <button className="toggle-btn" onClick={toggleSidebar}>
         ☰
       </button>
 
-      {/* Main Content */}
       <main className="main-content">{renderContent()}</main>
     </div>
   );

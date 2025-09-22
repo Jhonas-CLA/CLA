@@ -3,6 +3,16 @@ from . import views
 from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
+   # Gestión de usuarios
+    path('usuarios/', views.listar_usuarios, name='listar_usuarios'),
+    path('usuarios/<int:usuario_id>/editar/', views.editar_usuario, name='editar_usuario'),
+    path('usuarios/<int:usuario_id>/toggle-estado/', views.toggle_estado_usuario, name='toggle_estado_usuario'),
+    path('usuarios/crear/', views.crear_usuario, name='crear_usuario'),
+    
+    # Configuración del admin
+    path('perfil-admin/', views.perfil_admin, name='perfil_admin'),
+    path('actualizar-perfil-admin/', views.actualizar_perfil_admin, name='actualizar_perfil_admin'),
+    
     # Rutas de autenticación
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),

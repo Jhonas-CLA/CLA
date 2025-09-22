@@ -15,12 +15,428 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+#configuraciones 
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_http_methods
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.core.exceptions import ValidationError
+from django.db import IntegrityError
+import json
+import logging
+from .models import User  # ✅ Importamos tu modelo User
 
 # JWT
 from rest_framework_simplejwt.tokens import RefreshToken
 
 User = get_user_model()
 
+#configuraciones
+logger = logging.getLogger(__name__)
+
+@csrf_exempt
+def perfil_admin(request):
+    """Obtiene los datos del admin logueado"""
+    if request.method == 'GET':
+        try:
+            # Aquí deberías obtener el usuario del token o sesión
+            # Por simplicidad, asumimos que tienes una forma de obtener el usuario actual
+            token = request.META.get('HTTP_AUTHORIZATION', '').replace('Bearer ', '')
+            
+            if not token:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Token no proporcionado'
+                }, status=401)
+            
+            # Aquí deberías decodificar el token y obtener el usuario
+            # Por ahora, obtenemos el primer admin como ejemplo
+            admin = User.objects.filter(rol='admin', is_active=True).first()
+            
+            if not admin:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Administrador no encontrado'
+                }, status=404)
+            
+            return JsonResponse({
+                'success': True,
+                'admin': {
+                    'id': admin.id,
+                    'first_name': admin.first_name,
+                    'last_name': admin.last_name,
+                    'full_name': admin.full_name,
+                    'email': admin.email,
+                    'phone': admin.phone,
+                    'rol': admin.rol,
+                    'is_active': admin.is_active,
+                    'date_joined': admin.date_joined.isoformat() if admin.date_joined else None,
+                    'last_login': admin.last_login.isoformat() if admin.last_login else "Nunca",
+                    'profile_image': admin.get_profile_image_url(),
+                    'email_verified': admin.email_verified,
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"Error al obtener perfil admin: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Error interno del servidor'
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def actualizar_perfil_admin(request):
+    """Actualiza el perfil del admin logueado - solo campos permitidos"""
+    try:
+        token = request.META.get('HTTP_AUTHORIZATION', '').replace('Bearer ', '')
+        
+        if not token:
+            return JsonResponse({
+                'success': False,
+                'error': 'Token no proporcionado'
+            }, status=401)
+        
+        # Obtener el admin (por ahora el primer admin activo)
+        admin = User.objects.filter(rol='admin', is_active=True).first()
+        
+        if not admin:
+            return JsonResponse({
+                'success': False,
+                'error': 'Administrador no encontrado'
+            }, status=404)
+        
+        # Parsear datos del request
+        data = json.loads(request.body)
+        
+        # CAMPOS EDITABLES PERMITIDOS para el admin
+        campos_permitidos = ['first_name', 'last_name', 'phone']
+        
+        # Validar que solo se envíen campos permitidos
+        campos_enviados = list(data.keys())
+        campos_no_permitidos = [campo for campo in campos_enviados if campo not in campos_permitidos]
+        
+        if campos_no_permitidos:
+            return JsonResponse({
+                'success': False,
+                'error': f'Los siguientes campos no pueden ser modificados: {", ".join(campos_no_permitidos)}',
+                'campos_no_permitidos': campos_no_permitidos,
+                'campos_permitidos': campos_permitidos
+            }, status=400)
+        
+        # Actualizar solo los campos permitidos
+        cambios_realizados = []
+        
+        if 'first_name' in data:
+            valor_anterior = admin.first_name
+            admin.first_name = data['first_name'].strip()
+            if valor_anterior != admin.first_name:
+                cambios_realizados.append(f"Nombre: '{valor_anterior}' → '{admin.first_name}'")
+        
+        if 'last_name' in data:
+            valor_anterior = admin.last_name
+            admin.last_name = data['last_name'].strip()
+            if valor_anterior != admin.last_name:
+                cambios_realizados.append(f"Apellido: '{valor_anterior}' → '{admin.last_name}'")
+        
+        if 'phone' in data:
+            valor_anterior = admin.phone or ""
+            admin.phone = data['phone'].strip() if data['phone'] else None
+            if valor_anterior != (admin.phone or ""):
+                cambios_realizados.append(f"Teléfono: '{valor_anterior}' → '{admin.phone or 'Sin teléfono'}'")
+        
+        # Validaciones básicas
+        if not admin.first_name or not admin.last_name:
+            return JsonResponse({
+                'success': False,
+                'error': 'El nombre y apellido son obligatorios'
+            }, status=400)
+        
+        # Guardar cambios
+        admin.save()
+        
+        logger.info(f"Perfil de admin {admin.email} actualizado. Cambios: {'; '.join(cambios_realizados)}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Perfil actualizado correctamente. Cambios realizados: {len(cambios_realizados)}',
+            'cambios_realizados': cambios_realizados,
+            'admin': {
+                'id': admin.id,
+                'first_name': admin.first_name,
+                'last_name': admin.last_name,
+                'full_name': admin.full_name,
+                'email': admin.email,
+                'phone': admin.phone,
+                'rol': admin.rol,
+                'is_active': admin.is_active,
+            }
+        })
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Datos JSON inválidos'
+        }, status=400)
+        
+    except Exception as e:
+        logger.error(f"Error al actualizar perfil admin: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Error interno del servidor'
+        }, status=500)
+
+@csrf_exempt
+def listar_usuarios(request):
+    """Lista todos los usuarios del sistema"""
+    if request.method == 'GET':
+        try:
+            usuarios = User.objects.all().order_by('-date_joined')
+            
+            usuarios_data = []
+            for usuario in usuarios:
+                usuarios_data.append({
+                    'id': usuario.id,
+                    'first_name': usuario.first_name,
+                    'last_name': usuario.last_name,
+                    'full_name': usuario.full_name,
+                    'email': usuario.email,
+                    'phone': usuario.phone,
+                    'rol': usuario.rol,
+                    'is_active': usuario.is_active,
+                    'date_joined': usuario.date_joined.isoformat() if usuario.date_joined else None,
+                    'last_login': usuario.last_login.isoformat() if usuario.last_login else "Nunca",
+                    'profile_image': usuario.get_profile_image_url(),  # ✅ Usando el método helper
+                    'email_verified': usuario.email_verified,
+                })
+            
+            return JsonResponse({
+                'success': True,
+                'usuarios': usuarios_data,
+                'total': len(usuarios_data)
+            })
+            
+        except Exception as e:
+            logger.error(f"Error al listar usuarios: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Error interno del servidor'
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
+
+@csrf_exempt
+@require_http_methods(["PUT"])
+def editar_usuario(request, usuario_id):
+    """
+    Edita SOLO los campos permitidos de un usuario:
+    - first_name (nombre)
+    - last_name (apellido) 
+    - phone (teléfono)
+    
+    NO permite editar: email, rol, is_active
+    """
+    try:
+        # Obtener el usuario
+        usuario = User.objects.get(id=usuario_id)
+        
+        # Parsear datos del request
+        data = json.loads(request.body)
+        
+        # CAMPOS EDITABLES PERMITIDOS
+        campos_permitidos = ['first_name', 'last_name', 'phone']
+        
+        # Validar que solo se envíen campos permitidos
+        campos_enviados = list(data.keys())
+        campos_no_permitidos = [campo for campo in campos_enviados if campo not in campos_permitidos]
+        
+        if campos_no_permitidos:
+            return JsonResponse({
+                'success': False,
+                'error': f'Los siguientes campos no pueden ser modificados: {", ".join(campos_no_permitidos)}',
+                'campos_no_permitidos': campos_no_permitidos,
+                'campos_permitidos': campos_permitidos
+            }, status=400)
+        
+        # Actualizar solo los campos permitidos
+        cambios_realizados = []
+        
+        if 'first_name' in data:
+            valor_anterior = usuario.first_name
+            usuario.first_name = data['first_name'].strip()
+            if valor_anterior != usuario.first_name:
+                cambios_realizados.append(f"Nombre: '{valor_anterior}' → '{usuario.first_name}'")
+        
+        if 'last_name' in data:
+            valor_anterior = usuario.last_name
+            usuario.last_name = data['last_name'].strip()
+            if valor_anterior != usuario.last_name:
+                cambios_realizados.append(f"Apellido: '{valor_anterior}' → '{usuario.last_name}'")
+        
+        if 'phone' in data:
+            valor_anterior = usuario.phone or ""
+            usuario.phone = data['phone'].strip() if data['phone'] else None
+            if valor_anterior != (usuario.phone or ""):
+                cambios_realizados.append(f"Teléfono: '{valor_anterior}' → '{usuario.phone or 'Sin teléfono'}'")
+        
+        # Validaciones básicas
+        if not usuario.first_name or not usuario.last_name:
+            return JsonResponse({
+                'success': False,
+                'error': 'El nombre y apellido son obligatorios'
+            }, status=400)
+        
+        # Guardar cambios
+        usuario.save()
+        
+        logger.info(f"Usuario {usuario.email} actualizado por admin. Cambios: {'; '.join(cambios_realizados)}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Usuario actualizado correctamente. Cambios realizados: {len(cambios_realizados)}',
+            'cambios_realizados': cambios_realizados,
+            'usuario': {
+                'id': usuario.id,
+                'first_name': usuario.first_name,
+                'last_name': usuario.last_name,
+                'full_name': usuario.full_name,
+                'email': usuario.email,
+                'phone': usuario.phone,
+                'rol': usuario.rol,
+                'is_active': usuario.is_active,
+            }
+        })
+        
+    except User.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Usuario no encontrado'
+        }, status=404)
+        
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'Datos JSON inválidos'
+        }, status=400)
+        
+    except Exception as e:
+        logger.error(f"Error al editar usuario {usuario_id}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Error interno del servidor'
+        }, status=500)
+
+@csrf_exempt
+@require_http_methods(["PATCH"])
+def toggle_estado_usuario(request, usuario_id):
+    """
+    Cambia el estado activo/inactivo de un usuario
+    """
+    try:
+        usuario = User.objects.get(id=usuario_id)
+        
+        # Cambiar el estado
+        usuario.is_active = not usuario.is_active
+        usuario.save()
+        
+        accion = "habilitado" if usuario.is_active else "inhabilitado"
+        
+        logger.info(f"Usuario {usuario.email} {accion} por admin")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Usuario {accion} correctamente',
+            'is_active': usuario.is_active,
+            'usuario': {
+                'id': usuario.id,
+                'full_name': usuario.full_name,
+                'email': usuario.email,
+                'is_active': usuario.is_active
+            }
+        })
+        
+    except User.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Usuario no encontrado'
+        }, status=404)
+        
+    except Exception as e:
+        logger.error(f"Error al cambiar estado del usuario {usuario_id}: {str(e)}")
+        return JsonResponse({
+            'success': False,
+            'error': 'Error interno del servidor'
+        }, status=500)
+
+@csrf_exempt
+def crear_usuario(request):
+    """Crear un nuevo usuario (solo para testing/admin)"""
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            # Validar campos requeridos
+            campos_requeridos = ['email', 'first_name', 'last_name', 'password']
+            for campo in campos_requeridos:
+                if campo not in data or not data[campo]:
+                    return JsonResponse({
+                        'success': False,
+                        'error': f'El campo {campo} es obligatorio'
+                    }, status=400)
+            
+            # Crear usuario usando tu UserManager
+            usuario = User.objects.create_user(
+                email=data['email'].lower(),
+                first_name=data['first_name'].strip(),
+                last_name=data['last_name'].strip(),
+                password=data['password'],
+                phone=data.get('phone', '').strip() or None,
+                rol=data.get('rol', 'usuario')
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Usuario creado correctamente',
+                'usuario': {
+                    'id': usuario.id,
+                    'email': usuario.email,
+                    'full_name': usuario.full_name,
+                    'rol': usuario.rol
+                }
+            })
+            
+        except IntegrityError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Ya existe un usuario con ese email'
+            }, status=400)
+            
+        except json.JSONDecodeError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Datos JSON inválidos'
+            }, status=400)
+            
+        except Exception as e:
+            logger.error(f"Error al crear usuario: {str(e)}")
+            return JsonResponse({
+                'success': False,
+                'error': 'Error interno del servidor'
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Método no permitido'
+    }, status=405)
 # -------------------------------------------------------------------
 # 🔹 AUTENTICACIÓN Y REGISTRO
 # -------------------------------------------------------------------
