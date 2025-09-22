@@ -25,6 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/productos/', obtener_productos, name='obtener_productos'),
     path("api/whatsapp/", include("whatsapp.urls")),
+    #configuraciones 
+     path('accounts/', include('accounts.urls')),  # ← Asegurar que esta línea exista
 ]
 
 if settings.DEBUG:
