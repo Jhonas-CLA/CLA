@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
+import FavoriteButton from '../components/FavoriteButton';
 import "./Carrito.css";
 
 const BASE_URL = "http://localhost:8000";
@@ -73,8 +74,7 @@ const CarritoCompras = () => {
   const [carrito, setCarrito] = useState({});
   const [busqueda, setBusqueda] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
-  const [numeroWhatsApp, setNumeroWhatsApp] = useState(""); // número desde la BD
-  // 1️⃣ Estado para el nombre del cliente
+  const [numeroWhatsApp, setNumeroWhatsApp] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
 
   // Estados para la validación de usuario
@@ -116,6 +116,7 @@ const CarritoCompras = () => {
         }
         const response = await axios.get(url);
         const productosBack = response.data.map((p) => ({
+          id: p.id, // Asegurar que el ID esté presente para FavoriteButton
           codigo: p.codigo,
           nombre: p.nombre,
           categoria: p.categoria?.nombre || "Otra",
@@ -132,7 +133,7 @@ const CarritoCompras = () => {
     cargarProductos();
   }, [categoriaFiltro]);
 
-  // 2️⃣ Obtener nombre del cliente según el email
+  // Obtener nombre del cliente según el email
   const obtenerNombreCliente = async (emailUsuario) => {
     try {
       const res = await fetch(
@@ -236,7 +237,7 @@ const CarritoCompras = () => {
       // Preparar datos del pedido
       const pedidoData = {
         email: email,
-        cliente: nombreCliente || "Cliente desconocido", // 👈 agregado
+        cliente: nombreCliente || "Cliente desconocido",
         productos: Object.values(carrito).map((item) => ({
           nombre: item.nombre,
           codigo: item.codigo,
@@ -250,9 +251,9 @@ const CarritoCompras = () => {
         ),
       };
 
-      console.log("Enviando pedido:", pedidoData); // Debug
+      console.log("Enviando pedido:", pedidoData);
 
-      // ✅ Guardar pedido en backend
+      // Guardar pedido en backend
       await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
       const response = await fetch(
@@ -267,10 +268,10 @@ const CarritoCompras = () => {
       );
 
       const data = await response.json();
-      console.log("Respuesta del servidor:", data); // Debug
+      console.log("Respuesta del servidor:", data);
 
       if (response.ok) {
-        setSuccess("✅ ¡Perfecto! Tu pedido está listo");
+        setSuccess("¡Perfecto! Tu pedido está listo");
 
         // Si el backend devuelve un link de WhatsApp, lo abrimos:
         if (data.whatsapp_url) {
@@ -287,37 +288,37 @@ const CarritoCompras = () => {
         switch (data.error) {
           case "USER_NOT_REGISTERED":
             setError(
-              "❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
+              "Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
             );
             break;
           case "USER_INACTIVE":
-            setError("⚠️ Tu cuenta está inactiva. Contacta al administrador.");
+            setError("Tu cuenta está inactiva. Contacta al administrador.");
             break;
           case "EMAIL_REQUIRED":
-            setError("📧 Por favor ingresa tu correo electrónico.");
+            setError("Por favor ingresa tu correo electrónico.");
             break;
           case "PRODUCTS_REQUIRED":
-            setError("🛒 Debe incluir al menos un producto en el pedido.");
+            setError("Debe incluir al menos un producto en el pedido.");
             break;
           case "ADMIN_NOT_FOUND":
             setError(
-              "⚠️ No hay administrador disponible. Contacta al soporte."
+              "No hay administrador disponible. Contacta al soporte."
             );
             break;
           case "INVALID_JSON":
-            setError("❌ Error en el formato de datos. Intenta nuevamente.");
+            setError("Error en el formato de datos. Intenta nuevamente.");
             break;
           case "SERVER_ERROR":
-            setError(`❌ Error del servidor: ${data.message}`);
+            setError(`Error del servidor: ${data.message}`);
             break;
           default:
-            setError(data.message || "❌ Ocurrió un error inesperado");
+            setError(data.message || "Ocurrió un error inesperado");
         }
       }
     } catch (err) {
       console.error("Error de conexión:", err);
       setError(
-        "❌ Error de conexión. Verifica tu internet e intenta nuevamente"
+        "Error de conexión. Verifica tu internet e intenta nuevamente"
       );
     } finally {
       setLoading(false);
@@ -360,7 +361,7 @@ const CarritoCompras = () => {
 
     const handleContinuar = async () => {
       if (!localEmail.trim()) {
-        setLocalError("📧 Por favor ingresa tu correo electrónico.");
+        setLocalError("Por favor ingresa tu correo electrónico.");
         return;
       }
 
@@ -374,8 +375,8 @@ const CarritoCompras = () => {
 
       try {
         const pedidoData = {
-          email: localEmail, // 👈 usar el localEmail, no el email global
-          cliente: nombreCliente || "Cliente desconocido", // 👈 agregado
+          email: localEmail,
+          cliente: nombreCliente || "Cliente desconocido",
           productos: Object.values(carrito).map((item) => ({
             nombre: item.nombre,
             codigo: item.codigo,
@@ -389,7 +390,7 @@ const CarritoCompras = () => {
           ),
         };
 
-        // ✅ Guardar pedido en backend
+        // Guardar pedido en backend
         await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
         const response = await fetch(
@@ -406,7 +407,7 @@ const CarritoCompras = () => {
         const data = await response.json();
 
         if (response.ok) {
-          setSuccess("✅ ¡Perfecto! Tu pedido está listo");
+          setSuccess("¡Perfecto! Tu pedido está listo");
           if (data.whatsapp_url) {
             window.open(data.whatsapp_url, "_blank");
           }
@@ -417,39 +418,39 @@ const CarritoCompras = () => {
           switch (data.error) {
             case "USER_NOT_REGISTERED":
               setError(
-                "❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
+                "Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
               );
               break;
             case "USER_INACTIVE":
               setError(
-                "⚠️ Tu cuenta está inactiva. Contacta al administrador."
+                "Tu cuenta está inactiva. Contacta al administrador."
               );
               break;
             case "EMAIL_REQUIRED":
-              setError("📧 Por favor ingresa tu correo electrónico.");
+              setError("Por favor ingresa tu correo electrónico.");
               break;
             case "PRODUCTS_REQUIRED":
-              setError("🛒 Debe incluir al menos un producto en el pedido.");
+              setError("Debe incluir al menos un producto en el pedido.");
               break;
             case "ADMIN_NOT_FOUND":
               setError(
-                "⚠️ No hay administrador disponible. Contacta al soporte."
+                "No hay administrador disponible. Contacta al soporte."
               );
               break;
             case "INVALID_JSON":
-              setError("❌ Error en el formato de datos. Intenta nuevamente.");
+              setError("Error en el formato de datos. Intenta nuevamente.");
               break;
             case "SERVER_ERROR":
-              setError(`❌ Error del servidor: ${data.message}`);
+              setError(`Error del servidor: ${data.message}`);
               break;
             default:
-              setError(data.message || "❌ Ocurrió un error inesperado");
+              setError(data.message || "Ocurrió un error inesperado");
           }
         }
       } catch (err) {
         console.error("Error de conexión:", err);
         setError(
-          "❌ Error de conexión. Verifica tu internet e intenta nuevamente"
+          "Error de conexión. Verifica tu internet e intenta nuevamente"
         );
       } finally {
         setLoading(false);
@@ -497,7 +498,7 @@ const CarritoCompras = () => {
               textAlign: "center",
             }}
           >
-            🔐 Verificación Requerida
+            Verificación Requerida
           </h3>
           <p
             style={{
@@ -594,7 +595,7 @@ const CarritoCompras = () => {
                 fontWeight: "bold",
               }}
             >
-              {loading ? "⏳ Verificando..." : "✅ Continuar"}
+              {loading ? "Verificando..." : "Continuar"}
             </button>
           </div>
         </div>
@@ -666,7 +667,7 @@ const CarritoCompras = () => {
         </select>
         <input
           type="text"
-          placeholder="🔍 Buscar productos..."
+          placeholder="Buscar productos..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           style={{
@@ -687,7 +688,24 @@ const CarritoCompras = () => {
             </p>
           ) : (
             productosFiltrados.map((producto) => (
-              <div key={producto.codigo} className="producto-card">
+              <div 
+                key={producto.codigo} 
+                className="producto-card" 
+                style={{ position: 'relative' }}
+              >
+                {/* Botón de favorito en la esquina superior derecha */}
+                <div style={{ 
+                  position: 'absolute', 
+                  top: '8px', 
+                  right: '8px', 
+                  zIndex: 10 
+                }}>
+                  <FavoriteButton 
+                    producto={producto} 
+                    size="small"
+                  />
+                </div>
+
                 <ProductImage
                   src={producto.imagen_url}
                   alt={producto.nombre}
@@ -837,74 +855,6 @@ const CarritoCompras = () => {
                           backgroundColor: "#fbbf24",
                           color: "#1e3a8a",
                           cursor: "pointer",
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        −
-                      </button>
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          fontSize: "1.1rem",
-                          minWidth: "20px",
-                          textAlign: "center",
-                        }}
-                      >
-                        {item.cantidad}
-                      </span>
-                      <button
-                        onClick={() =>
-                          modificarCantidad(item.codigo, item.cantidad + 1)
-                        }
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                          border: "none",
-                          backgroundColor: "#fbbf24",
-                          color: "#1e3a8a",
-                          cursor: "pointer",
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "10px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontWeight: "bold",
-                          color: "#1e3a8a",
-                          fontSize: "1rem",
-                        }}
-                      >
-                        ${(item.precio * item.cantidad).toLocaleString()}
-                      </span>
-                      <button
-                        onClick={() => quitarDelCarrito(item.codigo)}
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                          border: "none",
-                          backgroundColor: "#1e3a8a",
-                          color: "white",
-                          cursor: "pointer",
                           fontSize: "1.2rem",
                           display: "flex",
                           alignItems: "center",
@@ -936,7 +886,7 @@ const CarritoCompras = () => {
                   Total: ${totalCarrito.toLocaleString()}
                 </div>
                 <button onClick={limpiarCarrito} className="btn-eliminar">
-                  🗑️ Eliminar productos
+                  Eliminar productos
                 </button>
 
                 <button
@@ -944,7 +894,7 @@ const CarritoCompras = () => {
                   disabled={loading}
                   className="btn-enviar"
                 >
-                  {loading ? "⏳ Enviando..." : "📲 Enviar pedido por WhatsApp"}
+                  {loading ? "Enviando..." : "Enviar pedido por WhatsApp"}
                 </button>
               </div>
             </>

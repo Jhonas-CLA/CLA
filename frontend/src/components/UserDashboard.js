@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
+import FavoriteButton from '../components/FavoriteButton';
 import './UserDashboard.css';
+
+const BASE_URL = "http://localhost:8000";
 
 function UserDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
@@ -16,10 +19,15 @@ function UserDashboard() {
     error: null
   });
 
-  // ✅ Estados para pedidos
+  // Estados para pedidos
   const [pedidos, setPedidos] = useState([]);
   const [loadingPedidos, setLoadingPedidos] = useState(false);
   const [errorPedidos, setErrorPedidos] = useState(null);
+
+  // Estados para favoritos (NUEVO)
+  const [favoritos, setFavoritos] = useState([]);
+  const [loadingFavoritos, setLoadingFavoritos] = useState(false);
+  const [errorFavoritos, setErrorFavoritos] = useState(null);
 
   // Estados para formularios
   const [profileForm, setProfileForm] = useState({
@@ -49,6 +57,15 @@ function UserDashboard() {
       logout();
       navigate("/");
     }
+  };
+
+  // Helper para imágenes (NUEVO)
+  const getImageUrl = (imagenUrl) => {
+    if (!imagenUrl) return "/images/default-product.jpg";
+    if (imagenUrl.startsWith("http")) return imagenUrl;
+    if (imagenUrl.startsWith("/media/")) return `${BASE_URL}${imagenUrl}`;
+    if (imagenUrl.startsWith("media/")) return `${BASE_URL}/${imagenUrl}`;
+    return `${BASE_URL}/media/${imagenUrl}`;
   };
 
   const fetchUserProfile = async () => {
@@ -89,7 +106,7 @@ function UserDashboard() {
     }
   };
 
-  // ✅ Traer pedidos del usuario
+  // Traer pedidos del usuario
   const fetchPedidosUsuario = async () => {
     if (!token) return;
     setLoadingPedidos(true);
@@ -107,6 +124,36 @@ function UserDashboard() {
       setErrorPedidos('Error de conexión');
     } finally {
       setLoadingPedidos(false);
+    }
+  };
+
+  // Traer favoritos del usuario (NUEVO)
+  const fetchFavoritos = async () => {
+    if (!token) return;
+    setLoadingFavoritos(true);
+    setErrorFavoritos(null);
+
+    try {
+      const response = await apiCall('http://localhost:8000/api/favoritos/');
+      if (response.ok) {
+        const data = await response.json();
+        setFavoritos(data.favoritos || []);
+      } else {
+        setErrorFavoritos('No se pudieron cargar los favoritos');
+      }
+    } catch (err) {
+      console.error('Error cargando favoritos:', err);
+      setErrorFavoritos('Error de conexión');
+    } finally {
+      setLoadingFavoritos(false);
+    }
+  };
+
+  // Manejar cuando se quita un favorito (NUEVO)
+  const handleFavoritoToggle = (productoId, esFavorito, action) => {
+    if (action === 'removed') {
+      // Quitar de la lista local
+      setFavoritos(prev => prev.filter(fav => fav.producto.id !== productoId));
     }
   };
 
@@ -222,12 +269,16 @@ function UserDashboard() {
     setActiveSection(section);
   };
 
+  // ACTUALIZADO: Agregar carga de favoritos
   useEffect(() => {
     if (activeSection === 'perfil') {
       fetchUserProfile();
     }
     if (activeSection === 'historial') {
       fetchPedidosUsuario();
+    }
+    if (activeSection === 'favoritos') {
+      fetchFavoritos();
     }
   }, [activeSection, token]);
 
@@ -244,19 +295,232 @@ function UserDashboard() {
             <div className="content-header">
               <h2 style={{ color: darkMode ? '#f1f5f9' : '#1e293b' }}>⭐ Favoritos</h2>
               <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
-                Administra y accede rápidamente a tus elementos favoritos
+                Administra y accede rápidamente a tus productos favoritos
               </p>
             </div>
-            <div className="empty-state" style={{
-              backgroundColor: darkMode ? '#0f172a' : '#f8fafc',
-              borderColor: darkMode ? '#334155' : '#cbd5e1'
-            }}>
-              <div className="empty-icon">💫</div>
-              <h3 style={{ color: darkMode ? '#cbd5e1' : '#475569' }}>Aún no tienes favoritos</h3>
-              <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
-                Los elementos que marques como favoritos aparecerán aquí
-              </p>
-            </div>
+
+            {loadingFavoritos && (
+              <div className="loading-container" style={{ textAlign: 'center', padding: '40px' }}>
+                <div className="spinner" style={{
+                  width: '40px',
+                  height: '40px',
+                  border: '4px solid #f3f4f6',
+                  borderTop: '4px solid #3b82f6',
+                  borderRadius: '50%',
+                  animation: 'spin 1s linear infinite',
+                  margin: '0 auto 16px'
+                }}></div>
+                <span style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>Cargando favoritos...</span>
+              </div>
+            )}
+
+            {errorFavoritos && (
+              <div style={{
+                backgroundColor: '#fee2e2',
+                border: '1px solid #ef4444',
+                borderRadius: '8px',
+                padding: '16px',
+                margin: '20px 0',
+                color: '#dc2626'
+              }}>
+                ⚠️ {errorFavoritos}
+                <button
+                  onClick={fetchFavoritos}
+                  style={{
+                    marginLeft: '12px',
+                    backgroundColor: '#3b82f6',
+                    color: 'white',
+                    border: 'none',
+                    padding: '6px 12px',
+                    borderRadius: '4px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Reintentar
+                </button>
+              </div>
+            )}
+
+            {!loadingFavoritos && favoritos.length === 0 && !errorFavoritos && (
+              <div className="empty-state" style={{
+                backgroundColor: darkMode ? '#0f172a' : '#f8fafc',
+                borderColor: darkMode ? '#334155' : '#cbd5e1',
+                border: '2px dashed',
+                borderRadius: '12px',
+                padding: '60px 20px',
+                textAlign: 'center',
+                margin: '40px 0'
+              }}>
+                <div className="empty-icon" style={{ fontSize: '4rem', marginBottom: '20px', opacity: '0.6' }}>💫</div>
+                <h3 style={{ color: darkMode ? '#cbd5e1' : '#475569', marginBottom: '12px' }}>Aún no tienes favoritos</h3>
+                <p style={{ color: darkMode ? '#94a3b8' : '#64748b', marginBottom: '24px' }}>
+                  Los productos que marques como favoritos aparecerán aquí
+                </p>
+                <button
+                  onClick={() => navigate('/carrito')}
+                  style={{
+                    backgroundColor: '#FFD700',
+                    color: '#000',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    fontSize: '1rem'
+                  }}
+                >
+                  Explorar productos
+                </button>
+              </div>
+            )}
+
+            {!loadingFavoritos && favoritos.length > 0 && (
+              <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                gap: '24px',
+                padding: '20px 0'
+              }}>
+                {favoritos.map((favorito) => (
+                  <div key={favorito.id} style={{
+                    backgroundColor: darkMode ? '#0f172a' : 'white',
+                    borderRadius: '12px',
+                    padding: '20px',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                    border: darkMode ? '1px solid #334155' : '1px solid #e2e8f0',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                    position: 'relative'
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-4px)';
+                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                  }}
+                  >
+                    {/* Botón de favorito en la esquina superior derecha */}
+                    <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
+                      <FavoriteButton 
+                        producto={favorito.producto} 
+                        onToggle={handleFavoritoToggle}
+                        size="small"
+                      />
+                    </div>
+
+                    {/* Imagen del producto */}
+                    <div style={{ 
+                      marginBottom: '16px',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '180px',
+                      overflow: 'hidden',
+                      backgroundColor: darkMode ? '#1e293b' : '#fafafa',
+                      borderRadius: '8px'
+                    }}>
+                      <img 
+                        src={getImageUrl(favorito.producto.imagen)} 
+                        alt={favorito.producto.nombre}
+                        style={{
+                          maxWidth: '100%',
+                          maxHeight: '100%',
+                          objectFit: 'contain',
+                          borderRadius: '6px'
+                        }}
+                        onError={(e) => {
+                          e.target.src = '/images/default-product.jpg';
+                        }}
+                      />
+                    </div>
+
+                    {/* Información del producto */}
+                    <div>
+                      <h3 style={{ 
+                        color: darkMode ? '#f1f5f9' : '#1e293b',
+                        marginBottom: '8px',
+                        fontSize: '1.1rem',
+                        fontWeight: '600',
+                        lineHeight: '1.3'
+                      }}>
+                        {favorito.producto.nombre}
+                      </h3>
+                      
+                      {favorito.producto.codigo && (
+                        <div style={{ 
+                          color: darkMode ? '#94a3b8' : '#666',
+                          fontSize: '0.85rem',
+                          marginBottom: '8px',
+                          fontFamily: 'monospace',
+                          backgroundColor: darkMode ? '#334155' : '#f8f9fa',
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                          display: 'inline-block',
+                          border: `1px solid ${darkMode ? '#475569' : '#e9ecef'}`
+                        }}>
+                          {favorito.producto.codigo}
+                        </div>
+                      )}
+                      
+                      {favorito.producto.categoria_nombre && (
+                        <p style={{ 
+                          color: darkMode ? '#94a3b8' : '#64748b',
+                          fontSize: '0.9rem',
+                          marginBottom: '12px'
+                        }}>
+                          📂 {favorito.producto.categoria_nombre}
+                        </p>
+                      )}
+                      
+                      {/* Precio y stock */}
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between',
+                        marginTop: '16px'
+                      }}>
+                        <span style={{ 
+                          fontWeight: 'bold', 
+                          fontSize: '1.2rem', 
+                          color: darkMode ? '#f1f5f9' : '#1e293b'
+                        }}>
+                          ${Number(favorito.producto.precio).toLocaleString('es-CO')}
+                        </span>
+                        
+                        {favorito.producto.cantidad !== undefined && (
+                          <span style={{
+                            backgroundColor: favorito.producto.cantidad > 0 ? '#22c55e' : '#ef4444',
+                            color: 'white',
+                            padding: '4px 12px',
+                            borderRadius: '12px',
+                            fontSize: '0.75rem',
+                            fontWeight: 'bold'
+                          }}>
+                            {favorito.producto.cantidad > 0 ? `Stock: ${favorito.producto.cantidad}` : 'Agotado'}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Fecha agregado */}
+                      <div style={{
+                        marginTop: '12px',
+                        paddingTop: '12px',
+                        borderTop: `1px solid ${darkMode ? '#334155' : '#e2e8f0'}`,
+                        fontSize: '0.8rem',
+                        color: darkMode ? '#94a3b8' : '#64748b'
+                      }}>
+                        💝 Agregado: {new Date(favorito.fecha_agregado).toLocaleDateString('es-CO', {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric'
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
 
