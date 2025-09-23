@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
-import FavoriteButton from '../components/FavoriteButton';
 import "./Carrito.css";
 
 const BASE_URL = "http://localhost:8000";
@@ -71,11 +70,24 @@ const ProductImage = ({ src, alt, style, className }) => {
 
 const CarritoCompras = () => {
   const [productos, setProductos] = useState([]);
-  const [carrito, setCarrito] = useState({});
+  // Inicializar carrito desde localStorage
+  const [carrito, setCarrito] = useState(() => {
+    try {
+      const carritoGuardado = localStorage.getItem('carrito');
+      return carritoGuardado ? JSON.parse(carritoGuardado) : {};
+    } catch (error) {
+      console.error('Error al cargar carrito:', error);
+      return {};
+    }
+  });
   const [busqueda, setBusqueda] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
   const [numeroWhatsApp, setNumeroWhatsApp] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
+  
+  // NUEVO: Estado para el producto seleccionado desde categorías
+  const [productoSeleccionado, setProductoSeleccionado] = useState(null);
+  const [mostrarProductoSeleccionado, setMostrarProductoSeleccionado] = useState(false);
 
   // Estados para la validación de usuario
   const [email, setEmail] = useState("");
@@ -83,6 +95,43 @@ const CarritoCompras = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
+  // Efecto para guardar carrito en localStorage cuando cambie
+  useEffect(() => {
+    try {
+      localStorage.setItem('carrito', JSON.stringify(carrito));
+    } catch (error) {
+      console.error('Error al guardar carrito:', error);
+    }
+  }, [carrito]);
+
+  // NUEVO: Verificar si hay un producto seleccionado al cargar
+  useEffect(() => {
+    const productoGuardado = localStorage.getItem('productoSeleccionado');
+    if (productoGuardado) {
+      try {
+        const producto = JSON.parse(productoGuardado);
+        setProductoSeleccionado(producto);
+        setMostrarProductoSeleccionado(true);
+        
+        // Buscar la categoría correspondiente y establecerla como filtro
+        const categoriaProducto = producto.categoria;
+        const categoriaSlug = Object.keys(categoriasMap).find(
+          key => categoriasMap[key] === categoriaProducto
+        );
+        
+        if (categoriaSlug) {
+          setCategoriaFiltro(categoriaSlug);
+        }
+        
+        // Limpiar localStorage después de usar
+        localStorage.removeItem('productoSeleccionado');
+      } catch (error) {
+        console.error('Error al parsear producto seleccionado:', error);
+        localStorage.removeItem('productoSeleccionado');
+      }
+    }
+  }, []);
 
   // cargar número de WhatsApp desde backend
   useEffect(() => {
@@ -116,7 +165,7 @@ const CarritoCompras = () => {
         }
         const response = await axios.get(url);
         const productosBack = response.data.map((p) => ({
-          id: p.id, // Asegurar que el ID esté presente para FavoriteButton
+          id: p.id,
           codigo: p.codigo,
           nombre: p.nombre,
           categoria: p.categoria?.nombre || "Otra",
@@ -164,6 +213,32 @@ const CarritoCompras = () => {
     );
   }, [productos, busqueda]);
 
+  // NUEVO: Función para agregar producto seleccionado al carrito
+  const agregarProductoSeleccionado = () => {
+    if (productoSeleccionado) {
+      // Convertir el producto seleccionado al formato esperado por el carrito
+      const productoParaCarrito = {
+        id: productoSeleccionado.id,
+        codigo: productoSeleccionado.codigo || `PROD-${productoSeleccionado.id}`,
+        nombre: productoSeleccionado.nombre || productoSeleccionado.name,
+        categoria: productoSeleccionado.categoria,
+        precio: parseFloat(productoSeleccionado.precio || 0),
+        stock: productoSeleccionado.cantidad || productoSeleccionado.stock || 1,
+        imagen_url: productoSeleccionado.imagen || productoSeleccionado.imagen_url || "",
+      };
+      
+      agregarAlCarrito(productoParaCarrito);
+      setMostrarProductoSeleccionado(false);
+      setProductoSeleccionado(null);
+    }
+  };
+
+  // NUEVO: Función para cerrar el producto seleccionado
+  const cerrarProductoSeleccionado = () => {
+    setMostrarProductoSeleccionado(false);
+    setProductoSeleccionado(null);
+  };
+
   // agregar al carrito
   const agregarAlCarrito = (producto) => {
     setCarrito((prev) => {
@@ -205,6 +280,7 @@ const CarritoCompras = () => {
   // limpiar carrito
   const limpiarCarrito = () => {
     setCarrito({});
+    localStorage.removeItem('carrito');
   };
 
   const totalItems = Object.values(carrito).reduce(
@@ -253,7 +329,6 @@ const CarritoCompras = () => {
 
       console.log("Enviando pedido:", pedidoData);
 
-      // Guardar pedido en backend
       await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
       const response = await fetch(
@@ -271,9 +346,8 @@ const CarritoCompras = () => {
       console.log("Respuesta del servidor:", data);
 
       if (response.ok) {
-        setSuccess("¡Perfecto! Tu pedido está listo");
+        setSuccess("✅ ¡Perfecto! Tu pedido está listo");
 
-        // Si el backend devuelve un link de WhatsApp, lo abrimos:
         if (data.whatsapp_url) {
           window.open(data.whatsapp_url, "_blank");
         }
@@ -282,43 +356,42 @@ const CarritoCompras = () => {
         setShowEmailModal(false);
         setTimeout(() => setSuccess(""), 5000);
       } else {
-        // Manejo de errores específicos
         console.error("Error del servidor:", data);
 
         switch (data.error) {
           case "USER_NOT_REGISTERED":
             setError(
-              "Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
+              "❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
             );
             break;
           case "USER_INACTIVE":
-            setError("Tu cuenta está inactiva. Contacta al administrador.");
+            setError("⚠️ Tu cuenta está inactiva. Contacta al administrador.");
             break;
           case "EMAIL_REQUIRED":
-            setError("Por favor ingresa tu correo electrónico.");
+            setError("📧 Por favor ingresa tu correo electrónico.");
             break;
           case "PRODUCTS_REQUIRED":
-            setError("Debe incluir al menos un producto en el pedido.");
+            setError("🛒 Debe incluir al menos un producto en el pedido.");
             break;
           case "ADMIN_NOT_FOUND":
             setError(
-              "No hay administrador disponible. Contacta al soporte."
+              "⚠️ No hay administrador disponible. Contacta al soporte."
             );
             break;
           case "INVALID_JSON":
-            setError("Error en el formato de datos. Intenta nuevamente.");
+            setError("❌ Error en el formato de datos. Intenta nuevamente.");
             break;
           case "SERVER_ERROR":
-            setError(`Error del servidor: ${data.message}`);
+            setError(`❌ Error del servidor: ${data.message}`);
             break;
           default:
-            setError(data.message || "Ocurrió un error inesperado");
+            setError(data.message || "❌ Ocurrió un error inesperado");
         }
       }
     } catch (err) {
       console.error("Error de conexión:", err);
       setError(
-        "Error de conexión. Verifica tu internet e intenta nuevamente"
+        "❌ Error de conexión. Verifica tu internet e intenta nuevamente"
       );
     } finally {
       setLoading(false);
@@ -361,14 +434,12 @@ const CarritoCompras = () => {
 
     const handleContinuar = async () => {
       if (!localEmail.trim()) {
-        setLocalError("Por favor ingresa tu correo electrónico.");
+        setLocalError("📧 Por favor ingresa tu correo electrónico.");
         return;
       }
 
-      // Actualizar el estado principal
       setEmail(localEmail);
 
-      // Proceder con el envío
       setLoading(true);
       setError("");
       setSuccess("");
@@ -390,7 +461,6 @@ const CarritoCompras = () => {
           ),
         };
 
-        // Guardar pedido en backend
         await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
         const response = await fetch(
@@ -407,7 +477,7 @@ const CarritoCompras = () => {
         const data = await response.json();
 
         if (response.ok) {
-          setSuccess("¡Perfecto! Tu pedido está listo");
+          setSuccess("✅ ¡Perfecto! Tu pedido está listo");
           if (data.whatsapp_url) {
             window.open(data.whatsapp_url, "_blank");
           }
@@ -418,39 +488,39 @@ const CarritoCompras = () => {
           switch (data.error) {
             case "USER_NOT_REGISTERED":
               setError(
-                "Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
+                "❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
               );
               break;
             case "USER_INACTIVE":
               setError(
-                "Tu cuenta está inactiva. Contacta al administrador."
+                "⚠️ Tu cuenta está inactiva. Contacta al administrador."
               );
               break;
             case "EMAIL_REQUIRED":
-              setError("Por favor ingresa tu correo electrónico.");
+              setError("📧 Por favor ingresa tu correo electrónico.");
               break;
             case "PRODUCTS_REQUIRED":
-              setError("Debe incluir al menos un producto en el pedido.");
+              setError("🛒 Debe incluir al menos un producto en el pedido.");
               break;
             case "ADMIN_NOT_FOUND":
               setError(
-                "No hay administrador disponible. Contacta al soporte."
+                "⚠️ No hay administrador disponible. Contacta al soporte."
               );
               break;
             case "INVALID_JSON":
-              setError("Error en el formato de datos. Intenta nuevamente.");
+              setError("❌ Error en el formato de datos. Intenta nuevamente.");
               break;
             case "SERVER_ERROR":
-              setError(`Error del servidor: ${data.message}`);
+              setError(`❌ Error del servidor: ${data.message}`);
               break;
             default:
-              setError(data.message || "Ocurrió un error inesperado");
+              setError(data.message || "❌ Ocurrió un error inesperado");
           }
         }
       } catch (err) {
         console.error("Error de conexión:", err);
         setError(
-          "Error de conexión. Verifica tu internet e intenta nuevamente"
+          "❌ Error de conexión. Verifica tu internet e intenta nuevamente"
         );
       } finally {
         setLoading(false);
@@ -498,7 +568,7 @@ const CarritoCompras = () => {
               textAlign: "center",
             }}
           >
-            Verificación Requerida
+            🔐 Verificación Requerida
           </h3>
           <p
             style={{
@@ -595,7 +665,7 @@ const CarritoCompras = () => {
                 fontWeight: "bold",
               }}
             >
-              {loading ? "Verificando..." : "Continuar"}
+              {loading ? "⏳ Verificando..." : "✅ Continuar"}
             </button>
           </div>
         </div>
@@ -605,6 +675,120 @@ const CarritoCompras = () => {
 
   return (
     <div className="carrito-container">
+      {/* NUEVO: Banner del producto seleccionado */}
+      {mostrarProductoSeleccionado && productoSeleccionado && (
+        <div style={{
+          backgroundColor: "#fff8e1",
+          border: "3px solid #FFD700",
+          borderRadius: "15px",
+          padding: "20px",
+          marginBottom: "30px",
+          position: "relative",
+          boxShadow: "0 4px 12px rgba(255, 215, 0, 0.3)"
+        }}>
+          <button
+            onClick={cerrarProductoSeleccionado}
+            style={{
+              position: "absolute",
+              top: "10px",
+              right: "15px",
+              background: "none",
+              border: "none",
+              fontSize: "1.5rem",
+              cursor: "pointer",
+              color: "#666",
+              width: "30px",
+              height: "30px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              borderRadius: "50%"
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = "#f0f0f0"}
+            onMouseOut={(e) => e.target.style.backgroundColor = "transparent"}
+          >
+            ✕
+          </button>
+          
+          <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+            <div style={{ 
+              width: "120px", 
+              height: "120px",
+              backgroundColor: "#f5f5f5",
+              borderRadius: "10px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              overflow: "hidden"
+            }}>
+              {productoSeleccionado.imagen || productoSeleccionado.imagen_url ? (
+                <ProductImage
+                  src={productoSeleccionado.imagen || productoSeleccionado.imagen_url}
+                  alt={productoSeleccionado.nombre || productoSeleccionado.name}
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    objectFit: "contain"
+                  }}
+                />
+              ) : (
+                <div style={{ color: "#999", fontSize: "2rem" }}>📷</div>
+              )}
+            </div>
+            
+            <div style={{ flex: 1 }}>
+              <h3 style={{ 
+                color: "#001152", 
+                fontSize: "1.4rem", 
+                marginBottom: "8px",
+                fontWeight: "bold"
+              }}>
+                ¡Producto seleccionado!
+              </h3>
+              <h4 style={{ 
+                color: "#333", 
+                fontSize: "1.2rem", 
+                marginBottom: "8px" 
+              }}>
+                {productoSeleccionado.nombre || productoSeleccionado.name}
+              </h4>
+              {productoSeleccionado.codigo && (
+                <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "8px" }}>
+                  Código: {productoSeleccionado.codigo}
+                </p>
+              )}
+              <p style={{ 
+                color: "#001152", 
+                fontSize: "1.3rem", 
+                fontWeight: "bold",
+                marginBottom: "15px"
+              }}>
+                ${(productoSeleccionado.precio || 0).toLocaleString('es-CO')}
+              </p>
+              
+              <button
+                onClick={agregarProductoSeleccionado}
+                style={{
+                  backgroundColor: "#FFD700",
+                  color: "#001152",
+                  border: "none",
+                  padding: "12px 24px",
+                  borderRadius: "8px",
+                  fontSize: "1.1rem",
+                  fontWeight: "bold",
+                  cursor: "pointer",
+                  transition: "background-color 0.2s ease"
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = "#e6c200"}
+                onMouseOut={(e) => e.target.style.backgroundColor = "#FFD700"}
+              >
+                🛒 Agregar al carrito
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div style={{ textAlign: "center", marginBottom: "40px" }}>
         <h1 style={{ color: "#FFD700", fontSize: "2.5rem" }}>
           Catálogo de Productos
@@ -667,7 +851,7 @@ const CarritoCompras = () => {
         </select>
         <input
           type="text"
-          placeholder="Buscar productos..."
+          placeholder="🔍 Buscar productos..."
           value={busqueda}
           onChange={(e) => setBusqueda(e.target.value)}
           style={{
@@ -688,24 +872,7 @@ const CarritoCompras = () => {
             </p>
           ) : (
             productosFiltrados.map((producto) => (
-              <div 
-                key={producto.codigo} 
-                className="producto-card" 
-                style={{ position: 'relative' }}
-              >
-                {/* Botón de favorito en la esquina superior derecha */}
-                <div style={{ 
-                  position: 'absolute', 
-                  top: '8px', 
-                  right: '8px', 
-                  zIndex: 10 
-                }}>
-                  <FavoriteButton 
-                    producto={producto} 
-                    size="small"
-                  />
-                </div>
-
+              <div key={producto.codigo} className="producto-card">
                 <ProductImage
                   src={producto.imagen_url}
                   alt={producto.nombre}
@@ -769,143 +936,241 @@ const CarritoCompras = () => {
         </div>
 
         {/* carrito lateral */}
+<div
+  style={{
+    width: "400px",
+    backgroundColor: "white",
+    borderRadius: "20px",
+    padding: "30px",
+    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+    position: "sticky",
+    top: "20px",
+    maxHeight: "80vh",
+    overflowY: "auto",
+  }}
+>
+  <h2
+    style={{
+      color: "#1e3a8a",
+      fontSize: "1.5rem",
+      fontWeight: "bold",
+      marginBottom: "20px",
+    }}
+  >
+    Tu Carrito
+  </h2>
+
+  {Object.values(carrito).length === 0 ? (
+    <p style={{ color: "#666", textAlign: "center", padding: "20px" }}>
+      No hay productos en el carrito.
+    </p>
+  ) : (
+    <>
+      {Object.values(carrito).map((item) => (
         <div
+          key={item.codigo}
           style={{
-            width: "400px",
-            backgroundColor: "white",
-            borderRadius: "20px",
-            padding: "30px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            position: "sticky",
-            top: "20px",
-            maxHeight: "80vh",
-            overflowY: "auto",
+            backgroundColor: "#f8fafc",
+            borderRadius: "8px",
+            padding: "15px",
+            marginBottom: "12px",
+            border: "1px solid #e2e8f0",
           }}
         >
-          <h2
+          <div
             style={{
-              color: "#1e3a8a",
-              fontSize: "1.5rem",
               fontWeight: "bold",
-              marginBottom: "20px",
+              color: "#1e3a8a",
+              fontSize: "1rem",
+              marginBottom: "4px",
             }}
           >
-            Tu Carrito
-          </h2>
-
-          {Object.values(carrito).length === 0 ? (
-            <p style={{ color: "#666", textAlign: "center", padding: "20px" }}>
-              No hay productos en el carrito.
-            </p>
-          ) : (
-            <>
-              {Object.values(carrito).map((item) => (
-                <div
-                  key={item.codigo}
-                  style={{
-                    backgroundColor: "#f8fafc",
-                    borderRadius: "8px",
-                    padding: "15px",
-                    marginBottom: "12px",
-                    border: "1px solid #e2e8f0",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontWeight: "bold",
-                      color: "#1e3a8a",
-                      fontSize: "1rem",
-                      marginBottom: "4px",
-                    }}
-                  >
-                    {item.nombre}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.85rem",
-                      color: "#64748b",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    {item.codigo}
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                      }}
-                    >
-                      <button
-                        onClick={() =>
-                          modificarCantidad(item.codigo, item.cantidad - 1)
-                        }
-                        style={{
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                          border: "none",
-                          backgroundColor: "#fbbf24",
-                          color: "#1e3a8a",
-                          cursor: "pointer",
-                          fontSize: "1.2rem",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-              <div
+            {item.nombre}
+          </div>
+          <div
+            style={{
+              fontSize: "0.85rem",
+              color: "#64748b",
+              marginBottom: "10px",
+            }}
+          >
+            {item.codigo}
+          </div>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              {/* Botón restar */}
+              <button
+                onClick={() =>
+                  modificarCantidad(item.codigo, item.cantidad - 1)
+                }
                 style={{
-                  borderTop: "2px solid #e2e8f0",
-                  paddingTop: "15px",
-                  marginTop: "20px",
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "linear-gradient(135deg, #facc15, #fbbf24)",
+                  color: "#1e3a8a",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                  transition: "all 0.2s ease-in-out",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.1)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              >
+                −
+              </button>
+
+              <span
+                style={{
+                  fontWeight: "bold",
+                  fontSize: "1.1rem",
+                  minWidth: "20px",
+                  textAlign: "center",
                 }}
               >
-                <div
-                  style={{
-                    fontSize: "1.2rem",
-                    fontWeight: "bold",
-                    color: "#1e3a8a",
-                    textAlign: "center",
-                    marginBottom: "15px",
-                  }}
-                >
-                  Total: ${totalCarrito.toLocaleString()}
-                </div>
-                <button onClick={limpiarCarrito} className="btn-eliminar">
-                  Eliminar productos
-                </button>
+                {item.cantidad}
+              </span>
 
-                <button
-                  onClick={enviarPedido}
-                  disabled={loading}
-                  className="btn-enviar"
-                >
-                  {loading ? "Enviando..." : "Enviar pedido por WhatsApp"}
-                </button>
-              </div>
-            </>
-          )}
+              {/* Botón sumar */}
+              <button
+                onClick={() =>
+                  modificarCantidad(item.codigo, item.cantidad + 1)
+                }
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "linear-gradient(135deg, #facc15, #fbbf24)",
+                  color: "#1e3a8a",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                  fontSize: "1.2rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                  transition: "all 0.2s ease-in-out",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.1)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              >
+                +
+              </button>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "10px",
+              }}
+            >
+              <span
+                style={{
+                  fontWeight: "bold",
+                  color: "#1e3a8a",
+                  fontSize: "1rem",
+                }}
+              >
+                ${(item.precio * item.cantidad).toLocaleString()}
+              </span>
+
+              {/* Botón eliminar */}
+              <button
+                onClick={() => quitarDelCarrito(item.codigo)}
+                style={{
+                  width: "36px",
+                  height: "36px",
+                  borderRadius: "12px",
+                  border: "none",
+                  background: "linear-gradient(135deg, #1e3a8a, #2563eb)",
+                  color: "white",
+                  cursor: "pointer",
+                  fontSize: "1.2rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                  transition: "all 0.2s ease-in-out",
+                }}
+                onMouseOver={(e) =>
+                  (e.currentTarget.style.transform = "scale(1.1)")
+                }
+                onMouseOut={(e) =>
+                  (e.currentTarget.style.transform = "scale(1)")
+                }
+              >
+                ✕
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
+      ))}
+      <div
+        style={{
+          borderTop: "2px solid #e2e8f0",
+          paddingTop: "15px",
+          marginTop: "20px",
+        }}
+      >
+        <div
+          style={{
+            fontSize: "1.2rem",
+            fontWeight: "bold",
+            color: "#1e3a8a",
+            textAlign: "center",
+            marginBottom: "15px",
+          }}
+        >
+          Total: ${totalCarrito.toLocaleString()}
+        </div>
+        <button onClick={limpiarCarrito} className="btn-eliminar">
+          🗑️ Eliminar productos
+        </button>
 
-      {/* Modal de email */}
-      {showEmailModal && <EmailModal />}
-    </div>
-  );
+        <button
+          onClick={enviarPedido}
+          disabled={loading}
+          className="btn-enviar"
+        >
+          {loading ? "⏳ Enviando..." : "📲 Enviar pedido por WhatsApp"}
+        </button>
+      </div>
+    </>
+  )}
+</div>
+</div>
+
+{/* Modal de email */}
+{showEmailModal && <EmailModal />}
+</div>
+);
 };
 
 export default CarritoCompras;
