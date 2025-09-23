@@ -5,6 +5,7 @@ from products.models import Product
 # Reemplazos comunes por errores de codificación (latin1 -> utf8)
 REPLACEMENTS = {
     "├í": "á",
+    "├ü": "Á",
     "├│": "ó",
     "├║": "í",
     "├®": "é",
