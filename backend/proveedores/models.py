@@ -4,6 +4,7 @@ class Proveedor(models.Model):
     nombre = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
     telefono = models.CharField(max_length=20, blank=True, null=True)
+    representante = models.CharField(max_length=255, blank=True, null=True)
     creado_en = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

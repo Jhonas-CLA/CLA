@@ -7,6 +7,13 @@ function Pedidos() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // Paginación
+  const [paginaActual, setPaginaActual] = useState(1);
+  const pedidosPorPagina = 5;
+
+  // Filtro único (por nombre y/o fecha)
+  const [filtro, setFiltro] = useState('');
+
   useEffect(() => {
     fetchPedidos();
   }, []);
@@ -17,8 +24,6 @@ function Pedidos() {
       const response = await fetch('http://localhost:8000/api/pedidos/');
       const data = await response.json();
 
-      console.log("📦 Respuesta pedidos:", data);
-
       if (Array.isArray(data)) {
         setPedidos(data);
       } else if (data.results && Array.isArray(data.results)) {
@@ -27,7 +32,6 @@ function Pedidos() {
         setPedidos([]);
       }
     } catch (err) {
-      console.error("Error cargando pedidos:", err);
       setError('Error al cargar pedidos');
       setPedidos([]);
     } finally {
@@ -35,11 +39,53 @@ function Pedidos() {
     }
   };
 
+  // Función para detectar si un texto es fecha en formato yyyy-mm-dd
+  const esFecha = (texto) => {
+    // Regex simple para fecha ISO yyyy-mm-dd
+    return /^\d{4}-\d{2}-\d{2}$/.test(texto);
+  };
+
+  // Filtrar pedidos usando el filtro único
+  const pedidosFiltrados = pedidos.filter((pedido) => {
+    if (!filtro.trim()) return true; // si filtro vacío, mostrar todo
+
+    // Dividir el filtro en palabras para permitir que se pase "Juan 2023-09-22"
+    const partesFiltro = filtro.trim().toLowerCase().split(/\s+/);
+
+    // Verificamos que cada parte coincida ya sea en el nombre o en la fecha
+    return partesFiltro.every((parte) => {
+      if (esFecha(parte)) {
+        // Parte parece una fecha: comparar con fecha del pedido
+        const fechaPedido = pedido.fecha ? pedido.fecha.split('T')[0] : '';
+        return fechaPedido === parte;
+      } else {
+        // Parte texto normal: buscar en nombre cliente
+        return pedido.cliente?.toLowerCase().includes(parte);
+      }
+    });
+  });
+
+  // Paginación con pedidos filtrados
+  const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
+  const indexInicio = (paginaActual - 1) * pedidosPorPagina;
+  const indexFin = indexInicio + pedidosPorPagina;
+  const pedidosPaginados = pedidosFiltrados.slice(indexInicio, indexFin);
+
+  // Resetear página cuando cambia filtro
+  React.useEffect(() => {
+    setPaginaActual(1);
+  }, [filtro]);
+
+  const irAPaginaAnterior = () => {
+    if (paginaActual > 1) setPaginaActual(paginaActual - 1);
+  };
+
+  const irAPaginaSiguiente = () => {
+    if (paginaActual < totalPaginas) setPaginaActual(paginaActual + 1);
+  };
+
   const toggleOpen = (e, id) => {
-    // Evita que el click en elementos internos cierre el desglose
-    if (e.target.tagName === "SELECT" || e.target.tagName === "OPTION") {
-      return;
-    }
+    if (e.target.tagName === "SELECT" || e.target.tagName === "OPTION") return;
     setOpenId(openId === id ? null : id);
   };
 
@@ -96,14 +142,54 @@ function Pedidos() {
     <div className="pedidos-section">
       <h2>📦 Pedidos</h2>
 
+      {/* Filtro único */}
+      <div
+        className="filtros-container"
+        style={{
+          marginBottom: '20px',
+          display: 'flex',
+          gap: '10px',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Filtrar por nombre y/o fecha (yyyy-mm-dd)"
+          value={filtro}
+          onChange={(e) => setFiltro(e.target.value)}
+          style={{
+            padding: '8px',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+            flex: '1 1 300px',
+            minWidth: '200px',
+          }}
+        />
+        <button
+          onClick={() => setFiltro('')}
+          style={{
+            padding: '8px 12px',
+            borderRadius: '5px',
+            border: 'none',
+            backgroundColor: '#ef4444',
+            color: 'white',
+            cursor: 'pointer',
+            height: '38px',
+          }}
+        >
+          Limpiar filtro
+        </button>
+      </div>
+
       {loading && <p>Cargando pedidos...</p>}
       {error && <p className="error">{error}</p>}
 
       <div className="pedidos-list">
-        {(!Array.isArray(pedidos) || pedidos.length === 0) ? (
+        {(!Array.isArray(pedidosPaginados) || pedidosPaginados.length === 0) ? (
           <p>No hay pedidos aún</p>
         ) : (
-          pedidos.map((pedido) => (
+          pedidosPaginados.map((pedido) => (
             <div
               key={pedido.id}
               className={`pedido-card ${openId === pedido.id ? 'open' : ''}`}
@@ -128,7 +214,7 @@ function Pedidos() {
                     <select
                       value={pedido.estado || "en_proceso"}
                       onChange={(e) => actualizarEstado(pedido.id, e.target.value)}
-                      onClick={(e) => e.stopPropagation()} // 👈 Esto evita que el select cierre el desglose
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <option value="en_proceso">En proceso</option>
                       <option value="empaquetado">Empaquetado</option>
@@ -155,6 +241,37 @@ function Pedidos() {
           ))
         )}
       </div>
+
+      {/* Paginación */}
+      {totalPaginas > 1 && (
+        <div className="pagination">
+          <button
+            className={`pagination-nav ${paginaActual === 1 ? 'disabled' : ''}`}
+            onClick={irAPaginaAnterior}
+            disabled={paginaActual === 1}
+          >
+            Anterior
+          </button>
+
+          {Array.from({ length: totalPaginas }, (_, i) => (
+            <button
+              key={i}
+              className={`pagination-button ${paginaActual === i + 1 ? 'active' : ''}`}
+              onClick={() => setPaginaActual(i + 1)}
+            >
+              {i + 1}
+            </button>
+          ))}
+
+          <button
+            className={`pagination-nav ${paginaActual === totalPaginas ? 'disabled' : ''}`}
+            onClick={irAPaginaSiguiente}
+            disabled={paginaActual === totalPaginas}
+          >
+            Siguiente
+          </button>
+        </div>
+      )}
     </div>
   );
 }

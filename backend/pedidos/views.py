@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from .models import Pedido
 from .serializers import PedidoSerializer
 from django.db.models import Count
+from rest_framework.exceptions import ValidationError 
 
 User = get_user_model()
 
@@ -16,17 +17,16 @@ class PedidoListCreateView(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         email = self.request.data.get("email")
-        cliente_nombre = "Cliente desconocido"
-        
-        if email:
-            try:
-                user = User.objects.get(email=email)
-                cliente_nombre = f"{user.first_name} {user.last_name}".strip() or "Sin nombre"
-            except User.DoesNotExist:
-                pass
-        
-        serializer.save(cliente=cliente_nombre, email=email)
+        if not email:
+            raise ValidationError({"email": "El email es obligatorio."})
 
+        try:
+            user = User.objects.get(email=email)
+            cliente_nombre = f"{user.first_name} {user.last_name}".strip() or "Sin nombre"
+        except User.DoesNotExist:
+            raise ValidationError({"email": "El usuario con este email no existe."})
+
+        serializer.save(cliente=cliente_nombre, email=email)
 # ✅ Actualizar estado del pedido
 @api_view(['PATCH'])
 def actualizar_estado_pedido(request, pk):
