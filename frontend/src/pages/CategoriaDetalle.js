@@ -76,6 +76,14 @@ const CategoriasDetalle = () => {
     return fullUrl;
   };
 
+  // Función para manejar clic en producto
+  const handleProductoClick = (producto) => {
+    // Guardar el producto seleccionado en localStorage para que el carrito lo pueda acceder
+    localStorage.setItem('productoSeleccionado', JSON.stringify(producto));
+    // Navegar al carrito
+    navigate('/carrito');
+  };
+
   useEffect(() => {
     if (nombre) {
       console.log('Buscando productos para categoría URL:', nombre);
@@ -266,6 +274,7 @@ const CategoriasDetalle = () => {
                 border: '1px solid #f0f0f0',
                 position: 'relative'  // Agregado para posicionar el botón
               }}
+              onClick={() => handleProductoClick(prod)} // Agregar onClick aquí
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-5px)';
                 e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
@@ -281,7 +290,9 @@ const CategoriasDetalle = () => {
                   top: '12px', 
                   right: '12px', 
                   zIndex: 10 
-                }}>
+                }}
+                onClick={(e) => e.stopPropagation()} // Evitar que el clic del favorito active la navegación
+                >
                   <FavoriteButton 
                     producto={prod} 
                     size="small"
