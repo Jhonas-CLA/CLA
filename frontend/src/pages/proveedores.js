@@ -11,7 +11,8 @@ export default function Proveedores() {
     id: null,
     nombre: '',
     email: '',
-    telefono: ''
+    telefono: '',
+    representante: '' // ✅ Nuevo campo
   });
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
@@ -21,7 +22,7 @@ export default function Proveedores() {
 
   // 🔹 Paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const [proveedoresPorPagina] = useState(1); // ✅ Mostrar 2 proveedores por página
+  const [proveedoresPorPagina] = useState(1);
 
   const fetchProveedores = async () => {
     try {
@@ -63,13 +64,13 @@ export default function Proveedores() {
       const response = await fetch(url, {
         method,
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData) // ✅ Ahora incluye representante
       });
 
       if (!response.ok) throw new Error('Error al guardar proveedor');
 
       await fetchProveedores();
-      setFormData({ id: null, nombre: '', email: '', telefono: '' });
+      setFormData({ id: null, nombre: '', email: '', telefono: '', representante: '' });
       setIsEditing(false);
       setShowForm(false);
     } catch (err) {
@@ -79,14 +80,14 @@ export default function Proveedores() {
   };
 
   const handleEdit = (proveedor) => {
-    setFormData(proveedor);
+    setFormData(proveedor); // ✅ Ya trae representante del backend
     setIsEditing(true);
     setShowForm(true);
   };
 
   // 🔹 filtrar proveedores por búsqueda
   const proveedoresFiltrados = proveedores.filter((p) =>
-    [p.nombre, p.email, p.telefono]
+    [p.nombre, p.email, p.telefono, p.representante]
       .join(' ')
       .toLowerCase()
       .includes(search.toLowerCase())
@@ -166,12 +167,19 @@ export default function Proveedores() {
                 value={formData.telefono || ''}
                 onChange={handleChange}
               />
+              <input
+                type="text"
+                name="representante"
+                placeholder="Nombre del Representante"
+                value={formData.representante || ''}
+                onChange={handleChange}
+              />
               <div className="form-buttons">
                 <button type="submit">{isEditing ? 'Actualizar' : 'Guardar'}</button>
                 <button
                   type="button"
                   onClick={() => {
-                    setFormData({ id: null, nombre: '', email: '', telefono: '' });
+                    setFormData({ id: null, nombre: '', email: '', telefono: '', representante: '' });
                     setIsEditing(false);
                     setShowForm(false);
                   }}
@@ -192,6 +200,7 @@ export default function Proveedores() {
               <th>Nombre</th>
               <th>Email</th>
               <th>Teléfono</th>
+              <th>Representante</th> {/* ✅ Nueva columna */}
               <th>Registro</th>
               <th>Acciones</th>
             </tr>
@@ -202,6 +211,7 @@ export default function Proveedores() {
                 <td>{p.nombre}</td>
                 <td>{p.email}</td>
                 <td>{p.telefono || 'No especificado'}</td>
+                <td>{p.representante || 'No asignado'}</td> {/* ✅ Mostrar en tabla */}
                 <td>{new Date(p.creado_en).toLocaleDateString('es-ES')}</td>
                 <td>
                   <button onClick={() => handleEdit(p)}>Editar</button>

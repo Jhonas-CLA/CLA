@@ -40,7 +40,7 @@ function AdminDashboard() {
 
   // 🔹 Estados para la paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const [usuariosPorPagina] = useState(2);
+  const [usuariosPorPagina] = useState(5);
 
   const toggleSidebar = () => {
     const sidebar = document.getElementById("sidebar");
@@ -74,14 +74,17 @@ function AdminDashboard() {
     try {
       setLoadingAdmin(true);
       const token = localStorage.getItem("token");
-      
-      const response = await fetch("http://localhost:8000/accounts/perfil-admin/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+
+      const response = await fetch(
+        "http://localhost:8000/accounts/perfil-admin/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       const data = await response.json();
 
@@ -113,17 +116,20 @@ function AdminDashboard() {
       const datosEditables = {
         first_name: perfilFormData.first_name,
         last_name: perfilFormData.last_name,
-        phone: perfilFormData.phone
+        phone: perfilFormData.phone,
       };
 
-      const response = await fetch("http://localhost:8000/accounts/actualizar-perfil-admin/", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(datosEditables),
-      });
+      const response = await fetch(
+        "http://localhost:8000/accounts/actualizar-perfil-admin/",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(datosEditables),
+        }
+      );
 
       const data = await response.json();
 
@@ -202,7 +208,7 @@ function AdminDashboard() {
       const datosEditables = {
         first_name: formData.first_name,
         last_name: formData.last_name,
-        phone: formData.phone
+        phone: formData.phone,
       };
 
       const response = await fetch(
@@ -413,7 +419,7 @@ function AdminDashboard() {
             </div>
             <div className="profile-actions">
               {!editandoPerfil ? (
-                <button 
+                <button
                   className="btn-edit-profile"
                   onClick={() => setEditandoPerfil(true)}
                 >
@@ -421,7 +427,7 @@ function AdminDashboard() {
                 </button>
               ) : (
                 <div className="edit-actions">
-                  <button 
+                  <button
                     className="btn-cancel"
                     onClick={() => {
                       setEditandoPerfil(false);
@@ -437,7 +443,7 @@ function AdminDashboard() {
                   >
                     Cancelar
                   </button>
-                  <button 
+                  <button
                     className="btn-save"
                     onClick={guardarPerfilAdmin}
                     disabled={loadingAction}
@@ -453,28 +459,32 @@ function AdminDashboard() {
             <div className="profile-edit-form">
               <div className="form-row">
                 <div className="form-group">
-                  <label>Nombre <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <label>
+                    Nombre <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
                   <input
                     type="text"
                     value={perfilFormData.first_name}
                     onChange={(e) =>
-                      setPerfilFormData({ 
-                        ...perfilFormData, 
-                        first_name: e.target.value 
+                      setPerfilFormData({
+                        ...perfilFormData,
+                        first_name: e.target.value,
                       })
                     }
                     placeholder="Tu nombre"
                   />
                 </div>
                 <div className="form-group">
-                  <label>Apellido <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <label>
+                    Apellido <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
                   <input
                     type="text"
                     value={perfilFormData.last_name}
                     onChange={(e) =>
-                      setPerfilFormData({ 
-                        ...perfilFormData, 
-                        last_name: e.target.value 
+                      setPerfilFormData({
+                        ...perfilFormData,
+                        last_name: e.target.value,
                       })
                     }
                     placeholder="Tu apellido"
@@ -484,30 +494,34 @@ function AdminDashboard() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Teléfono <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <label>
+                    Teléfono <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
                   <input
                     type="text"
                     value={perfilFormData.phone}
                     onChange={(e) =>
-                      setPerfilFormData({ 
-                        ...perfilFormData, 
-                        phone: e.target.value 
+                      setPerfilFormData({
+                        ...perfilFormData,
+                        phone: e.target.value,
                       })
                     }
                     placeholder="Tu número de teléfono"
                   />
                 </div>
                 <div className="form-group">
-                  <label>Email <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <label>
+                    Email <span style={{ color: "red" }}>🔒 No editable</span>
+                  </label>
                   <input
                     type="email"
                     value={perfilFormData.email}
                     readOnly
                     disabled
                     style={{
-                      backgroundColor: '#f5f5f5',
-                      cursor: 'not-allowed',
-                      opacity: '0.6'
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
                     }}
                   />
                 </div>
@@ -515,16 +529,22 @@ function AdminDashboard() {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label>Rol <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <label>
+                    Rol <span style={{ color: "red" }}>🔒 No editable</span>
+                  </label>
                   <input
                     type="text"
-                    value={perfilFormData.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                    value={
+                      perfilFormData.rol === "admin"
+                        ? "Administrador"
+                        : "Usuario"
+                    }
                     readOnly
                     disabled
                     style={{
-                      backgroundColor: '#f5f5f5',
-                      cursor: 'not-allowed',
-                      opacity: '0.6'
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
                     }}
                   />
                 </div>
@@ -548,7 +568,11 @@ function AdminDashboard() {
               </div>
               <div className="detail-item">
                 <strong>Estado:</strong>
-                <span className={`estado-text ${adminData.is_active ? "activo" : "inactivo"}`}>
+                <span
+                  className={`estado-text ${
+                    adminData.is_active ? "activo" : "inactivo"
+                  }`}
+                >
                   {adminData.is_active ? "Activo" : "Inactivo"}
                 </span>
               </div>
@@ -661,12 +685,14 @@ function AdminDashboard() {
                   <td>
                     <div className="estado-info">
                       <div
-                        className={`estado-dot ${usuario.is_active ? "activo" : "inactivo"
-                          }`}
+                        className={`estado-dot ${
+                          usuario.is_active ? "activo" : "inactivo"
+                        }`}
                       ></div>
                       <span
-                        className={`estado-text ${usuario.is_active ? "activo" : "inactivo"
-                          }`}
+                        className={`estado-text ${
+                          usuario.is_active ? "activo" : "inactivo"
+                        }`}
                       >
                         {usuario.is_active ? "Activo" : "Inactivo"}
                       </span>
@@ -682,19 +708,28 @@ function AdminDashboard() {
                         onClick={() => abrirModalEdicion(usuario)}
                         title="Editar usuario"
                         disabled={loadingAction}
+                        style={{
+                          opacity: 0, // hace invisible el botón
+                          pointerEvents: "none", // desactiva los clics
+                          position: "absolute", // para que no afecte el layout
+                          width: 0,
+                          height: 0,
+                          overflow: "hidden",
+                        }}
                       >
                         ✏️
                       </button>
                       <button
-                        className={`btn-toggle ${usuario.is_active
+                        className={`btn-toggle ${
+                          usuario.is_active
                             ? "btn-inhabilitar"
                             : "btn-habilitar"
-                          }`}
+                        }`}
                         onClick={() =>
                           toggleEstadoUsuario(
                             usuario.id,
                             usuario.full_name ||
-                            `${usuario.first_name} ${usuario.last_name}`
+                              `${usuario.first_name} ${usuario.last_name}`
                           )
                         }
                         title={
@@ -765,7 +800,9 @@ function AdminDashboard() {
 
               <div className="modal-body">
                 <div className="form-group">
-                  <label>Nombre: <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <label>
+                    Nombre: <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
                   <input
                     type="text"
                     value={formData.first_name}
@@ -777,7 +814,9 @@ function AdminDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Apellido: <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <label>
+                    Apellido: <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
                   <input
                     type="text"
                     value={formData.last_name}
@@ -789,7 +828,9 @@ function AdminDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Teléfono: <span style={{color: 'green'}}>✓ Editable</span></label>
+                  <label>
+                    Teléfono: <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
                   <input
                     type="text"
                     value={formData.phone}
@@ -801,31 +842,37 @@ function AdminDashboard() {
                 </div>
 
                 <div className="form-group">
-                  <label>Email: <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <label>
+                    Email: <span style={{ color: "red" }}>🔒 No editable</span>
+                  </label>
                   <input
                     type="email"
                     value={formData.email}
                     readOnly
                     disabled
                     style={{
-                      backgroundColor: '#f5f5f5',
-                      cursor: 'not-allowed',
-                      opacity: '0.6'
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
                     }}
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Rol: <span style={{color: 'red'}}>🔒 No editable</span></label>
+                  <label>
+                    Rol: <span style={{ color: "red" }}>🔒 No editable</span>
+                  </label>
                   <input
                     type="text"
-                    value={formData.rol === 'admin' ? 'Administrador' : 'Usuario'}
+                    value={
+                      formData.rol === "admin" ? "Administrador" : "Usuario"
+                    }
                     readOnly
                     disabled
                     style={{
-                      backgroundColor: '#f5f5f5',
-                      cursor: 'not-allowed',
-                      opacity: '0.6'
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
                     }}
                   />
                 </div>
@@ -878,57 +925,60 @@ function AdminDashboard() {
 
         <nav className="menu">
           <button
-            className={`menu-item ${activeSection === "usuarios" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              activeSection === "usuarios" ? "active" : ""
+            }`}
             onClick={(e) => setActive(e.target, "usuarios")}
           >
             <div className="menu-icon">👤</div>
             <span>Usuarios</span>
           </button>
           <button
-            className={`menu-item ${activeSection === "proveedores" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              activeSection === "proveedores" ? "active" : ""
+            }`}
             onClick={(e) => setActive(e.target, "proveedores")}
           >
             <div className="menu-icon">👥</div>
             <span>Proveedores</span>
           </button>
           <button
-            className={`menu-item ${activeSection === "analiticos" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              activeSection === "analiticos" ? "active" : ""
+            }`}
             onClick={(e) => setActive(e.target, "analiticos")}
           >
             <div className="menu-icon">📊</div>
             <span>Analíticas</span>
           </button>
           <button
-            className={`menu-item ${activeSection === "productos" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              activeSection === "productos" ? "active" : ""
+            }`}
             onClick={(e) => setActive(e.target, "productos")}
           >
             <div className="menu-icon">📦</div>
             <span>Productos</span>
           </button>
           <button
-            className={`menu-item ${activeSection === "pedidos" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              activeSection === "pedidos" ? "active" : ""
+            }`}
             onClick={(e) => setActive(e.target, "pedidos")}
           >
             <div className="menu-icon">🛒</div>
             <span>Pedidos</span>
           </button>
           <button
-            className={`menu-item ${activeSection === "configuracion" ? "active" : ""
-              }`}
+            className={`menu-item ${
+              activeSection === "configuracion" ? "active" : ""
+            }`}
             onClick={(e) => setActive(e.target, "configuracion")}
           >
             <div className="menu-icon">⚙️</div>
             <span>Configuración</span>
           </button>
-          <button
-            className="menu-item logout-btn"
-            onClick={handleLogout}
-          >
+          <button className="menu-item logout-btn" onClick={handleLogout}>
             <div className="menu-icon">🚪</div>
             <span>Salir</span>
           </button>
