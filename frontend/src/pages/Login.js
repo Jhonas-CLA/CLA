@@ -23,9 +23,84 @@ function Login() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // NUEVO: Estado para la fortaleza de la contraseña en registro
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    text: '',
+    color: '#ccc',
+    requirements: {
+      length: false,
+      uppercase: false,
+      lowercase: false,
+      numbers: false,
+      symbols: false
+    }
+  });
+
+  // NUEVO: Función para evaluar la fortaleza de la contraseña
+  const evaluatePasswordStrength = (password) => {
+    const requirements = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      numbers: /\d/.test(password),
+      symbols: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+
+    const score = Object.values(requirements).filter(Boolean).length;
+    
+    let text, color;
+    
+    if (password.length === 0) {
+      text = '';
+      color = '#ccc';
+    } else if (password.length < 8) {
+      text = 'Muy débil (mínimo 8 caracteres)';
+      color = '#ef4444';
+    } else if (score <= 2) {
+      text = 'Débil';
+      color = '#ef4444';
+    } else if (score === 3) {
+      text = 'Regular';
+      color = '#f59e0b';
+    } else if (score === 4) {
+      text = 'Segura';
+      color = '#10b981';
+    } else if (score === 5) {
+      text = 'Muy segura';
+      color = '#059669';
+    }
+
+    return { score, text, color, requirements };
+  };
+
+  // CORREGIDO: Función para cambiar pestañas (no debe ser submit)
   const switchTab = (tab) => {
     setActiveTab(tab);
     setError('');
+    // Limpiar formularios cuando cambie de pestaña
+    setLoginData({ email: '', password: '' });
+    setRegisterData({
+      first_name: '',
+      last_name: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      rol: 'usuario',
+    });
+    // Limpiar indicador de fortaleza
+    setPasswordStrength({
+      score: 0,
+      text: '',
+      color: '#ccc',
+      requirements: {
+        length: false,
+        uppercase: false,
+        lowercase: false,
+        numbers: false,
+        symbols: false
+      }
+    });
   };
 
   const handleLogin = async (e) => {
@@ -86,6 +161,11 @@ function Login() {
     e.preventDefault();
     setError('');
 
+    // NUEVO: Validación de contraseña mínima
+    if (registerData.password.length < 8) {
+      return setError('La contraseña debe tener al menos 8 caracteres');
+    }
+
     if (registerData.password !== registerData.confirmPassword) {
       return setError('Las contraseñas no coinciden');
     }
@@ -112,6 +192,19 @@ function Login() {
           confirmPassword: '',
           rol: 'usuario',
         });
+        // Limpiar indicador de fortaleza
+        setPasswordStrength({
+          score: 0,
+          text: '',
+          color: '#ccc',
+          requirements: {
+            length: false,
+            uppercase: false,
+            lowercase: false,
+            numbers: false,
+            symbols: false
+          }
+        });
       } else {
         setError(data.error || data.message || 'Error al registrar usuario');
       }
@@ -123,13 +216,36 @@ function Login() {
     }
   };
 
+  // NUEVO: Manejar cambio en contraseña de registro
+  const handleRegisterPasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setRegisterData({ ...registerData, password: newPassword });
+    
+    // Evaluar fortaleza en tiempo real
+    const strength = evaluatePasswordStrength(newPassword);
+    setPasswordStrength(strength);
+  };
+
   return (
     <div className="login-container">
       <h2 className="login-title">
         {activeTab === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
       </h2>
       
-      {error && <p className="text-danger text-center">{error}</p>}
+      {error && (
+        <div style={{
+          backgroundColor: '#fee2e2',
+          border: '1px solid #ef4444',
+          borderRadius: '8px',
+          padding: '12px',
+          marginBottom: '20px',
+          color: '#dc2626',
+          fontSize: '0.9rem',
+          textAlign: 'center'
+        }}>
+          ⚠️ {error}
+        </div>
+      )}
 
       {activeTab === 'login' ? (
         <form onSubmit={handleLogin}>
@@ -178,9 +294,10 @@ function Login() {
           </button>
           
           <div className="text-center mt-3">
+            {/* CORREGIDO: Cambiar de type="submit" a type="button" */}
             <button
-              type="submit"
-              className="btn btn-primary btn-block"
+              type="button"
+              className="btn btn-secondary btn-block"
               onClick={() => switchTab('register')}
               disabled={isLoading}
             >
@@ -227,15 +344,93 @@ function Login() {
           </div>
 
           <div className="form-group">
-            <label>Contraseña</label>
+            <label>Contraseña (mínimo 8 caracteres)</label>
             <input
               type="password"
               value={registerData.password}
-              onChange={(e) => setRegisterData({ ...registerData, password: e.target.value })}
+              onChange={handleRegisterPasswordChange}
               placeholder="Ingresa tu contraseña"
               required
+              minLength="8"
               disabled={isLoading}
+              style={{
+                borderColor: registerData.password.length > 0 ? passwordStrength.color : '#ddd',
+                borderWidth: '2px'
+              }}
             />
+
+            {/* NUEVO: Indicador de fortaleza de contraseña */}
+            {registerData.password.length > 0 && (
+              <div style={{ 
+                marginTop: '8px',
+                marginBottom: '12px'
+              }}>
+                {/* Barra de fortaleza */}
+                <div style={{
+                  width: '100%',
+                  height: '6px',
+                  backgroundColor: '#e5e7eb',
+                  borderRadius: '3px',
+                  overflow: 'hidden',
+                  marginBottom: '8px'
+                }}>
+                  <div style={{
+                    width: `${(passwordStrength.score / 5) * 100}%`,
+                    height: '100%',
+                    backgroundColor: passwordStrength.color,
+                    transition: 'all 0.3s ease'
+                  }} />
+                </div>
+                
+                {/* Texto de fortaleza */}
+                <div style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  marginBottom: '12px'
+                }}>
+                  <span style={{
+                    color: passwordStrength.color,
+                    fontWeight: 'bold',
+                    fontSize: '0.9rem'
+                  }}>
+                    {passwordStrength.text}
+                  </span>
+                </div>
+                
+                {/* Requisitos de la contraseña */}
+                <div style={{
+                  fontSize: '0.8rem',
+                  color: '#64748b',
+                  backgroundColor: '#f8fafc',
+                  padding: '8px',
+                  borderRadius: '6px',
+                  border: '1px solid #e2e8f0'
+                }}>
+                  <div style={{ marginBottom: '4px', fontWeight: 'bold' }}>Requisitos:</div>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px', fontSize: '0.75rem' }}>
+                    <span style={{ color: passwordStrength.requirements.length ? '#10b981' : '#ef4444' }}>
+                      {passwordStrength.requirements.length ? '✓' : '✗'} 8+ caracteres
+                    </span>
+                    <span style={{ color: passwordStrength.requirements.uppercase ? '#10b981' : '#ef4444' }}>
+                      {passwordStrength.requirements.uppercase ? '✓' : '✗'} Mayúsculas
+                    </span>
+                    <span style={{ color: passwordStrength.requirements.lowercase ? '#10b981' : '#ef4444' }}>
+                      {passwordStrength.requirements.lowercase ? '✓' : '✗'} Minúsculas
+                    </span>
+                    <span style={{ color: passwordStrength.requirements.numbers ? '#10b981' : '#ef4444' }}>
+                      {passwordStrength.requirements.numbers ? '✓' : '✗'} Números
+                    </span>
+                    <span style={{ 
+                      color: passwordStrength.requirements.symbols ? '#10b981' : '#ef4444', 
+                      gridColumn: 'span 2' 
+                    }}>
+                      {passwordStrength.requirements.symbols ? '✓' : '✗'} Símbolos (!@#$%^&*)
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -247,21 +442,67 @@ function Login() {
               placeholder="Confirma tu contraseña"
               required
               disabled={isLoading}
+              style={{
+                borderColor: registerData.confirmPassword.length > 0 
+                  ? (registerData.password === registerData.confirmPassword ? '#10b981' : '#ef4444')
+                  : '#ddd',
+                borderWidth: '2px'
+              }}
             />
+
+            {/* Indicador de coincidencia de contraseñas */}
+            {registerData.confirmPassword.length > 0 && (
+              <div style={{ 
+                marginTop: '4px',
+                fontSize: '0.8rem',
+                color: registerData.password === registerData.confirmPassword ? '#10b981' : '#ef4444'
+              }}>
+                {registerData.password === registerData.confirmPassword 
+                  ? '✓ Las contraseñas coinciden' 
+                  : '✗ Las contraseñas no coinciden'
+                }
+              </div>
+            )}
           </div>
 
           <button 
             type="submit" 
             className="btn btn-primary btn-block"
-            disabled={isLoading}
+            disabled={
+              isLoading || 
+              registerData.password.length < 8 || 
+              registerData.password !== registerData.confirmPassword ||
+              !registerData.first_name ||
+              !registerData.last_name ||
+              !registerData.email
+            }
+            style={{
+              opacity: (
+                isLoading || 
+                registerData.password.length < 8 || 
+                registerData.password !== registerData.confirmPassword ||
+                !registerData.first_name ||
+                !registerData.last_name ||
+                !registerData.email
+              ) ? 0.6 : 1,
+              cursor: (
+                isLoading || 
+                registerData.password.length < 8 || 
+                registerData.password !== registerData.confirmPassword ||
+                !registerData.first_name ||
+                !registerData.last_name ||
+                !registerData.email
+              ) ? 'not-allowed' : 'pointer'
+            }}
           >
             {isLoading ? 'Registrando...' : 'Registrarse'}
           </button>
           
           <div className="text-center mt-3">
+            {/* CORREGIDO: Cambiar de type="submit" a type="button" */}
             <button
-              type="submit"
-              className="btn btn-primary btn-block"
+              type="button"
+              className="btn btn-secondary btn-block"
               onClick={() => switchTab('login')}
               disabled={isLoading}
             >

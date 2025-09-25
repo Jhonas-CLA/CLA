@@ -60,7 +60,7 @@ const QuienesSomos = () => {
           <div className="row justify-content-center align-items-center text-center text-white">
             <div className="col-md-4 mb-4 mb-md-0">
               <img
-                src="https://www.infobae.com/resizer/v2/L2SPIWTA7VDCFMIQMAWC3RKJTQ.jpg?auth=5e66902428bafad71b856cd49d021c0dbe13989d5b9b7cab814093c1a1dbbc14&smart=true&width=400&height=400&quality=85"
+                src="https://tse4.mm.bing.net/th/id/OIP.rIsI3TvodysyTi_2VOGK3gHaHa?pid=Api&P=0&h=180"
                 alt="Gerente"
                 className="img-fluid rounded-circle floating"
               />

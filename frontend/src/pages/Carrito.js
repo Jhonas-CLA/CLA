@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
+import FavoriteButton from "../components/FavoriteButton";
 import "./Carrito.css";
 
 const BASE_URL = "http://localhost:8000";
@@ -73,10 +74,10 @@ const CarritoCompras = () => {
   // Inicializar carrito desde localStorage
   const [carrito, setCarrito] = useState(() => {
     try {
-      const carritoGuardado = localStorage.getItem('carrito');
+      const carritoGuardado = localStorage.getItem("carrito");
       return carritoGuardado ? JSON.parse(carritoGuardado) : {};
     } catch (error) {
-      console.error('Error al cargar carrito:', error);
+      console.error("Error al cargar carrito:", error);
       return {};
     }
   });
@@ -84,10 +85,11 @@ const CarritoCompras = () => {
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
   const [numeroWhatsApp, setNumeroWhatsApp] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
-  
+
   // NUEVO: Estado para el producto seleccionado desde categorías
   const [productoSeleccionado, setProductoSeleccionado] = useState(null);
-  const [mostrarProductoSeleccionado, setMostrarProductoSeleccionado] = useState(false);
+  const [mostrarProductoSeleccionado, setMostrarProductoSeleccionado] =
+    useState(false);
 
   // Estados para la validación de usuario
   const [email, setEmail] = useState("");
@@ -99,37 +101,36 @@ const CarritoCompras = () => {
   // Efecto para guardar carrito en localStorage cuando cambie
   useEffect(() => {
     try {
-      localStorage.setItem('carrito', JSON.stringify(carrito));
+      localStorage.setItem("carrito", JSON.stringify(carrito));
     } catch (error) {
-      console.error('Error al guardar carrito:', error);
+      console.error("Error al guardar carrito:", error);
     }
   }, [carrito]);
 
-  // NUEVO: Verificar si hay un producto seleccionado al cargar
+  // MODIFICADO: Verificar si hay un producto seleccionado y categoría guardada al cargar
   useEffect(() => {
-    const productoGuardado = localStorage.getItem('productoSeleccionado');
+    const productoGuardado = localStorage.getItem("productoSeleccionado");
+    const categoriaGuardada = localStorage.getItem("categoriaSeleccionada");
+    
     if (productoGuardado) {
       try {
         const producto = JSON.parse(productoGuardado);
         setProductoSeleccionado(producto);
         setMostrarProductoSeleccionado(true);
-        
-        // Buscar la categoría correspondiente y establecerla como filtro
-        const categoriaProducto = producto.categoria;
-        const categoriaSlug = Object.keys(categoriasMap).find(
-          key => categoriasMap[key] === categoriaProducto
-        );
-        
-        if (categoriaSlug) {
-          setCategoriaFiltro(categoriaSlug);
-        }
-        
+
         // Limpiar localStorage después de usar
-        localStorage.removeItem('productoSeleccionado');
+        localStorage.removeItem("productoSeleccionado");
       } catch (error) {
-        console.error('Error al parsear producto seleccionado:', error);
-        localStorage.removeItem('productoSeleccionado');
+        console.error("Error al parsear producto seleccionado:", error);
+        localStorage.removeItem("productoSeleccionado");
       }
+    }
+
+    // NUEVO: Establecer la categoría si viene de categorías
+    if (categoriaGuardada) {
+      setCategoriaFiltro(categoriaGuardada);
+      // Limpiar localStorage después de usar
+      localStorage.removeItem("categoriaSeleccionada");
     }
   }, []);
 
@@ -219,14 +220,16 @@ const CarritoCompras = () => {
       // Convertir el producto seleccionado al formato esperado por el carrito
       const productoParaCarrito = {
         id: productoSeleccionado.id,
-        codigo: productoSeleccionado.codigo || `PROD-${productoSeleccionado.id}`,
+        codigo:
+          productoSeleccionado.codigo || `PROD-${productoSeleccionado.id}`,
         nombre: productoSeleccionado.nombre || productoSeleccionado.name,
         categoria: productoSeleccionado.categoria,
         precio: parseFloat(productoSeleccionado.precio || 0),
         stock: productoSeleccionado.cantidad || productoSeleccionado.stock || 1,
-        imagen_url: productoSeleccionado.imagen || productoSeleccionado.imagen_url || "",
+        imagen_url:
+          productoSeleccionado.imagen || productoSeleccionado.imagen_url || "",
       };
-      
+
       agregarAlCarrito(productoParaCarrito);
       setMostrarProductoSeleccionado(false);
       setProductoSeleccionado(null);
@@ -280,7 +283,7 @@ const CarritoCompras = () => {
   // limpiar carrito
   const limpiarCarrito = () => {
     setCarrito({});
-    localStorage.removeItem('carrito');
+    localStorage.removeItem("carrito");
   };
 
   const totalItems = Object.values(carrito).reduce(
@@ -677,15 +680,17 @@ const CarritoCompras = () => {
     <div className="carrito-container">
       {/* NUEVO: Banner del producto seleccionado */}
       {mostrarProductoSeleccionado && productoSeleccionado && (
-        <div style={{
-          backgroundColor: "#fff8e1",
-          border: "3px solid #FFD700",
-          borderRadius: "15px",
-          padding: "20px",
-          marginBottom: "30px",
-          position: "relative",
-          boxShadow: "0 4px 12px rgba(255, 215, 0, 0.3)"
-        }}>
+        <div
+          style={{
+            backgroundColor: "#fff8e1",
+            border: "3px solid #FFD700",
+            borderRadius: "15px",
+            padding: "20px",
+            marginBottom: "30px",
+            position: "relative",
+            boxShadow: "0 4px 12px rgba(255, 215, 0, 0.3)",
+          }}
+        >
           <button
             onClick={cerrarProductoSeleccionado}
             style={{
@@ -702,70 +707,88 @@ const CarritoCompras = () => {
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              borderRadius: "50%"
+              borderRadius: "50%",
             }}
-            onMouseOver={(e) => e.target.style.backgroundColor = "#f0f0f0"}
-            onMouseOut={(e) => e.target.style.backgroundColor = "transparent"}
+            onMouseOver={(e) => (e.target.style.backgroundColor = "#f0f0f0")}
+            onMouseOut={(e) => (e.target.style.backgroundColor = "transparent")}
           >
             ✕
           </button>
-          
+
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-            <div style={{ 
-              width: "120px", 
-              height: "120px",
-              backgroundColor: "#f5f5f5",
-              borderRadius: "10px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              overflow: "hidden"
-            }}>
-              {productoSeleccionado.imagen || productoSeleccionado.imagen_url ? (
+            <div
+              style={{
+                width: "120px",
+                height: "120px",
+                backgroundColor: "#f5f5f5",
+                borderRadius: "10px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                overflow: "hidden",
+              }}
+            >
+              {productoSeleccionado.imagen ||
+              productoSeleccionado.imagen_url ? (
                 <ProductImage
-                  src={productoSeleccionado.imagen || productoSeleccionado.imagen_url}
+                  src={
+                    productoSeleccionado.imagen ||
+                    productoSeleccionado.imagen_url
+                  }
                   alt={productoSeleccionado.nombre || productoSeleccionado.name}
                   style={{
                     maxWidth: "100%",
                     maxHeight: "100%",
-                    objectFit: "contain"
+                    objectFit: "contain",
                   }}
                 />
               ) : (
                 <div style={{ color: "#999", fontSize: "2rem" }}>📷</div>
               )}
             </div>
-            
+
             <div style={{ flex: 1 }}>
-              <h3 style={{ 
-                color: "#001152", 
-                fontSize: "1.4rem", 
-                marginBottom: "8px",
-                fontWeight: "bold"
-              }}>
+              <h3
+                style={{
+                  color: "#001152",
+                  fontSize: "1.4rem",
+                  marginBottom: "8px",
+                  fontWeight: "bold",
+                }}
+              >
                 ¡Producto seleccionado!
               </h3>
-              <h4 style={{ 
-                color: "#333", 
-                fontSize: "1.2rem", 
-                marginBottom: "8px" 
-              }}>
+              <h4
+                style={{
+                  color: "#333",
+                  fontSize: "1.2rem",
+                  marginBottom: "8px",
+                }}
+              >
                 {productoSeleccionado.nombre || productoSeleccionado.name}
               </h4>
               {productoSeleccionado.codigo && (
-                <p style={{ color: "#666", fontSize: "0.9rem", marginBottom: "8px" }}>
+                <p
+                  style={{
+                    color: "#666",
+                    fontSize: "0.9rem",
+                    marginBottom: "8px",
+                  }}
+                >
                   Código: {productoSeleccionado.codigo}
                 </p>
               )}
-              <p style={{ 
-                color: "#001152", 
-                fontSize: "1.3rem", 
-                fontWeight: "bold",
-                marginBottom: "15px"
-              }}>
-                ${(productoSeleccionado.precio || 0).toLocaleString('es-CO')}
+              <p
+                style={{
+                  color: "#001152",
+                  fontSize: "1.3rem",
+                  fontWeight: "bold",
+                  marginBottom: "15px",
+                }}
+              >
+                ${(productoSeleccionado.precio || 0).toLocaleString("es-CO")}
               </p>
-              
+
               <button
                 onClick={agregarProductoSeleccionado}
                 style={{
@@ -777,10 +800,12 @@ const CarritoCompras = () => {
                   fontSize: "1.1rem",
                   fontWeight: "bold",
                   cursor: "pointer",
-                  transition: "background-color 0.2s ease"
+                  transition: "background-color 0.2s ease",
                 }}
-                onMouseOver={(e) => e.target.style.backgroundColor = "#e6c200"}
-                onMouseOut={(e) => e.target.style.backgroundColor = "#FFD700"}
+                onMouseOver={(e) =>
+                  (e.target.style.backgroundColor = "#e6c200")
+                }
+                onMouseOut={(e) => (e.target.style.backgroundColor = "#FFD700")}
               >
                 🛒 Agregar al carrito
               </button>
@@ -872,7 +897,23 @@ const CarritoCompras = () => {
             </p>
           ) : (
             productosFiltrados.map((producto) => (
-              <div key={producto.codigo} className="producto-card">
+              <div
+                key={producto.codigo}
+                className="producto-card"
+                style={{ position: "relative" }}
+              >
+                {/* Botón de favorito */}
+                <div
+                  style={{
+                    position: "absolute",
+                    top: "8px",
+                    right: "8px",
+                    zIndex: 10,
+                  }}
+                >
+                  <FavoriteButton producto={producto} size="small" />
+                </div>
+
                 <ProductImage
                   src={producto.imagen_url}
                   alt={producto.nombre}
@@ -890,20 +931,7 @@ const CarritoCompras = () => {
                 <p style={{ color: "#666" }}>
                   {producto.codigo} • {producto.categoria}
                 </p>
-                <div style={{ marginTop: "5px", fontSize: "0.9rem" }}>
-                  <span
-                    style={{
-                      backgroundColor:
-                        producto.stock > 0 ? "#22c55e" : "#ef4444",
-                      color: "white",
-                      padding: "4px 8px",
-                      borderRadius: "12px",
-                      marginRight: "8px",
-                    }}
-                  >
-                    Stock: {producto.stock}
-                  </span>
-                </div>
+                {/* REMOVIDO: La sección del stock ya no se muestra */}
                 <span
                   style={{
                     fontWeight: "bold",
@@ -936,241 +964,244 @@ const CarritoCompras = () => {
         </div>
 
         {/* carrito lateral */}
-<div
-  style={{
-    width: "400px",
-    backgroundColor: "white",
-    borderRadius: "20px",
-    padding: "30px",
-    boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-    position: "sticky",
-    top: "20px",
-    maxHeight: "80vh",
-    overflowY: "auto",
-  }}
->
-  <h2
-    style={{
-      color: "#1e3a8a",
-      fontSize: "1.5rem",
-      fontWeight: "bold",
-      marginBottom: "20px",
-    }}
-  >
-    Tu Carrito
-  </h2>
-
-  {Object.values(carrito).length === 0 ? (
-    <p style={{ color: "#666", textAlign: "center", padding: "20px" }}>
-      No hay productos en el carrito.
-    </p>
-  ) : (
-    <>
-      {Object.values(carrito).map((item) => (
         <div
-          key={item.codigo}
           style={{
-            backgroundColor: "#f8fafc",
-            borderRadius: "8px",
-            padding: "15px",
-            marginBottom: "12px",
-            border: "1px solid #e2e8f0",
+            width: "400px",
+            backgroundColor: "white",
+            borderRadius: "20px",
+            padding: "30px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            position: "sticky",
+            top: "20px",
+            maxHeight: "80vh",
+            overflowY: "auto",
           }}
         >
-          <div
+          <h2
             style={{
-              fontWeight: "bold",
               color: "#1e3a8a",
-              fontSize: "1rem",
-              marginBottom: "4px",
+              fontSize: "1.5rem",
+              fontWeight: "bold",
+              marginBottom: "20px",
             }}
           >
-            {item.nombre}
-          </div>
-          <div
-            style={{
-              fontSize: "0.85rem",
-              color: "#64748b",
-              marginBottom: "10px",
-            }}
-          >
-            {item.codigo}
-          </div>
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              {/* Botón restar */}
-              <button
-                onClick={() =>
-                  modificarCantidad(item.codigo, item.cantidad - 1)
-                }
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "12px",
-                  border: "none",
-                  background: "linear-gradient(135deg, #facc15, #fbbf24)",
-                  color: "#1e3a8a",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
-                  transition: "all 0.2s ease-in-out",
-                }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.1)")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
-              >
-                −
-              </button>
+            Tu Carrito
+          </h2>
 
-              <span
-                style={{
-                  fontWeight: "bold",
-                  fontSize: "1.1rem",
-                  minWidth: "20px",
-                  textAlign: "center",
-                }}
-              >
-                {item.cantidad}
-              </span>
+          {Object.values(carrito).length === 0 ? (
+            <p style={{ color: "#666", textAlign: "center", padding: "20px" }}>
+              No hay productos en el carrito.
+            </p>
+          ) : (
+            <>
+              {Object.values(carrito).map((item) => (
+                <div
+                  key={item.codigo}
+                  style={{
+                    backgroundColor: "#f8fafc",
+                    borderRadius: "8px",
+                    padding: "15px",
+                    marginBottom: "12px",
+                    border: "1px solid #e2e8f0",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontWeight: "bold",
+                      color: "#1e3a8a",
+                      fontSize: "1rem",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    {item.nombre}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.85rem",
+                      color: "#64748b",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    {item.codigo}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      {/* Botón restar */}
+                      <button
+                        onClick={() =>
+                          modificarCantidad(item.codigo, item.cantidad - 1)
+                        }
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "12px",
+                          border: "none",
+                          background:
+                            "linear-gradient(135deg, #facc15, #fbbf24)",
+                          color: "#1e3a8a",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                          transition: "all 0.2s ease-in-out",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.transform = "scale(1.1)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
+                      >
+                        −
+                      </button>
 
-              {/* Botón sumar */}
-              <button
-                onClick={() =>
-                  modificarCantidad(item.codigo, item.cantidad + 1)
-                }
-                style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "12px",
-                  border: "none",
-                  background: "linear-gradient(135deg, #facc15, #fbbf24)",
-                  color: "#1e3a8a",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  fontSize: "1.2rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
-                  transition: "all 0.2s ease-in-out",
-                }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.1)")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
-              >
-                +
-              </button>
-            </div>
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          fontSize: "1.1rem",
+                          minWidth: "20px",
+                          textAlign: "center",
+                        }}
+                      >
+                        {item.cantidad}
+                      </span>
 
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "10px",
-              }}
-            >
-              <span
-                style={{
-                  fontWeight: "bold",
-                  color: "#1e3a8a",
-                  fontSize: "1rem",
-                }}
-              >
-                ${(item.precio * item.cantidad).toLocaleString()}
-              </span>
+                      {/* Botón sumar */}
+                      <button
+                        onClick={() =>
+                          modificarCantidad(item.codigo, item.cantidad + 1)
+                        }
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "12px",
+                          border: "none",
+                          background:
+                            "linear-gradient(135deg, #facc15, #fbbf24)",
+                          color: "#1e3a8a",
+                          cursor: "pointer",
+                          fontWeight: "bold",
+                          fontSize: "1.2rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                          transition: "all 0.2s ease-in-out",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.transform = "scale(1.1)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
+                      >
+                        +
+                      </button>
+                    </div>
 
-              {/* Botón eliminar */}
-              <button
-                onClick={() => quitarDelCarrito(item.codigo)}
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontWeight: "bold",
+                          color: "#1e3a8a",
+                          fontSize: "1rem",
+                        }}
+                      >
+                        ${(item.precio * item.cantidad).toLocaleString()}
+                      </span>
+
+                      {/* Botón eliminar */}
+                      <button
+                        onClick={() => quitarDelCarrito(item.codigo)}
+                        style={{
+                          width: "36px",
+                          height: "36px",
+                          borderRadius: "12px",
+                          border: "none",
+                          background:
+                            "linear-gradient(135deg, #1e3a8a, #2563eb)",
+                          color: "white",
+                          cursor: "pointer",
+                          fontSize: "1.2rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
+                          transition: "all 0.2s ease-in-out",
+                        }}
+                        onMouseOver={(e) =>
+                          (e.currentTarget.style.transform = "scale(1.1)")
+                        }
+                        onMouseOut={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              <div
                 style={{
-                  width: "36px",
-                  height: "36px",
-                  borderRadius: "12px",
-                  border: "none",
-                  background: "linear-gradient(135deg, #1e3a8a, #2563eb)",
-                  color: "white",
-                  cursor: "pointer",
-                  fontSize: "1.2rem",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  boxShadow: "0 3px 6px rgba(0,0,0,0.15)",
-                  transition: "all 0.2s ease-in-out",
+                  borderTop: "2px solid #e2e8f0",
+                  paddingTop: "15px",
+                  marginTop: "20px",
                 }}
-                onMouseOver={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.1)")
-                }
-                onMouseOut={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
-                }
               >
-                ✕
-              </button>
-            </div>
-          </div>
+                <div
+                  style={{
+                    fontSize: "1.2rem",
+                    fontWeight: "bold",
+                    color: "#1e3a8a",
+                    textAlign: "center",
+                    marginBottom: "15px",
+                  }}
+                >
+                  Total: ${totalCarrito.toLocaleString()}
+                </div>
+                <button onClick={limpiarCarrito} className="btn-eliminar">
+                  🗑️ Eliminar productos
+                </button>
+
+                <button
+                  onClick={enviarPedido}
+                  disabled={loading}
+                  className="btn-enviar"
+                >
+                  {loading ? "⏳ Enviando..." : "📲 Enviar pedido por WhatsApp"}
+                </button>
+              </div>
+            </>
+          )}
         </div>
-      ))}
-      <div
-        style={{
-          borderTop: "2px solid #e2e8f0",
-          paddingTop: "15px",
-          marginTop: "20px",
-        }}
-      >
-        <div
-          style={{
-            fontSize: "1.2rem",
-            fontWeight: "bold",
-            color: "#1e3a8a",
-            textAlign: "center",
-            marginBottom: "15px",
-          }}
-        >
-          Total: ${totalCarrito.toLocaleString()}
-        </div>
-        <button onClick={limpiarCarrito} className="btn-eliminar">
-          🗑️ Eliminar productos
-        </button>
-
-        <button
-          onClick={enviarPedido}
-          disabled={loading}
-          className="btn-enviar"
-        >
-          {loading ? "⏳ Enviando..." : "📲 Enviar pedido por WhatsApp"}
-        </button>
       </div>
-    </>
-  )}
-</div>
-</div>
 
-{/* Modal de email */}
-{showEmailModal && <EmailModal />}
-</div>
-);
+      {/* Modal de email */}
+      {showEmailModal && <EmailModal />}
+    </div>
+  );
 };
 
 export default CarritoCompras;
