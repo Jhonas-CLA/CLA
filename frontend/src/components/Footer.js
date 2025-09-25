@@ -1,5 +1,6 @@
-import React from 'react';
-import './Footer.css';
+import React from "react";
+import { Link } from "react-router-dom"; // ✅ Importar Link
+import "./Footer.css";
 
 function Footer() {
   return (
@@ -8,7 +9,10 @@ function Footer() {
         {/* Header */}
         <div className="footer-header">
           <h2>E&S</h2>
-          <p>Amplio catálogo en productos eléctricos y distribuidores desde hace más de 5 años.</p>
+          <p>
+            Amplio catálogo en productos eléctricos y distribuidores desde hace
+            más de 5 años.
+          </p>
         </div>
 
         {/* Footer Content */}
@@ -17,9 +21,13 @@ function Footer() {
           <div className="footer-section">
             <h3>Contáctanos</h3>
             <div className="contact-info">
-              <p><strong>Teléfono:</strong></p>
+              <p>
+                <strong>Teléfono:</strong>
+              </p>
               <p>+57 315 651 76 89</p>
-              <p><strong>Email:</strong></p>
+              <p>
+                <strong>Email:</strong>
+              </p>
               <p>edingaitan@hotmail.com</p>
             </div>
           </div>
@@ -28,11 +36,21 @@ function Footer() {
           <div className="footer-section">
             <h3>Enlaces Rápidos</h3>
             <ul className="footer-links">
-              <li><a href="/catalogo">Catálogo</a></li>
-              <li><a href="/quienes-somos">Quiénes Somos</a></li>
-              <li><a href="/novedades">Novedades</a></li>
-              <li><a href="/contacto">Contacto</a></li>
-              <li><a href="/carrito">Productos</a></li>
+              <li>
+                <Link to="/categorias">Catálogo</Link>
+              </li>
+              <li>
+                <Link to="/quienes-somos">Quiénes Somos</Link>
+              </li>
+              <li>
+                <Link to="/novedades">Novedades</Link>
+              </li>
+              <li>
+                <Link to="/contacto">Contacto</Link>
+              </li>
+              <li>
+                <Link to="/carrito">Carrito</Link>
+              </li>
             </ul>
           </div>
 
@@ -40,8 +58,12 @@ function Footer() {
           <div className="footer-section">
             <h3>Legal</h3>
             <ul className="footer-links">
-              <li><a href="/terminos">Términos y Condiciones</a></li>
-              <li><a href="/privacidad">Política de Privacidad</a></li>
+              <li>
+                <Link to="/terminos-condiciones">Términos y Condiciones</Link>
+              </li>
+              <li>
+                <Link to="/politica-privacidad">Política de Privacidad</Link>
+              </li>
             </ul>
           </div>
         </div>

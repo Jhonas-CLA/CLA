@@ -24,7 +24,7 @@ function UserDashboard() {
   const [loadingPedidos, setLoadingPedidos] = useState(false);
   const [errorPedidos, setErrorPedidos] = useState(null);
 
-  // Estados para favoritos (NUEVO)
+  // Estados para favoritos
   const [favoritos, setFavoritos] = useState([]);
   const [loadingFavoritos, setLoadingFavoritos] = useState(false);
   const [errorFavoritos, setErrorFavoritos] = useState(null);
@@ -48,9 +48,73 @@ function UserDashboard() {
     error: ''
   });
 
+  // NUEVO: Estado para la fortaleza de la contraseña
+  const [passwordStrength, setPasswordStrength] = useState({
+    score: 0,
+    text: '',
+    color: '#ccc',
+    requirements: {
+      length: false,
+      uppercase: false,
+      lowercase: false,
+      numbers: false,
+      symbols: false
+    }
+  });
+
   // Contexto de autenticación real
   const { user, token, apiCall, logout } = useAuth();
   const navigate = useNavigate();
+
+  // NUEVO: Función para evaluar la fortaleza de la contraseña
+  const evaluatePasswordStrength = (password) => {
+    const requirements = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      numbers: /\d/.test(password),
+      symbols: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)
+    };
+
+    const score = Object.values(requirements).filter(Boolean).length;
+    
+    let text, color;
+    
+    if (password.length === 0) {
+      text = '';
+      color = '#ccc';
+    } else if (password.length < 8) {
+      text = 'Muy débil (mínimo 8 caracteres)';
+      color = '#ef4444';
+    } else if (score <= 2) {
+      text = 'Débil';
+      color = '#ef4444';
+    } else if (score === 3) {
+      text = 'Regular';
+      color = '#f59e0b';
+    } else if (score === 4) {
+      text = 'Segura';
+      color = '#10b981';
+    } else if (score === 5) {
+      text = 'Muy segura';
+      color = '#059669';
+    }
+
+    return { score, text, color, requirements };
+  };
+
+  // NUEVO: Manejar cambio en el campo de nueva contraseña
+  const handleNewPasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPasswordForm(prev => ({
+      ...prev,
+      new_password: newPassword
+    }));
+    
+    // Evaluar fortaleza en tiempo real
+    const strength = evaluatePasswordStrength(newPassword);
+    setPasswordStrength(strength);
+  };
 
   const handleLogout = () => {
     if (window.confirm('¿Estás seguro de que quieres salir?')) {
@@ -59,13 +123,36 @@ function UserDashboard() {
     }
   };
 
-  // Helper para imágenes (NUEVO)
+  // Helper para imágenes
   const getImageUrl = (imagenUrl) => {
     if (!imagenUrl) return "/images/default-product.jpg";
     if (imagenUrl.startsWith("http")) return imagenUrl;
     if (imagenUrl.startsWith("/media/")) return `${BASE_URL}${imagenUrl}`;
     if (imagenUrl.startsWith("media/")) return `${BASE_URL}/${imagenUrl}`;
     return `${BASE_URL}/media/${imagenUrl}`;
+  };
+
+  // Función para manejar clic en producto favorito
+  const handleProductoFavoritoClick = (producto) => {
+    // Guardar el producto seleccionado en localStorage
+    localStorage.setItem('productoSeleccionado', JSON.stringify({
+      id: producto.id,
+      codigo: producto.codigo,
+      nombre: producto.nombre,
+      categoria: producto.categoria_nombre,
+      precio: producto.precio,
+      cantidad: producto.cantidad,
+      imagen: producto.imagen,
+      imagen_url: producto.imagen
+    }));
+    
+    // Guardar también la categoría si está disponible
+    if (producto.categoria_slug) {
+      localStorage.setItem('categoriaSeleccionada', producto.categoria_slug);
+    }
+    
+    // Navegar al carrito
+    navigate('/carrito');
   };
 
   const fetchUserProfile = async () => {
@@ -127,7 +214,7 @@ function UserDashboard() {
     }
   };
 
-  // Traer favoritos del usuario (NUEVO)
+  // Traer favoritos del usuario
   const fetchFavoritos = async () => {
     if (!token) return;
     setLoadingFavoritos(true);
@@ -149,7 +236,7 @@ function UserDashboard() {
     }
   };
 
-  // Manejar cuando se quita un favorito (NUEVO)
+  // Manejar cuando se quita un favorito
   const handleFavoritoToggle = (productoId, esFavorito, action) => {
     if (action === 'removed') {
       // Quitar de la lista local
@@ -204,8 +291,27 @@ function UserDashboard() {
     }
   };
 
+  // MODIFICADO: Validar contraseña antes de enviar
   const changePassword = async (e) => {
     e.preventDefault();
+    
+    // Validación de fortaleza mínima
+    if (passwordForm.new_password.length < 8) {
+      setPasswordForm(prev => ({ 
+        ...prev, 
+        error: 'La nueva contraseña debe tener al menos 8 caracteres' 
+      }));
+      return;
+    }
+
+    if (passwordForm.new_password !== passwordForm.confirm_password) {
+      setPasswordForm(prev => ({ 
+        ...prev, 
+        error: 'Las contraseñas no coinciden' 
+      }));
+      return;
+    }
+
     setPasswordForm(prev => ({ ...prev, loading: true, error: '', success: false }));
 
     try {
@@ -229,6 +335,20 @@ function UserDashboard() {
           loading: false,
           success: true,
           error: ''
+        });
+        
+        // Limpiar indicador de fortaleza
+        setPasswordStrength({
+          score: 0,
+          text: '',
+          color: '#ccc',
+          requirements: {
+            length: false,
+            uppercase: false,
+            lowercase: false,
+            numbers: false,
+            symbols: false
+          }
         });
         
         // Limpiar mensaje después de 3 segundos
@@ -269,7 +389,6 @@ function UserDashboard() {
     setActiveSection(section);
   };
 
-  // ACTUALIZADO: Agregar carga de favoritos
   useEffect(() => {
     if (activeSection === 'perfil') {
       fetchUserProfile();
@@ -382,26 +501,32 @@ function UserDashboard() {
                 padding: '20px 0'
               }}>
                 {favoritos.map((favorito) => (
-                  <div key={favorito.id} style={{
-                    backgroundColor: darkMode ? '#0f172a' : 'white',
-                    borderRadius: '12px',
-                    padding: '20px',
-                    boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-                    border: darkMode ? '1px solid #334155' : '1px solid #e2e8f0',
-                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                    position: 'relative'
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = 'translateY(-4px)';
-                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = 'translateY(0)';
-                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
-                  }}
+                  <div key={favorito.id} 
+                    style={{
+                      backgroundColor: darkMode ? '#0f172a' : 'white',
+                      borderRadius: '12px',
+                      padding: '20px',
+                      boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+                      border: darkMode ? '1px solid #334155' : '1px solid #e2e8f0',
+                      transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                      position: 'relative',
+                      cursor: 'pointer'
+                    }}
+                    onClick={() => handleProductoFavoritoClick(favorito.producto)}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
+                    }}
                   >
                     {/* Botón de favorito en la esquina superior derecha */}
-                    <div style={{ position: 'absolute', top: '12px', right: '12px' }}>
+                    <div 
+                      style={{ position: 'absolute', top: '12px', right: '12px' }}
+                      onClick={(e) => e.stopPropagation()}
+                    >
                       <FavoriteButton 
                         producto={favorito.producto} 
                         onToggle={handleFavoritoToggle}
@@ -473,7 +598,7 @@ function UserDashboard() {
                         </p>
                       )}
                       
-                      {/* Precio y stock */}
+                      {/* Precio e icono de carrito */}
                       <div style={{ 
                         display: 'flex', 
                         alignItems: 'center', 
@@ -488,18 +613,22 @@ function UserDashboard() {
                           ${Number(favorito.producto.precio).toLocaleString('es-CO')}
                         </span>
                         
-                        {favorito.producto.cantidad !== undefined && (
-                          <span style={{
-                            backgroundColor: favorito.producto.cantidad > 0 ? '#22c55e' : '#ef4444',
-                            color: 'white',
-                            padding: '4px 12px',
-                            borderRadius: '12px',
-                            fontSize: '0.75rem',
-                            fontWeight: 'bold'
-                          }}>
-                            {favorito.producto.cantidad > 0 ? `Stock: ${favorito.producto.cantidad}` : 'Agotado'}
-                          </span>
-                        )}
+                        {/* Icono de carrito en lugar del stock */}
+                        <div style={{
+                          backgroundColor: '#FFD700',
+                          color: '#001152',
+                          padding: '8px 12px',
+                          borderRadius: '20px',
+                          fontSize: '1rem',
+                          fontWeight: 'bold',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '4px',
+                          boxShadow: '0 2px 8px rgba(255, 215, 0, 0.3)'
+                        }}>
+                          🛒
+                          <span style={{ fontSize: '0.8rem' }}>Ver</span>
+                        </div>
                       </div>
 
                       {/* Fecha agregado */}
@@ -521,6 +650,174 @@ function UserDashboard() {
                 ))}
               </div>
             )}
+          </div>
+        );
+
+      case 'configuracion':
+        return (
+          <div className="content-section" style={baseStyle}>
+            <div className="content-header">
+              <h2 style={{ color: darkMode ? '#f1f5f9' : '#1e293b' }}>⚙️ Configuración</h2>
+              <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
+                Administra la seguridad y preferencias de tu cuenta
+              </p>
+            </div>
+
+            <div className="config-container">
+              <div className="config-section">
+                <h3>Cambiar Contraseña</h3>
+                
+                {passwordForm.success && (
+                  <div className="success-message">
+                    ✅ Contraseña cambiada correctamente
+                  </div>
+                )}
+                
+                {passwordForm.error && (
+                  <div className="error-message">
+                    ⚠️ {passwordForm.error}
+                  </div>
+                )}
+                
+                <form className="profile-form" onSubmit={changePassword}>
+                  <div className="field-group">
+                    <label>🔒 Contraseña actual</label>
+                    <input 
+                      type="password" 
+                      placeholder="Ingresa tu contraseña actual"
+                      value={passwordForm.current_password}
+                      onChange={(e) => setPasswordForm(prev => ({
+                        ...prev, 
+                        current_password: e.target.value
+                      }))}
+                      required
+                    />
+                  </div>
+
+                  <div className="field-group">
+                    <label>🔑 Nueva contraseña (mínimo 8 caracteres)</label>
+                    <input 
+                      type="password" 
+                      placeholder="Ingresa tu nueva contraseña"
+                      value={passwordForm.new_password}
+                      onChange={handleNewPasswordChange}
+                      minLength="8"
+                      required
+                      style={{
+                        borderColor: passwordForm.new_password.length > 0 ? passwordStrength.color : '#ccc'
+                      }}
+                    />
+                    
+                    {/* NUEVO: Indicador de fortaleza de contraseña */}
+                    {passwordForm.new_password.length > 0 && (
+                      <div style={{ marginTop: '8px' }}>
+                        {/* Barra de fortaleza */}
+                        <div style={{
+                          width: '100%',
+                          height: '6px',
+                          backgroundColor: '#e5e7eb',
+                          borderRadius: '3px',
+                          overflow: 'hidden',
+                          marginBottom: '8px'
+                        }}>
+                          <div style={{
+                            width: `${(passwordStrength.score / 5) * 100}%`,
+                            height: '100%',
+                            backgroundColor: passwordStrength.color,
+                            transition: 'all 0.3s ease'
+                          }} />
+                        </div>
+                        
+                        {/* Texto de fortaleza */}
+                        <div style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '8px',
+                          marginBottom: '12px'
+                        }}>
+                          <span style={{
+                            color: passwordStrength.color,
+                            fontWeight: 'bold',
+                            fontSize: '0.9rem'
+                          }}>
+                            {passwordStrength.text}
+                          </span>
+                        </div>
+                        
+                        {/* Requisitos de la contraseña */}
+                        <div style={{
+                          fontSize: '0.8rem',
+                          color: darkMode ? '#94a3b8' : '#64748b'
+                        }}>
+                          <div style={{ marginBottom: '4px' }}>Requisitos:</div>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px' }}>
+                            <span style={{ color: passwordStrength.requirements.length ? '#10b981' : '#ef4444' }}>
+                              {passwordStrength.requirements.length ? '✓' : '✗'} 8+ caracteres
+                            </span>
+                            <span style={{ color: passwordStrength.requirements.uppercase ? '#10b981' : '#ef4444' }}>
+                              {passwordStrength.requirements.uppercase ? '✓' : '✗'} Mayúsculas (A-Z)
+                            </span>
+                            <span style={{ color: passwordStrength.requirements.lowercase ? '#10b981' : '#ef4444' }}>
+                              {passwordStrength.requirements.lowercase ? '✓' : '✗'} Minúsculas (a-z)
+                            </span>
+                            <span style={{ color: passwordStrength.requirements.numbers ? '#10b981' : '#ef4444' }}>
+                              {passwordStrength.requirements.numbers ? '✓' : '✗'} Números (0-9)
+                            </span>
+                            <span style={{ color: passwordStrength.requirements.symbols ? '#10b981' : '#ef4444', gridColumn: 'span 2' }}>
+                              {passwordStrength.requirements.symbols ? '✓' : '✗'} Símbolos (!@#$%^&*)
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="field-group">
+                    <label>✅ Confirmar contraseña</label>
+                    <input 
+                      type="password" 
+                      placeholder="Repite tu nueva contraseña"
+                      value={passwordForm.confirm_password}
+                      onChange={(e) => setPasswordForm(prev => ({
+                        ...prev, 
+                        confirm_password: e.target.value
+                      }))}
+                      required
+                      style={{
+                        borderColor: passwordForm.confirm_password.length > 0 
+                          ? (passwordForm.new_password === passwordForm.confirm_password ? '#10b981' : '#ef4444')
+                          : '#ccc'
+                      }}
+                    />
+                    
+                    {/* Indicador de coincidencia de contraseñas */}
+                    {passwordForm.confirm_password.length > 0 && (
+                      <div style={{ 
+                        marginTop: '4px', 
+                        fontSize: '0.8rem',
+                        color: passwordForm.new_password === passwordForm.confirm_password ? '#10b981' : '#ef4444'
+                      }}>
+                        {passwordForm.new_password === passwordForm.confirm_password 
+                          ? '✓ Las contraseñas coinciden' 
+                          : '✗ Las contraseñas no coinciden'
+                        }
+                      </div>
+                    )}
+                  </div>
+
+                  <button 
+                    type="submit" 
+                    className="save-btn" 
+                    disabled={passwordForm.loading || passwordForm.new_password.length < 8 || passwordForm.new_password !== passwordForm.confirm_password}
+                    style={{
+                      opacity: (passwordForm.loading || passwordForm.new_password.length < 8 || passwordForm.new_password !== passwordForm.confirm_password) ? 0.6 : 1
+                    }}
+                  >
+                    {passwordForm.loading ? 'Guardando...' : 'Guardar cambios'}
+                  </button>
+                </form>
+              </div>
+            </div>
           </div>
         );
 
@@ -567,89 +864,6 @@ function UserDashboard() {
                   </div>
                 </div>
               ))}
-            </div>
-          </div>
-        );
-
-      case 'configuracion':
-        return (
-          <div className="content-section" style={baseStyle}>
-            <div className="content-header">
-              <h2 style={{ color: darkMode ? '#f1f5f9' : '#1e293b' }}>⚙️ Configuración</h2>
-              <p style={{ color: darkMode ? '#94a3b8' : '#64748b' }}>
-                Administra la seguridad y preferencias de tu cuenta
-              </p>
-            </div>
-
-            <div className="config-container">
-              <div className="config-section">
-                <h3>Cambiar Contraseña</h3>
-                
-                {passwordForm.success && (
-                  <div className="success-message">
-                    ✅ Contraseña cambiada correctamente
-                  </div>
-                )}
-                
-                {passwordForm.error && (
-                  <div className="error-message">
-                    ⚠️ {passwordForm.error}
-                  </div>
-                )}
-                
-                <form className="profile-form" onSubmit={changePassword}>
-                  <div className="field-group">
-                    <label>🔒 Contraseña actual</label>
-                    <input 
-                      type="password" 
-                      placeholder="Ingresa tu contraseña actual"
-                      value={passwordForm.current_password}
-                      onChange={(e) => setPasswordForm(prev => ({
-                        ...prev, 
-                        current_password: e.target.value
-                      }))}
-                      required
-                    />
-                  </div>
-
-                  <div className="field-group">
-                    <label>🔑 Nueva contraseña</label>
-                    <input 
-                      type="password" 
-                      placeholder="Ingresa tu nueva contraseña"
-                      value={passwordForm.new_password}
-                      onChange={(e) => setPasswordForm(prev => ({
-                        ...prev, 
-                        new_password: e.target.value
-                      }))}
-                      minLength="6"
-                      required
-                    />
-                  </div>
-
-                  <div className="field-group">
-                    <label>✅ Confirmar contraseña</label>
-                    <input 
-                      type="password" 
-                      placeholder="Repite tu nueva contraseña"
-                      value={passwordForm.confirm_password}
-                      onChange={(e) => setPasswordForm(prev => ({
-                        ...prev, 
-                        confirm_password: e.target.value
-                      }))}
-                      required
-                    />
-                  </div>
-
-                  <button 
-                    type="submit" 
-                    className="save-btn" 
-                    disabled={passwordForm.loading}
-                  >
-                    {passwordForm.loading ? 'Guardando...' : 'Guardar cambios'}
-                  </button>
-                </form>
-              </div>
             </div>
           </div>
         );

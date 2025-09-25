@@ -21,12 +21,14 @@ import Proveedores from './pages/proveedores';
 import DashboardProductos from './pages/DashboardProductos';
 import Pedidos from "./pages/Pedidos";
 import Analiticas from "./pages/Analiticas";
+import TerminosCondiciones from './pages/TerminosCondiciones';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 import AdminDashboard from './components/AdminDashboard';
 import UserDashboard from './components/UserDashboard';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
-import { AuthProvider } from './context/AuthContext'; // Agregar el AuthProvider
+import { AuthProvider } from './context/AuthContext';
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -54,6 +56,8 @@ function AppContent() {
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route path="/reset-password/:uidb64/:token" element={<ResetPassword />} />
             <Route path="/analiticas" element={<UserDashboard />} />
+            <Route path="/terminos-condiciones" element={<TerminosCondiciones />} />
+            <Route path="/politica-privacidad" element={<PrivacyPolicy />} />
           </Route>
 
           {/* Sin Layout */}
@@ -62,7 +66,6 @@ function AppContent() {
           <Route path="/dashboard/productos" element={<DashboardProductos />} />
           <Route path="/pedidos" element={<Pedidos />} />
           <Route path="/Analiticas" element={<Analiticas />} />
-
         </Routes>
       </Router>
     </div>

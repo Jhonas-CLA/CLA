@@ -78,8 +78,10 @@ const CategoriasDetalle = () => {
 
   // Función para manejar clic en producto
   const handleProductoClick = (producto) => {
-    // Guardar el producto seleccionado en localStorage para que el carrito lo pueda acceder
+    // Guardar el producto seleccionado en localStorage
     localStorage.setItem('productoSeleccionado', JSON.stringify(producto));
+    // NUEVO: Guardar también la categoría seleccionada para que se mantenga en el carrito
+    localStorage.setItem('categoriaSeleccionada', nombre);
     // Navegar al carrito
     navigate('/carrito');
   };
@@ -272,9 +274,9 @@ const CategoriasDetalle = () => {
                 transition: 'transform 0.2s ease, box-shadow 0.2s ease',
                 cursor: 'pointer',
                 border: '1px solid #f0f0f0',
-                position: 'relative'  // Agregado para posicionar el botón
+                position: 'relative'
               }}
-              onClick={() => handleProductoClick(prod)} // Agregar onClick aquí
+              onClick={() => handleProductoClick(prod)}
               onMouseOver={(e) => {
                 e.currentTarget.style.transform = 'translateY(-5px)';
                 e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.15)';
@@ -291,7 +293,7 @@ const CategoriasDetalle = () => {
                   right: '12px', 
                   zIndex: 10 
                 }}
-                onClick={(e) => e.stopPropagation()} // Evitar que el clic del favorito active la navegación
+                onClick={(e) => e.stopPropagation()}
                 >
                   <FavoriteButton 
                     producto={prod} 
@@ -404,7 +406,7 @@ const CategoriasDetalle = () => {
                     </p>
                   )}
                   
-                  {/* Precio y stock */}
+                  {/* Precio e icono del carrito (CAMBIO: Se removió el stock) */}
                   <div style={{ 
                     display: 'flex', 
                     alignItems: 'center', 
@@ -420,19 +422,22 @@ const CategoriasDetalle = () => {
                       ${(prod.precio || 0).toLocaleString('es-CO')}
                     </span>
                     
-                    {prod.cantidad !== undefined && (
-                      <span style={{
-                        backgroundColor: prod.cantidad > 0 ? '#22c55e' : '#ef4444',
-                        color: 'white',
-                        padding: '5px 10px',
-                        borderRadius: '15px',
-                        fontSize: '0.75rem',
-                        fontWeight: 'bold',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {prod.cantidad > 0 ? `Stock: ${prod.cantidad}` : 'Agotado'}
-                      </span>
-                    )}
+                    {/* NUEVO: Icono de carrito en lugar del stock */}
+                    <div style={{
+                      backgroundColor: '#FFD700',
+                      color: '#001152',
+                      padding: '8px 12px',
+                      borderRadius: '20px',
+                      fontSize: '1.2rem',
+                      fontWeight: 'bold',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '5px',
+                      boxShadow: '0 2px 8px rgba(255, 215, 0, 0.3)'
+                    }}>
+                      🛒
+                      <span style={{ fontSize: '0.8rem' }}>Agregar</span>
+                    </div>
                   </div>
                 </div>
               </div>

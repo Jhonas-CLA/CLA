@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import './Home.css';
-import ProductCarousel from '../components/ProductCarousel';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import "./Home.css";
+import ProductCarousel from "../components/ProductCarousel";
 
 function Home() {
   const [productos, setProductos] = useState([]);
@@ -9,7 +9,8 @@ function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/productos/')
+    axios
+      .get("http://127.0.0.1:8000/api/productos/")
       .then((res) => {
         console.log("📦 Productos recibidos:", res.data);
         setProductos(res.data);
@@ -24,10 +25,7 @@ function Home() {
   }, []);
 
   const handleSolicitarEnvio = () => {
-    const mensaje = encodeURIComponent(
-      'Hola! Me interesa solicitar un envío de productos eléctricos a mi ubicación en Tolima. ¿Podrían ayudarme con información sobre costos y tiempos de entrega?'
-    );
-    window.open(`https://wa.me/573123456789?text=${mensaje}`, '_blank');
+    window.location.href = "/carrito";
   };
 
   return (
@@ -93,7 +91,7 @@ function Home() {
                 para todo el departamento <br />
                 del Tolima
               </h2>
-              <button 
+              <button
                 className="btn btn-solicitar-envio"
                 onClick={handleSolicitarEnvio}
               >
