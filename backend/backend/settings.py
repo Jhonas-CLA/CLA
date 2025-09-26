@@ -24,6 +24,7 @@ INSTALLED_APPS = [
     'proveedores',
     'pedidos',
     'favoritos',
+    'documentos',
 
     # Terceros
     'corsheaders',

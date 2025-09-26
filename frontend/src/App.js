@@ -23,9 +23,11 @@ import Pedidos from "./pages/Pedidos";
 import Analiticas from "./pages/Analiticas";
 import TerminosCondiciones from './pages/TerminosCondiciones';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Documentos from './pages/Documentos';
 
 import AdminDashboard from './components/AdminDashboard';
 import UserDashboard from './components/UserDashboard';
+
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
@@ -66,6 +68,8 @@ function AppContent() {
           <Route path="/dashboard/productos" element={<DashboardProductos />} />
           <Route path="/pedidos" element={<Pedidos />} />
           <Route path="/Analiticas" element={<Analiticas />} />
+          <Route path="/documentos" element={<Documentos />} />
+
         </Routes>
       </Router>
     </div>

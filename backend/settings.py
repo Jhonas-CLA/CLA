@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'pedidos',
     'media',
     'favoritos',
+    'documentos',
 
     # Terceros
     'corsheaders',
