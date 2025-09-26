@@ -6,6 +6,7 @@ import Pedidos from "../pages/Pedidos";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Analiticas from "../pages/Analiticas";
+import Documentos from "../pages/Documentos";
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -344,6 +345,12 @@ function AdminDashboard() {
         return (
           <div className="content-section">
             <Analiticas />
+          </div>
+        );
+        case "documentos":
+        return (
+          <div className="content-section">
+            <Documentos />
           </div>
         );
       case "productos":
@@ -950,6 +957,15 @@ function AdminDashboard() {
           >
             <div className="menu-icon">📊</div>
             <span>Analíticas</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "documentos" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "documentos")}
+          >
+            <div className="menu-icon">📃</div>
+            <span>Documentos</span>
           </button>
           <button
             className={`menu-item ${
