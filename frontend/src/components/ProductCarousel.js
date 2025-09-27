@@ -1,11 +1,59 @@
- import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
+import axios from 'axios';
 import './ProductCarousel.css';
 
-function ProductCarousel({ productos }) {
+function ProductCarousel({ limite = 20 }) {
   const navigate = useNavigate();
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
  
+  useEffect(() => {
+    const cargarProductosMezclados = async () => {
+      try {
+        setLoading(true);
+        
+        // Cargar TODOS los productos sin filtro de categoría
+        const response = await axios.get('http://127.0.0.1:8000/api/productos/');
+        
+        if (response.data && response.data.length > 0) {
+          // Mezclar productos aleatoriamente (shuffle)
+          const productosMezclados = [...response.data].sort(() => Math.random() - 0.5);
+          
+          // Limitar a la cantidad especificada
+          const productosLimitados = productosMezclados.slice(0, limite);
+          
+          setProductos(productosLimitados);
+        } else {
+          setProductos([]);
+        }
+      } catch (error) {
+        console.error('Error cargando productos:', error);
+        setProductos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    cargarProductosMezclados();
+  }, [limite]);
+
+  if (loading) {
+    return (
+      <div className="carousel-container">
+        <p style={{
+          textAlign: 'center',
+          color: 'var(--text-secondary)',
+          fontSize: '1.1rem',
+          padding: '40px 0'
+        }}>
+          Cargando productos...
+        </p>
+      </div>
+    );
+  }
+
   if (!productos || productos.length === 0) {
     return (
       <div className="carousel-container">
@@ -21,14 +69,11 @@ function ProductCarousel({ productos }) {
     );
   }
 
-  // Limitamos a 20 productos máximo
-  const productosLimitados = productos.slice(0, 20);
-
   const settings = {
     dots: true,
-    infinite: productosLimitados.length > 1,
+    infinite: productos.length > 1,
     speed: 500,
-    slidesToShow: Math.min(productosLimitados.length, 4), // máximo 4 visibles
+    slidesToShow: Math.min(productos.length, 4), // máximo 4 visibles
     slidesToScroll: 1,
     autoplay: true, // ✅ AUTOPLAY ACTIVADO
     autoplaySpeed: 3000, // Cambia cada 3 segundos
@@ -39,14 +84,14 @@ function ProductCarousel({ productos }) {
       {
         breakpoint: 1200,
         settings: {
-          slidesToShow: Math.min(productosLimitados.length, 3),
+          slidesToShow: Math.min(productos.length, 3),
           slidesToScroll: 1
         }
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: Math.min(productosLimitados.length, 2),
+          slidesToShow: Math.min(productos.length, 2),
           slidesToScroll: 1
         }
       },
@@ -60,8 +105,69 @@ function ProductCarousel({ productos }) {
     ],
   };
 
-  const handleAddToCart = () => {
-    navigate("/carrito");
+  // Función para manejar clic en agregar al carrito
+  const handleAddToCart = (producto) => {
+    // Guardar el producto seleccionado en localStorage
+    localStorage.setItem('productoSeleccionado', JSON.stringify(producto));
+    
+    // Guardar la categoría del producto si existe
+    if (producto.categoria) {
+      // Obtener el nombre de la categoría (puede ser objeto o string)
+      const categoriaNombre = typeof producto.categoria === 'object' 
+        ? producto.categoria.name 
+        : producto.categoria;
+      
+      // Mapeo inverso para obtener la URL de la categoría
+      const categoriasMapInverso = {
+        'Automáticos / Breakers': 'automaticos-breakers',
+        'Alambres y Cables': 'alambres-cables',
+        'Abrazaderas y Amarres': 'abrazaderas-amarres',
+        'Accesorios para Canaletas / EMT / PVC': 'accesorios-canaletas-emt-pvc',
+        'Bornas y Conectores': 'bornas-conectores',
+        'Herramientas y Accesorios Especiales': 'herramientas-accesorios-especiales',
+        'Boquillas': 'boquillas',
+        'Cajas': 'cajas',
+        'Canaletas': 'canaletas',
+        'Capacetes y Chazos': 'capacetes-chazos',
+        'Cintas Aislantes': 'cintas-aislantes',
+        'Clavijas': 'clavijas',
+        'Conectores': 'conectores',
+        'Contactores y Contadores': 'contactores-contadores',
+        'Curvas y Accesorios de Tubería': 'curvas-accesorios-tuberia',
+        'Discos para Pulidora': 'discos-pulidora',
+        'Duchas': 'duchas',
+        'Extensiones y Multitomas': 'extensiones-multitomas',
+        'Hebillas, Grapas y Perchas': 'hebillas-grapas-perchas',
+        'Iluminación': 'iluminacion',
+        'Instrumentos de Medición': 'instrumentos-medicion',
+        'Interruptores y Programadores': 'interruptores-programadores',
+        'Otros / Misceláneos': 'otros-miscelaneos',
+        'Portalamparas y Plafones': 'portalamparas-plafones',
+        'Reflectores y Fotoceldas': 'reflectores-fotoceldas',
+        'Relés': 'reles',
+        'Rosetas': 'rosetas',
+        'Sensores y Temporizadores': 'sensores-temporizadores',
+        'Soldaduras': 'soldaduras',
+        'Soportes, Pernos y Herrajes': 'soportes-pernos-herrajes',
+        'Tableros Eléctricos': 'tableros-electricos',
+        'Tapas y Accesorios de Superficie': 'tapas-accesorios-superficie',
+        'Tensores': 'tensores',
+        'Terminales y Uniones': 'terminales-uniones',
+        'Timbres': 'timbres',
+        'Tomas y Enchufes': 'tomas-enchufes',
+        'Tuberia': 'tuberia'
+      };
+      
+      // Obtener la URL de la categoría
+      const categoriaUrl = categoriasMapInverso[categoriaNombre];
+      
+      if (categoriaUrl) {
+        localStorage.setItem('categoriaSeleccionada', categoriaUrl);
+      }
+    }
+    
+    // Navegar al carrito
+    navigate('/carrito');
   };
 
   const formatPrice = (precio) => {
@@ -81,7 +187,7 @@ function ProductCarousel({ productos }) {
   return (
     <div className="carousel-container">
       <Slider {...settings}>
-        {productosLimitados.map((producto) => (
+        {productos.map((producto) => (
           <div key={producto.id}>
             <div className="product-card">
               <div className="product-image-container">
@@ -93,11 +199,14 @@ function ProductCarousel({ productos }) {
                     e.target.style.display = 'none';
                   }}
                 />
+                
+
               </div>
+              
               <div className="product-info">
                 <h5
                   className="product-name"
-                  title={producto.nombre} // Tooltip para nombre completo
+                  title={producto.nombre}
                 >
                   {truncateText(producto.nombre, 50)}
                 </h5>
@@ -108,7 +217,7 @@ function ProductCarousel({ productos }) {
                
                 <button
                   className="add-to-cart-btn"
-                  onClick={handleAddToCart}
+                  onClick={() => handleAddToCart(producto)}
                 >
                   Agregar al carrito
                 </button>
