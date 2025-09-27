@@ -111,7 +111,7 @@ const CarritoCompras = () => {
   useEffect(() => {
     const productoGuardado = localStorage.getItem("productoSeleccionado");
     const categoriaGuardada = localStorage.getItem("categoriaSeleccionada");
-    
+
     if (productoGuardado) {
       try {
         const producto = JSON.parse(productoGuardado);
@@ -246,29 +246,23 @@ const CarritoCompras = () => {
   const agregarAlCarrito = (producto) => {
     setCarrito((prev) => {
       const cantidadActual = prev[producto.codigo]?.cantidad || 0;
-      if (cantidadActual < producto.stock) {
-        return {
-          ...prev,
-          [producto.codigo]: { ...producto, cantidad: cantidadActual + 1 },
-        };
-      }
-      return prev;
+      return {
+        ...prev,
+        [producto.codigo]: { ...producto, cantidad: cantidadActual + 1 },
+      };
     });
   };
 
   // modificar cantidad
   const modificarCantidad = (codigo, nuevaCantidad) => {
     if (nuevaCantidad <= 0) return quitarDelCarrito(codigo);
-    const producto = productos.find((p) => p.codigo === codigo);
-    if (producto && nuevaCantidad <= producto.stock) {
-      setCarrito((prev) => ({
-        ...prev,
-        [codigo]: {
-          ...prev[codigo],
-          cantidad: nuevaCantidad,
-        },
-      }));
-    }
+    setCarrito((prev) => ({
+      ...prev,
+      [codigo]: {
+        ...prev[codigo],
+        cantidad: nuevaCantidad,
+      },
+    }));
   };
 
   // quitar del carrito
@@ -944,15 +938,14 @@ const CarritoCompras = () => {
                 </span>
                 <button
                   onClick={() => agregarAlCarrito(producto)}
-                  disabled={producto.stock === 0}
                   style={{
                     marginTop: "10px",
-                    backgroundColor: producto.stock === 0 ? "#ccc" : "#FFD700",
+                    backgroundColor: "#FFD700",
                     color: "#001152",
                     padding: "8px 16px",
                     borderRadius: "8px",
                     fontWeight: "bold",
-                    cursor: producto.stock === 0 ? "not-allowed" : "pointer",
+                    cursor: "pointer",
                     border: "none",
                   }}
                 >
