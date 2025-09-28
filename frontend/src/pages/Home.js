@@ -11,14 +11,31 @@ function Home() {
   useEffect(() => {
     console.log("🔄 Iniciando carga de productos...");
     console.log("🌐 URL base:", api.defaults.baseURL);
+    console.log("🔗 URL completa:", `${api.defaults.baseURL}/api/productos/`);
     
     api
       .get("/api/productos/")
       .then((res) => {
         console.log("✅ Response status:", res.status);
-        console.log("📦 Productos recibidos:", res.data);
+        console.log("🔍 Response headers:", res.headers);
+        console.log("📦 Productos recibidos (raw):", res.data);
+        console.log("📦 Productos recibidos (tipo):", typeof res.data);
+        console.log("📦 Productos recibidos (es array):", Array.isArray(res.data));
         console.log("📊 Cantidad de productos:", res.data?.length || 0);
-        setProductos(res.data);
+        
+        // Verificar si la respuesta es un string que necesita parsing
+        let productos = res.data;
+        if (typeof res.data === 'string') {
+          console.log("🔄 Parseando string como JSON...");
+          try {
+            productos = JSON.parse(res.data);
+            console.log("✅ JSON parseado:", productos);
+          } catch (e) {
+            console.error("❌ Error parseando JSON:", e);
+          }
+        }
+        
+        setProductos(productos);
       })
       .catch((err) => {
         console.error("❌ Error cargando productos:", err);
