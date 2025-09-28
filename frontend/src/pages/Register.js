@@ -112,7 +112,7 @@ function Register() {
     try {
       const { data } = await api.post('/accounts/register/', formData);
 
-      if (res.ok) {
+      if (data.id) {
         alert('Usuario registrado correctamente');
         setForm({
           email: '',
