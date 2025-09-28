@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import "./Home.css";
 import ProductCarousel from "../components/ProductCarousel";
 
@@ -9,8 +9,8 @@ function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/productos/")
+    api
+      .get("/api/productos/")
       .then((res) => {
         console.log("📦 Productos recibidos:", res.data);
         setProductos(res.data);
