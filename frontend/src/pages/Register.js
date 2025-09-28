@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import api from '../api';
 import './Register.css';
 
 function Register() {
@@ -109,13 +110,7 @@ function Register() {
     setError('');
 
     try {
-      const res = await fetch('http://localhost:8000/accounts/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-
-      const data = await res.json();
+      const { data } = await api.post('/accounts/register/', formData);
 
       if (res.ok) {
         alert('Usuario registrado correctamente');

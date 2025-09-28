@@ -1,6 +1,7 @@
 // ForgotPassword.js
 import { useState } from "react";
-import { Link } from "react-router-dom"; // Asegúrate de importar Link
+import { Link } from "react-router-dom";
+import api from '../api';
 import './ForgotPassword.css';
 
 function ForgotPassword() {
@@ -9,12 +10,7 @@ function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await fetch('http://localhost:8000/accounts/forgot-password/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email })
-    });
-    const data = await res.json();
+    const { data } = await api.post('/accounts/forgot-password/', { email });
     setMsg(data.message || data.error);
   };
 
