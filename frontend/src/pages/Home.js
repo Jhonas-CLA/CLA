@@ -4,6 +4,7 @@ import "./Home.css";
 import ProductCarousel from "../components/ProductCarousel";
 
 function Home() {
+  const navigate = useNavigate(); 
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
