@@ -68,13 +68,15 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ProyectoCLA',
-        'USER': 'postgres',
-        'PASSWORD': 'jjgr0056',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.environ.get('DB_NAME', 'proyectocla'),
+        'USER': os.environ.get('DB_USER', 'proyectocla_user'),
+        'PASSWORD': os.environ.get('DB_PASSWORD', 'TFjFDLeWZeif2FBhocd4BGVVBKQFZs0I'),
+        'HOST': os.environ.get('DB_HOST', 'dpg-d3cmph37mgec73allsgg-a.oregon-postgres.render.com'),
+        'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
+
+
 
 # Archivos subidos (media)
 MEDIA_URL = '/media/'
