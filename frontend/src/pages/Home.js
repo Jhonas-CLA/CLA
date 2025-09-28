@@ -51,7 +51,7 @@ function Home() {
   }, []);
 
   const handleSolicitarEnvio = () => {
-    window.location.href = "/carrito";
+    navigate('/carrito');
   };
 
   return (
