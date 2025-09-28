@@ -128,7 +128,7 @@ function Login() {
         // Fallback: hacer la petición directamente
         const { data } = await api.post('/accounts/login/', loginData);
 
-        if (response.ok && data.success) {
+        if (data.access) {
           // IMPORTANTE: Guardar el token y datos del usuario
           localStorage.setItem('token', data.token);
           localStorage.setItem('userRole', data.role);
@@ -170,7 +170,7 @@ function Login() {
     try {
       const { data } = await api.post('/accounts/register/', registerData);
 
-      if (response.ok) {
+      if (data.access) {
         alert('Registro exitoso. Ahora inicia sesión.');
         setActiveTab('login');
         setRegisterData({
