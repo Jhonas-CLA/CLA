@@ -16,18 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from products.views import obtener_productos
 from django.conf import settings
 from django.conf.urls.static import static
 
-
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/productos/', obtener_productos, name='obtener_productos'),
+    path('api/', include('products.urls')), 
+    
+    # Otras rutas
     path("api/whatsapp/", include("whatsapp.urls")),
     path('accounts/', include('accounts.urls')), 
     path('api/favoritos/', include('favoritos.urls')),
     path('api/', include('documentos.urls')),
+    path('api/', include('proveedores.urls')),
+    path('api/pedidos/', include('pedidos.urls')),
 ]
 
 if settings.DEBUG:
