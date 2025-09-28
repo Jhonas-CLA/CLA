@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import api from "../api";
 import "./Home.css";
+import useNavigate from 'react-router-dom';
 import ProductCarousel from "../components/ProductCarousel";
 
 function Home() {
