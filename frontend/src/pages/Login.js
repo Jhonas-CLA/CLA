@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api';
 import './Login.css';
 
 function Login() {
@@ -125,13 +126,7 @@ function Login() {
         }
       } else {
         // Fallback: hacer la petición directamente
-        const response = await fetch('http://localhost:8000/accounts/login/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(loginData),
-        });
-
-        const data = await response.json();
+        const { data } = await api.post('/accounts/login/', loginData);
 
         if (response.ok && data.success) {
           // IMPORTANTE: Guardar el token y datos del usuario
@@ -173,13 +168,7 @@ function Login() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/accounts/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData),
-      });
-
-      const data = await response.json();
+      const { data } = await api.post('/accounts/register/', registerData);
 
       if (response.ok) {
         alert('Registro exitoso. Ahora inicia sesión.');
