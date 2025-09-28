@@ -19,32 +19,28 @@ export const AuthProvider = ({ children }) => {
 
   // -------- API CALL CON AUTO REFRESH --------
   const apiCall = async (url, options = {}) => {
-    let headers = {
-      "Content-Type": "application/json",
-      ...options.headers,
-    };
-
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
-
     try {
-      let response = await fetch(url, { ...options, headers });
-
-      if (response.status === 401 && token) {
+      const method = options.method || "get";
+      const res = await api({
+        url,
+        method,
+        data: options.body || {},
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+      });
+      return res; // Axios ya tiene res.data
+    } catch (error) {
+      if (error.response && error.response.status === 401 && token) {
         const refreshed = await refreshToken();
         if (refreshed) {
-          const newToken = localStorage.getItem("access_token");
-          headers.Authorization = `Bearer ${newToken}`;
-          response = await fetch(url, { ...options, headers });
+          return apiCall(url, options); // reintento
         } else {
           logout();
         }
       }
-
-      return response;
-    } catch (error) {
-      console.error("Error en API call:", error);
       throw error;
     }
   };
@@ -52,7 +48,10 @@ export const AuthProvider = ({ children }) => {
   // -------- LOGIN --------
   const login = async (email, password) => {
     try {
-      const { data } = await api.post("/accounts/api/auth/login/", { email, password });
+      const { data } = await api.post("/accounts/api/auth/login/", {
+        email,
+        password,
+      });
 
       if (data.access) {
         localStorage.setItem("access_token", data.access);
@@ -68,7 +67,10 @@ export const AuthProvider = ({ children }) => {
 
         return { success: true, user: data.user, role: userRole };
       } else {
-        return { success: false, error: data.error || "Error al iniciar sesión" };
+        return {
+          success: false,
+          error: data.error || "Error al iniciar sesión",
+        };
       }
     } catch (error) {
       console.error("Error en login:", error);
@@ -82,16 +84,22 @@ export const AuthProvider = ({ children }) => {
 
     if (refreshTokenValue) {
       try {
-        const { data } = await api.post("/accounts/api/auth/logout/", { refresh: refreshTokenValue });
+        const { data } = await api.post("/accounts/api/auth/logout/", {
+          refresh: refreshTokenValue,
+        });
         console.log("Logout response:", data);
       } catch (error) {
         console.error("Error en logout:", error);
       }
     }
 
-    ["access_token", "refresh_token", "userRole", "userEmail", "userData"].forEach(item =>
-      localStorage.removeItem(item)
-    );
+    [
+      "access_token",
+      "refresh_token",
+      "userRole",
+      "userEmail",
+      "userData",
+    ].forEach((item) => localStorage.removeItem(item));
     setToken(null);
     setUser(null);
   };
@@ -102,7 +110,9 @@ export const AuthProvider = ({ children }) => {
       const refreshTokenValue = localStorage.getItem("refresh_token");
       if (!refreshTokenValue) return false;
 
-      const { data } = await api.post("/accounts/api/auth/refresh/", { refresh: refreshTokenValue });
+      const { data } = await api.post("/accounts/api/auth/refresh/", {
+        refresh: refreshTokenValue,
+      });
 
       if (data.access) {
         localStorage.setItem("access_token", data.access);
