@@ -120,10 +120,15 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "CSRF_TRUSTED_ORIGINS",
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
+    "https://electricosandsolucionesfrontend.onrender.com",
+
 ]
+
+if DEBUG:
+    CSRF_TRUSTED_ORIGINS += [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
 
 # DRF y JWT
 REST_FRAMEWORK = {
