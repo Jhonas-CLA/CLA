@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
-import axios from 'axios';
+import api from '../api';
 import './ProductCarousel.css';
 
 function ProductCarousel({ limite = 20 }) {
@@ -14,8 +14,8 @@ function ProductCarousel({ limite = 20 }) {
       try {
         setLoading(true);
         
-        // Cargar TODOS los productos sin filtro de categoría
-        const response = await axios.get('http://127.0.0.1:8000/api/productos/');
+        // Cargar TODOS los productos usando la instancia de api configurada
+        const response = await api.get('/api/productos/');
         
         if (response.data && response.data.length > 0) {
           // Mezclar productos aleatoriamente (shuffle)
@@ -199,8 +199,6 @@ function ProductCarousel({ limite = 20 }) {
                     e.target.style.display = 'none';
                   }}
                 />
-                
-
               </div>
               
               <div className="product-info">
