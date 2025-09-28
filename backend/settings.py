@@ -4,12 +4,11 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# 🔑 Seguridad
 SECRET_KEY = 'django-insecure-d!3y1vgzp)ax)ist7+^ez^)z6wkjtf#l2on#h+75q9_hvt!87^'
 DEBUG = True
 ALLOWED_HOSTS = []
 
-# 📦 Aplicaciones instaladas
+# Aplicaciones instaladas
 INSTALLED_APPS = [
     # Apps propias
     'accounts',
@@ -26,7 +25,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
 
-    # Django apps por defecto
+    # Django apps
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,7 +34,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
-# ⚙️ Middleware
+# Middleware
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
@@ -49,7 +48,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
-# 🎨 Templates
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -68,7 +67,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# 🗄️ Base de datos
+# Base de datos
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -80,12 +79,16 @@ DATABASES = {
     }
 }
 
-
-# 📂 Archivos subidos
+# Archivos subidos (media)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# 🔒 Validación de contraseñas
+# Archivos estáticos
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Validación de contraseñas
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
@@ -93,28 +96,25 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-# 🌎 Internacionalización
+# Internacionalización
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-# 🖼️ Archivos estáticos
-STATIC_URL = 'static/'
-
-# 🔐 Modelo de usuario personalizado
+# Modelo de usuario personalizado
 AUTH_USER_MODEL = 'accounts.User'
 
-# 📧 Configuración de correo
+# Configuración de correo
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'codigolatino123@gmail.com'
-EMAIL_HOST_PASSWORD = 'ycax ybjy xoog jvqb'  # Contraseña de aplicación de Gmail
+EMAIL_HOST_PASSWORD = 'ycax ybjy xog jvqb'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# 🌍 CORS y CSRF
+# CORS y CSRF
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 
@@ -123,7 +123,7 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-# ⚡ DRF y JWT
+# DRF y JWT
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -143,8 +143,10 @@ SIMPLE_JWT = {
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
     'AUTH_HEADER_TYPES': ('Bearer',),
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
 }
+
+# Campo por defecto en modelos
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
