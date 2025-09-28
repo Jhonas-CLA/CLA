@@ -76,7 +76,11 @@ function Home() {
           <p className="text-center">⚠️ No hay productos disponibles.</p>
         )}
         {!loading && productos.length > 0 && (
-          <ProductCarousel productos={productos} />
+          <ProductCarousel 
+            productos={productos} 
+            limite={20} 
+            useProp={true} 
+          />
         )}
       </div>
 
