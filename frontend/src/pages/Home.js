@@ -9,17 +9,26 @@ function Home() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    console.log("🔄 Iniciando carga de productos...");
+    console.log("🌐 URL base:", api.defaults.baseURL);
+    
     api
       .get("/api/productos/")
       .then((res) => {
+        console.log("✅ Response status:", res.status);
         console.log("📦 Productos recibidos:", res.data);
+        console.log("📊 Cantidad de productos:", res.data?.length || 0);
         setProductos(res.data);
       })
       .catch((err) => {
         console.error("❌ Error cargando productos:", err);
+        console.error("❌ Error response:", err.response);
+        console.error("❌ Error status:", err.response?.status);
+        console.error("❌ Error data:", err.response?.data);
         setError(err.message);
       })
       .finally(() => {
+        console.log("🏁 Carga finalizada");
         setLoading(false);
       });
   }, []);
