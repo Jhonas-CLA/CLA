@@ -305,24 +305,6 @@ function Login() {
                 disabled={isLoading}
                 style={{ paddingRight: '45px' }}
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                disabled={isLoading}
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#64748b',
-                  fontSize: '14px'
-                }}
-              >
-                {showPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
             </div>
             <div className="checkbox-container" style={{ marginTop: '8px' }}>
               <input
@@ -413,24 +395,6 @@ function Login() {
                   paddingRight: '45px'
                 }}
               />
-              <button
-                type="button"
-                onClick={() => setShowRegisterPassword(!showRegisterPassword)}
-                disabled={isLoading}
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#64748b',
-                  fontSize: '14px'
-                }}
-              >
-                {showRegisterPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
             </div>
             <div className="checkbox-container" style={{ marginTop: '8px' }}>
               <input
@@ -533,24 +497,6 @@ function Login() {
                   paddingRight: '45px'
                 }}
               />
-              <button
-                type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                disabled={isLoading}
-                style={{
-                  position: 'absolute',
-                  right: '10px',
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                  color: '#64748b',
-                  fontSize: '14px'
-                }}
-              >
-                {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
-              </button>
             </div>
             <div className="checkbox-container" style={{ marginTop: '8px' }}>
               <input
