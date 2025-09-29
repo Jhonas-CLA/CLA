@@ -86,7 +86,7 @@ const CategoriasDetalle = () => {
       const categoriaExacta = categoriasMap[nombre];
       if (categoriaExacta) {
         api
-          .get(`/api/productos/?categoria=${encodeURIComponent(categoriaExacta)}`)
+          .get(`/api/productos/?categoria=${encodeURIComponent(nombre)}`)
           .then((response) => {
             setProductos(response.data);
           })
