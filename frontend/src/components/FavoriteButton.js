@@ -17,13 +17,8 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
       try {
         const response = await apiCall(`/api/favoritos/verificar/${producto.id}/`);
         
-        // Verificar si response ya es el objeto JSON o necesita parsearse
-        let data;
-        if (typeof response.json === 'function') {
-          data = await response.json();
-        } else {
-          data = response;
-        }
+        // Con axios, response.data contiene los datos
+        const data = response.data || response;
         
         if (data.es_favorito !== undefined) {
           setIsFavorite(data.es_favorito);
