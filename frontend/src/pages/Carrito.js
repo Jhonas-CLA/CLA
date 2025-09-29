@@ -3,8 +3,6 @@ import api, { BASE_URL } from "../api";
 import FavoriteButton from "../components/FavoriteButton";
 import "./Carrito.css";
 
-const BASE_URL = "http://localhost:8000";
-
 // Mapeo slug → nombre exacto
 const categoriasMap = {
   "automaticos-breakers": "Automáticos / Breakers",
