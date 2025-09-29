@@ -16,7 +16,7 @@ function Home() {
     console.log("🔗 URL completa:", `${api.defaults.baseURL}/api/products/`);
     
     api
-      .get("/api/productos/")
+      .get("/api/products/")
       .then((res) => {
         console.log("✅ Response status:", res.status);
         console.log("🔍 Response headers:", res.headers);
