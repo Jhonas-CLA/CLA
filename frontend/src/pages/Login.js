@@ -249,22 +249,6 @@ function Login() {
       {/* Mensaje de error */}
       {error && (
         <div style={{
-          backgroundColor: '#fee2e2',
-          border: '1px solid #ef4444',
-          borderRadius: '8px',
-          padding: '12px',
-          marginBottom: '20px',
-          color: '#dc2626',
-          fontSize: '0.9rem',
-          textAlign: 'center'
-        }}>
-          ⚠️ {error}
-        </div>
-      )}
-
-      {/* Mensaje de éxito */}
-      {successMessage && (
-        <div style={{
           backgroundColor: '#dcfce7',
           border: '1px solid #10b981',
           borderRadius: '8px',
@@ -275,7 +259,7 @@ function Login() {
           textAlign: 'center',
           animation: 'fadeIn 0.5s ease-in'
         }}>
-          {successMessage}
+          ✅ {error}
         </div>
       )}
 
