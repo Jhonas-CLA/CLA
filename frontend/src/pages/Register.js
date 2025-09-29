@@ -18,7 +18,6 @@ function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // NUEVO: Estado para la fortaleza de la contraseña
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     text: "",
@@ -32,7 +31,6 @@ function Register() {
     },
   });
 
-  // NUEVO: Función para evaluar la fortaleza de la contraseña
   const evaluatePasswordStrength = (password) => {
     const requirements = {
       length: password.length >= 8,
@@ -73,22 +71,27 @@ function Register() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
 
-    // Limpiar errores cuando el usuario empiece a escribir
-    if (error) {
-      setError("");
-    }
+    if (error) setError("");
 
-    // NUEVO: Evaluar fortaleza cuando cambia la contraseña
     if (name === "password") {
       const strength = evaluatePasswordStrength(value);
       setPasswordStrength(strength);
     }
   };
 
+  // Validación básica de email
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validación de contraseña mínima
+    if (!isValidEmail(form.email)) {
+      setError("Ingresa un correo electrónico válido");
+      return;
+    }
+
     if (form.password.length < 8) {
       setError("La contraseña debe tener al menos 8 caracteres");
       return;
@@ -122,8 +125,6 @@ function Register() {
           first_name: "",
           last_name: "",
         });
-        setTimeout(() => navigate("/"), 2000);
-        // Limpiar indicador de fortaleza
         setPasswordStrength({
           score: 0,
           text: "",
@@ -136,7 +137,10 @@ function Register() {
             symbols: false,
           },
         });
-        navigate("/");
+        setTimeout(() => {
+          setSuccess("");
+          navigate("/");
+        }, 2000);
       } else {
         setError(data.error || "Error en el registro");
       }
@@ -152,7 +156,6 @@ function Register() {
       <form className="register-form" onSubmit={handleSubmit}>
         <h2 className="register-title">Crear Cuenta</h2>
 
-        {/* Mensaje de éxito */}
         {success && (
           <div
             style={{
@@ -167,6 +170,22 @@ function Register() {
             }}
           >
             ✅ {success}
+          </div>
+        )}
+        {error && (
+          <div
+            style={{
+              backgroundColor: "#fee2e2",
+              border: "1px solid #ef4444",
+              borderRadius: "8px",
+              padding: "12px",
+              marginBottom: "20px",
+              color: "#b91c1c",
+              fontSize: "0.9rem",
+              textAlign: "center",
+            }}
+          >
+            {error}
           </div>
         )}
         <input
@@ -197,7 +216,6 @@ function Register() {
           required
         />
 
-        {/* Campo de contraseña con validación */}
         <div style={{ position: "relative", width: "100%" }}>
           <input
             className="register-input"
@@ -221,7 +239,6 @@ function Register() {
           />
         </div>
 
-        {/* NUEVO: Indicador de fortaleza de contraseña */}
         {form.password.length > 0 && (
           <div
             style={{
@@ -231,7 +248,6 @@ function Register() {
               textAlign: "left",
             }}
           >
-            {/* Barra de fortaleza */}
             <div
               style={{
                 width: "100%",
@@ -251,8 +267,6 @@ function Register() {
                 }}
               />
             </div>
-
-            {/* Texto de fortaleza */}
             <div
               style={{
                 display: "flex",
@@ -271,8 +285,6 @@ function Register() {
                 {passwordStrength.text}
               </span>
             </div>
-
-            {/* Requisitos de la contraseña */}
             <div
               style={{
                 fontSize: "0.8rem",
@@ -326,7 +338,7 @@ function Register() {
                 <span
                   style={{
                     color: passwordStrength.requirements.numbers
-                      ? "✓0b981"
+                      ? "#10b981"
                       : "#ef4444",
                   }}
                 >
@@ -349,7 +361,6 @@ function Register() {
           </div>
         )}
 
-        {/* Campo de confirmar contraseña */}
         <div style={{ position: "relative", width: "100%" }}>
           <input
             className="register-input"
@@ -371,7 +382,6 @@ function Register() {
           />
         </div>
 
-        {/* Indicador de coincidencia de contraseñas */}
         {form.confirmPassword.length > 0 && (
           <div
             style={{
@@ -399,7 +409,8 @@ function Register() {
             form.password !== form.confirmPassword ||
             !form.first_name ||
             !form.last_name ||
-            !form.email
+            !form.email ||
+            !isValidEmail(form.email)
           }
           style={{
             opacity:
@@ -408,7 +419,8 @@ function Register() {
               form.password !== form.confirmPassword ||
               !form.first_name ||
               !form.last_name ||
-              !form.email
+              !form.email ||
+              !isValidEmail(form.email)
                 ? 0.6
                 : 1,
             cursor:
@@ -417,7 +429,8 @@ function Register() {
               form.password !== form.confirmPassword ||
               !form.first_name ||
               !form.last_name ||
-              !form.email
+              !form.email ||
+              !isValidEmail(form.email)
                 ? "not-allowed"
                 : "pointer",
           }}
