@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./AdminConfig.css"; // Importar el archivo CSS
+import api from "../api"; 
+import "./AdminConfig.css";
 
 export default function AdminConfig() {
   const [adminData, setAdminData] = useState(null);
   const [error, setError] = useState(null);
 
-  const fetchAdminData = () => {
-    const token = localStorage.getItem("token"); // JWT guardado al hacer login
-    console.log("Token actual:", token);
-    axios.get("http://localhost:8000/accounts/admin-profile/", {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-    .then(res => {
+  const fetchAdminData = async () => {
+    try {
+      const res = await api.get("/accounts/admin-profile/"); 
       setAdminData(res.data);
       setError(null);
-    })
-    .catch(err => {
+    } catch (err) {
       console.error('Error completo:', err.response ? err.response.data : err);
       setError('Error al cargar los datos del administrador');
-    });
+    }
   };
 
   useEffect(() => {

@@ -60,7 +60,7 @@ const QuienesSomos = () => {
           <div className="row justify-content-center align-items-center text-center text-white">
             <div className="col-md-4 mb-4 mb-md-0">
               <img
-                src="https://tse4.mm.bing.net/th/id/OIP.rIsI3TvodysyTi_2VOGK3gHaHa?pid=Api&P=0&h=180"
+                src="https://cdn-icons-png.flaticon.com/512/3781/3781986.png"
                 alt="Gerente"
                 className="img-fluid rounded-circle floating"
               />

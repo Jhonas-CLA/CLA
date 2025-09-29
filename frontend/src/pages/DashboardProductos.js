@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api";
 import "./DashboardProductos.css";
 
 const DashboardProductos = () => {
@@ -33,15 +33,18 @@ const DashboardProductos = () => {
 
   // --- cargar productos ---
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/productos/")
-      .then((response) => {
-        const productosOrdenados = response.data.sort((a, b) => a.id - b.id);
+    api
+      .get("/productos/")
+      .then((res) => {
+        const productosOrdenados = res.data.sort((a, b) => a.id - b.id);
         setProductos(productosOrdenados);
         setLoading(false);
       })
-      .catch((error) => {
-        console.error("Error al obtener productos:", error);
+      .catch((err) => {
+        console.error(
+          "Error al obtener productos:",
+          err.response ? err.response.data : err
+        );
         setError("No se pudieron cargar los productos");
         setLoading(false);
       });
@@ -49,10 +52,15 @@ const DashboardProductos = () => {
 
   // --- cargar categorías ---
   useEffect(() => {
-    axios
-      .get("http://localhost:8000/api/categorias/")
-      .then((response) => setCategorias(response.data))
-      .catch((err) => console.error("Error al cargar categorías:", err));
+    api
+      .get("/categorias/")
+      .then((res) => setCategorias(res.data))
+      .catch((err) =>
+        console.error(
+          "Error al cargar categorías:",
+          err.response ? err.response.data : err
+        )
+      );
   }, []);
 
   // --- filtrar productos ---
@@ -85,22 +93,21 @@ const DashboardProductos = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith("http")) return imagePath;
-    return `http://localhost:8000${imagePath}`;
+    return `${process.env.REACT_APP_BASE_URL || "https://electricosandsoluciones.onrender.com"}${imagePath}`;
   };
 
   // --- habilitar / deshabilitar producto ---
   const toggleActivo = (id, isActive) => {
-    axios
-      .patch(`http://localhost:8000/api/productos/${id}/`, {
-        is_active: !isActive,
-      })
-      .then(() => {
-        setProductos((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, is_active: !isActive } : p))
-        );
+    api
+      .patch(`/productos/${id}/`, { is_active: !isActive })
+      .then((res) => {
+        setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
       })
       .catch((err) => {
-        console.error("Error al cambiar estado:", err);
+        console.error(
+          "Error al cambiar estado:",
+          err.response ? err.response.data : err
+        );
         alert("No se pudo cambiar el estado del producto");
       });
   };
@@ -116,14 +123,10 @@ const DashboardProductos = () => {
       alert("Cantidad inválida");
       return;
     }
-    axios
-      .patch(`http://localhost:8000/api/productos/${id}/`, {
-        cantidad: nuevaCantidad,
-      })
-      .then(() => {
-        setProductos((prev) =>
-          prev.map((p) => (p.id === id ? { ...p, cantidad: nuevaCantidad } : p))
-        );
+    api
+      .patch(`/productos/${id}/`, { cantidad: nuevaCantidad })
+      .then((res) => {
+        setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
         setCantidadesTemp((prev) => {
           const temp = { ...prev };
           delete temp[id];
@@ -131,7 +134,10 @@ const DashboardProductos = () => {
         });
       })
       .catch((err) => {
-        console.error("Error al actualizar cantidad:", err);
+        console.error(
+          "Error al actualizar cantidad:",
+          err.response ? err.response.data : err
+        );
         alert("No se pudo actualizar la cantidad");
       });
   };
@@ -182,14 +188,12 @@ const DashboardProductos = () => {
 
     const formData = prepararProducto();
 
-    axios
-      .post("http://localhost:8000/api/productos/", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+    api
+      .post("/productos/", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((response) => {
-        setProductos((prev) => [response.data, ...prev]);
+      .then((res) => {
+        setProductos((prev) => [res.data, ...prev]);
         setMostrarModal(false);
         // Limpiar formulario
         setNuevoNombre("");
@@ -201,7 +205,10 @@ const DashboardProductos = () => {
         setNuevaImagen(null);
       })
       .catch((err) => {
-        console.error("Error al crear producto:", err);
+        console.error(
+          "Error al crear producto:",
+          err.response ? err.response.data : err
+        );
         alert("No se pudo crear el producto");
       });
   };
@@ -246,26 +253,23 @@ const DashboardProductos = () => {
       formData.append("imagen", imagenEditando);
     }
 
-    axios
-      .put(
-        `http://localhost:8000/api/productos/${productoEditando.id}/`,
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-      .then((response) => {
+    api
+      .put(`/productos/${productoEditando.id}/`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res) => {
         setProductos((prev) =>
-          prev.map((p) => (p.id === productoEditando.id ? response.data : p))
+          prev.map((p) => (p.id === productoEditando.id ? res.data : p))
         );
         setMostrarModalEditar(false);
         setProductoEditando(null);
         setImagenEditando(null);
       })
       .catch((err) => {
-        console.error("Error al editar producto:", err);
+        console.error(
+          "Error al editar producto:",
+          err.response ? err.response.data : err
+        );
         alert("No se pudo editar el producto");
       });
   };
