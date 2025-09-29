@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
 import FavoriteButton from '../components/FavoriteButton';
 import './UserDashboard.css';
-import api, { BASE_URL } from '../api';
+import api, { BASE_URL } from '../api'; // IMPORTANTE: Importar BASE_URL
 
 function UserDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
@@ -154,7 +154,7 @@ function UserDashboard() {
     navigate('/carrito');
   };
 
-  // ACTUALIZADO: Usar path relativo
+  // ACTUALIZADO: Compatible con axios
   const fetchUserProfile = async () => {
     if (!token) {
       setUserProfile(prev => ({ ...prev, loading: false, error: 'No estás autenticado' }));
@@ -165,35 +165,32 @@ function UserDashboard() {
 
     try {
       const response = await apiCall('/accounts/api/auth/profile/');
-      if (response.ok) {
-        const data = await response.json();
-        setUserProfile({
-          email: data.email,
-          firstName: data.first_name,
-          lastName: data.last_name,
-          phone: data.phone || '',
-          email_verified: data.email_verified ?? false,
-          loading: false,
-          error: null
-        });
-        
-        // Actualizar formulario de perfil
-        setProfileForm(prev => ({
-          ...prev,
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          phone: data.phone || ''
-        }));
-      } else {
-        setUserProfile(prev => ({ ...prev, loading: false, error: 'No se pudo cargar perfil' }));
-      }
+      const data = response.data || response;
+      
+      setUserProfile({
+        email: data.email,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        phone: data.phone || '',
+        email_verified: data.email_verified ?? false,
+        loading: false,
+        error: null
+      });
+      
+      // Actualizar formulario de perfil
+      setProfileForm(prev => ({
+        ...prev,
+        first_name: data.first_name || '',
+        last_name: data.last_name || '',
+        phone: data.phone || ''
+      }));
     } catch (err) {
       console.error(err);
       setUserProfile(prev => ({ ...prev, loading: false, error: 'Error al cargar perfil' }));
     }
   };
 
-  // ACTUALIZADO: Usar path relativo
+  // ACTUALIZADO: Compatible con axios
   const fetchPedidosUsuario = async () => {
     if (!token) return;
     setLoadingPedidos(true);
@@ -201,12 +198,8 @@ function UserDashboard() {
 
     try {
       const response = await apiCall('/api/pedidos/mis-pedidos/');
-      if (response.ok) {
-        const data = await response.json();
-        setPedidos(data.pedidos || []);
-      } else {
-        setErrorPedidos('No se pudieron cargar los pedidos');
-      }
+      const data = response.data || response;
+      setPedidos(data.pedidos || []);
     } catch (err) {
       setErrorPedidos('Error de conexión');
     } finally {
@@ -214,7 +207,7 @@ function UserDashboard() {
     }
   };
 
-  // ACTUALIZADO: Usar path relativo
+  // ACTUALIZADO: Compatible con axios
   const fetchFavoritos = async () => {
     if (!token) return;
     setLoadingFavoritos(true);
@@ -222,12 +215,8 @@ function UserDashboard() {
 
     try {
       const response = await apiCall('/api/favoritos/');
-      if (response.ok) {
-        const data = await response.json();
-        setFavoritos(data.favoritos || []);
-      } else {
-        setErrorFavoritos('No se pudieron cargar los favoritos');
-      }
+      const data = response.data || response;
+      setFavoritos(data.favoritos || []);
     } catch (err) {
       console.error('Error cargando favoritos:', err);
       setErrorFavoritos('Error de conexión');
@@ -244,7 +233,7 @@ function UserDashboard() {
     }
   };
 
-  // ACTUALIZADO: Usar path relativo
+  // ACTUALIZADO: Compatible con axios
   const updateProfile = async (e) => {
     e.preventDefault();
     setProfileForm(prev => ({ ...prev, loading: true, error: '', success: false }));
@@ -260,11 +249,10 @@ function UserDashboard() {
         })
       });
 
-      const data = await response.json();
+      const data = response.data || response;
 
-      if (response.ok && data.success) {
+      if (data.success) {
         setProfileForm(prev => ({ ...prev, loading: false, success: true }));
-        // Actualizar el perfil mostrado
         setUserProfile(prev => ({
           ...prev,
           firstName: data.user.first_name,
@@ -272,7 +260,6 @@ function UserDashboard() {
           phone: data.user.phone
         }));
         
-        // Limpiar mensaje después de 3 segundos
         setTimeout(() => {
           setProfileForm(prev => ({ ...prev, success: false }));
         }, 3000);
@@ -292,11 +279,10 @@ function UserDashboard() {
     }
   };
 
-  // ACTUALIZADO: Usar path relativo
+  // ACTUALIZADO: Compatible con axios
   const changePassword = async (e) => {
     e.preventDefault();
     
-    // Validación de fortaleza mínima
     if (passwordForm.new_password.length < 8) {
       setPasswordForm(prev => ({ 
         ...prev, 
@@ -326,9 +312,9 @@ function UserDashboard() {
         })
       });
 
-      const data = await response.json();
+      const data = response.data || response;
 
-      if (response.ok && data.success) {
+      if (data.success) {
         setPasswordForm({
           current_password: '',
           new_password: '',
@@ -338,7 +324,6 @@ function UserDashboard() {
           error: ''
         });
         
-        // Limpiar indicador de fortaleza
         setPasswordStrength({
           score: 0,
           text: '',
@@ -352,7 +337,6 @@ function UserDashboard() {
           }
         });
         
-        // Limpiar mensaje después de 3 segundos
         setTimeout(() => {
           setPasswordForm(prev => ({ ...prev, success: false }));
         }, 3000);
