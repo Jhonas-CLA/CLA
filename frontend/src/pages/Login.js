@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import api from '../api';
 import './Login.css';
 
 function Login() {
@@ -23,7 +24,6 @@ function Login() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // NUEVO: Estado para la fortaleza de la contraseña en registro
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     text: '',
@@ -37,7 +37,6 @@ function Login() {
     }
   });
 
-  // NUEVO: Función para evaluar la fortaleza de la contraseña
   const evaluatePasswordStrength = (password) => {
     const requirements = {
       length: password.length >= 8,
@@ -48,9 +47,7 @@ function Login() {
     };
 
     const score = Object.values(requirements).filter(Boolean).length;
-    
     let text, color;
-    
     if (password.length === 0) {
       text = '';
       color = '#ccc';
@@ -70,15 +67,12 @@ function Login() {
       text = 'Muy segura';
       color = '#059669';
     }
-
     return { score, text, color, requirements };
   };
 
-  // CORREGIDO: Función para cambiar pestañas (no debe ser submit)
   const switchTab = (tab) => {
     setActiveTab(tab);
     setError('');
-    // Limpiar formularios cuando cambie de pestaña
     setLoginData({ email: '', password: '' });
     setRegisterData({
       first_name: '',
@@ -88,7 +82,6 @@ function Login() {
       confirmPassword: '',
       rol: 'usuario',
     });
-    // Limpiar indicador de fortaleza
     setPasswordStrength({
       score: 0,
       text: '',
@@ -109,12 +102,10 @@ function Login() {
     setIsLoading(true);
 
     try {
-      // Intentar usar el contexto de autenticación primero
       if (login && typeof login === 'function') {
         const result = await login(loginData.email, loginData.password);
 
         if (result.success) {
-          // Redirección según el rol del usuario
           if (result.role === 'admin') {
             navigate('/admin/dashboard');
           } else {
@@ -124,22 +115,15 @@ function Login() {
           setError(result.error || 'Correo o contraseña incorrectos');
         }
       } else {
-        // Fallback: hacer la petición directamente
-        const response = await fetch('http://localhost:8000/accounts/login/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(loginData),
-        });
+        // Usa la instancia api y ruta relativa
+        const response = await api.post('/accounts/login/', loginData);
+        const data = response.data;
 
-        const data = await response.json();
-
-        if (response.ok && data.success) {
-          // IMPORTANTE: Guardar el token y datos del usuario
+        if (response.status === 200 && data.success) {
           localStorage.setItem('token', data.token);
           localStorage.setItem('userRole', data.role);
           localStorage.setItem('userEmail', loginData.email);
-          
-          // Redirección según el rol del usuario
+
           if (data.role === 'admin') {
             navigate('/admin/dashboard');
           } else {
@@ -161,27 +145,20 @@ function Login() {
     e.preventDefault();
     setError('');
 
-    // NUEVO: Validación de contraseña mínima
     if (registerData.password.length < 8) {
       return setError('La contraseña debe tener al menos 8 caracteres');
     }
-
     if (registerData.password !== registerData.confirmPassword) {
       return setError('Las contraseñas no coinciden');
     }
-
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8000/accounts/register/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(registerData),
-      });
+      // Usa la instancia api y ruta relativa
+      const response = await api.post('/accounts/register/', registerData);
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (response.ok) {
+      if (response.status === 201 || response.status === 200) {
         alert('Registro exitoso. Ahora inicia sesión.');
         setActiveTab('login');
         setRegisterData({
@@ -192,7 +169,6 @@ function Login() {
           confirmPassword: '',
           rol: 'usuario',
         });
-        // Limpiar indicador de fortaleza
         setPasswordStrength({
           score: 0,
           text: '',
@@ -216,12 +192,9 @@ function Login() {
     }
   };
 
-  // NUEVO: Manejar cambio en contraseña de registro
   const handleRegisterPasswordChange = (e) => {
     const newPassword = e.target.value;
     setRegisterData({ ...registerData, password: newPassword });
-    
-    // Evaluar fortaleza en tiempo real
     const strength = evaluatePasswordStrength(newPassword);
     setPasswordStrength(strength);
   };
