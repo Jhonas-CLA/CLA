@@ -238,24 +238,6 @@ function Register() {
             required
             style={{ marginTop: "8px" }}
           />
-
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            style={{
-              position: "absolute",
-              right: "12px",
-              top: "50%",
-              transform: "translateY(-50%)",
-              background: "none",
-              border: "none",
-              cursor: "pointer",
-              fontSize: "1.2rem",
-              color: "#666",
-            }}
-          >
-            {showPassword ? "👁️" : "👁️‍🗨️"}
-          </button>
         </div>
 
         {/* NUEVO: Indicador de fortaleza de contraseña */}
