@@ -3,7 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
 import FavoriteButton from '../components/FavoriteButton';
 import './UserDashboard.css';
-import api, { BASE_URL } from '../api'; // IMPORTANTE: Importar BASE_URL
+import api, { BASE_URL } from '../api';
 
 function UserDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
