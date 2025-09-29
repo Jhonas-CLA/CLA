@@ -43,7 +43,7 @@ const DashboardProductos = () => {
   useEffect(() => {
     configurarAxiosToken(); // 🔹 Configurar token
     api
-      .get("/api/productos/")
+      .get("/productos/")
       .then((res) => {
         const productosOrdenados = res.data.sort((a, b) => a.id - b.id);
         setProductos(productosOrdenados);
@@ -110,7 +110,7 @@ const DashboardProductos = () => {
   const toggleActivo = (id, isActive) => {
     configurarAxiosToken(); // 🔹 Configurar token
     api
-      .patch(`/api/productos/${id}/`, { is_active: !isActive }) // 🔹 URL corregida
+      .patch(`/productos/${id}/`, { is_active: !isActive }) // 🔹 URL corregida
       .then((res) => {
         setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
       })
@@ -136,7 +136,7 @@ const DashboardProductos = () => {
     }
     configurarAxiosToken(); // 🔹 Configurar token
     api
-      .patch(`/api/productos/${id}/`, { cantidad: nuevaCantidad }) // 🔹 URL corregida
+      .patch(`/productos/${id}/`, { cantidad: nuevaCantidad }) // 🔹 URL corregida
       .then((res) => {
         setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
         setCantidadesTemp((prev) => {
@@ -202,7 +202,7 @@ const DashboardProductos = () => {
     configurarAxiosToken(); // 🔹 Configurar token
 
     api
-      .post("/api/productos/", formData, {
+      .post("/productos/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -268,7 +268,7 @@ const DashboardProductos = () => {
 
     configurarAxiosToken(); // 🔹 Configurar token
     api
-      .put(`/api/productos/${productoEditando.id}/`, formData, { // 🔹 URL corregida
+      .put(`/productos/${productoEditando.id}/`, formData, { // 🔹 URL corregida
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
