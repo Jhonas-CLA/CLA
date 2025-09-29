@@ -896,65 +896,72 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "usuarios" ? "active" : ""
             }`}
-            onClick={() => setActiveSectionHandler("usuarios")}
+            onClick={() => setActiveSection("usuarios")}
           >
             <div className="menu-icon">👤</div>
             <span>Usuarios</span>
           </button>
+
           <button
             className={`menu-item ${
               activeSection === "proveedores" ? "active" : ""
             }`}
-            onClick={(e) => setActiveSectionHandler(e.target, "proveedores")}
+            onClick={() => setActiveSection("proveedores")}
           >
             <div className="menu-icon">👥</div>
             <span>Proveedores</span>
           </button>
+
           <button
             className={`menu-item ${
               activeSection === "analiticos" ? "active" : ""
             }`}
-            onClick={() => setActiveSectionHandler("analiticos")}
+            onClick={() => setActiveSection("analiticos")}
           >
             <div className="menu-icon">📊</div>
             <span>Analíticas</span>
           </button>
+
           <button
             className={`menu-item ${
               activeSection === "documentos" ? "active" : ""
             }`}
-            onClick={(e) => setActiveSectionHandler(e.target, "documentos")}
+            onClick={() => setActiveSection("documentos")}
           >
             <div className="menu-icon">📃</div>
             <span>Documentos</span>
           </button>
+
           <button
             className={`menu-item ${
               activeSection === "productos" ? "active" : ""
             }`}
-            onClick={(e) => setActiveSectionHandler(e.target, "productos")}
+            onClick={() => setActiveSection("productos")}
           >
             <div className="menu-icon">📦</div>
             <span>Productos</span>
           </button>
+
           <button
             className={`menu-item ${
               activeSection === "pedidos" ? "active" : ""
             }`}
-            onClick={(e) => setActiveSectionHandler(e.target, "pedidos")}
+            onClick={() => setActiveSection("pedidos")}
           >
             <div className="menu-icon">🛒</div>
             <span>Pedidos</span>
           </button>
+
           <button
             className={`menu-item ${
               activeSection === "configuracion" ? "active" : ""
             }`}
-            onClick={() => setActiveSectionHandler("configuracion")}
+            onClick={() => setActiveSection("configuracion")}
           >
             <div className="menu-icon">⚙️</div>
             <span>Configuración</span>
           </button>
+
           <button className="menu-item logout-btn" onClick={handleLogout}>
             <div className="menu-icon">🚪</div>
             <span>Salir</span>
