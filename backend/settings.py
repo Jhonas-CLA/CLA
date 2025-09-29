@@ -173,3 +173,5 @@ if os.environ.get('CREATE_SUPERUSER') == 'true':
             email='codigolatino123@gmail.com', 
             password='123456'
         )
+
+FRONTEND_URL = "https://electricosandsolucionesfrontend.onrender.com"
