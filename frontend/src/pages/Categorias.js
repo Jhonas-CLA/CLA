@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api'; // Importa la instancia de Axios configurada
 import { Link } from 'react-router-dom';
 import './Categorias.css';
 
@@ -7,7 +7,7 @@ const Categorias = () => {
   const [categorias, setCategorias] = useState([]);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/categorias/')
+    api.get('/api/categorias/')
       .then(response => setCategorias(response.data))
       .catch(error => console.error('Error cargando las categorías:', error));
   }, []);
