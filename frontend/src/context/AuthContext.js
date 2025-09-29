@@ -1,5 +1,5 @@
-// context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import api from '../api';
 
 const AuthContext = createContext();
 
@@ -28,7 +28,12 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      let response = await fetch(url, { ...options, headers });
+      let response = await api({
+        url,
+        method: options.method || 'GET',
+        headers,
+        data: options.body ? JSON.parse(options.body) : undefined,
+      });
 
       // Si el token expiró, intentar refrescar
       if (response.status === 401 && token) {
@@ -36,7 +41,12 @@ export const AuthProvider = ({ children }) => {
         if (refreshed) {
           const newToken = localStorage.getItem('access_token');
           headers.Authorization = `Bearer ${newToken}`;
-          response = await fetch(url, { ...options, headers }); // 👈 reintento
+          response = await api({
+            url,
+            method: options.method || 'GET',
+            headers,
+            data: options.body ? JSON.parse(options.body) : undefined,
+          });
         } else {
           logout();
         }
@@ -52,18 +62,10 @@ export const AuthProvider = ({ children }) => {
   // -------- LOGIN --------
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:8000/accounts/api/auth/login/', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      const response = await api.post('/accounts/api/auth/login/', { email, password });
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (response.ok && data.access) {
-        // Guardar tokens
+      if (response.status === 200 && data.access) {
         localStorage.setItem('access_token', data.access);
         localStorage.setItem('refresh_token', data.refresh);
 
@@ -86,35 +88,27 @@ export const AuthProvider = ({ children }) => {
   };
 
   // -------- LOGOUT --------
-
   const logout = async () => {
-  const refreshTokenValue = localStorage.getItem('refresh_token');
-  console.log('Refresh token en logout:', refreshTokenValue);
-
-  if (refreshTokenValue) {
-    try {
-      const res = await fetch('http://localhost:8000/accounts/api/auth/logout/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: refreshTokenValue }),
-      });
-      const data = await res.json();
-      console.log('Logout response:', data);
-    } catch (error) {
-      console.error('Error en logout:', error);
+    const refreshTokenValue = localStorage.getItem('refresh_token');
+    if (refreshTokenValue) {
+      try {
+        const res = await api.post('/accounts/api/auth/logout/', { refresh: refreshTokenValue });
+        const data = res.data;
+        console.log('Logout response:', data);
+      } catch (error) {
+        console.error('Error en logout:', error);
+      }
+    } else {
+      console.warn('No hay refresh token, solo limpiando localStorage');
     }
-  } else {
-    console.warn('No hay refresh token, solo limpiando localStorage');
-  }
 
-  // Limpiar localStorage siempre
-  ['access_token', 'refresh_token', 'userRole', 'userEmail', 'userData'].forEach(item =>
-    localStorage.removeItem(item)
-  );
-  setToken(null);
-  setUser(null);
-};
-
+    // Limpiar localStorage siempre
+    ['access_token', 'refresh_token', 'userRole', 'userEmail', 'userData'].forEach(item =>
+      localStorage.removeItem(item)
+    );
+    setToken(null);
+    setUser(null);
+  };
 
   // -------- REFRESH TOKEN --------
   const refreshToken = async () => {
@@ -122,15 +116,10 @@ export const AuthProvider = ({ children }) => {
       const refreshTokenValue = localStorage.getItem('refresh_token');
       if (!refreshTokenValue) return false;
 
-      const response = await fetch('http://localhost:8000/accounts/api/auth/refresh/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ refresh: refreshTokenValue }),
-      });
+      const response = await api.post('/accounts/api/auth/refresh/', { refresh: refreshTokenValue });
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (response.ok && data.access) {
+      if (response.status === 200 && data.access) {
         localStorage.setItem('access_token', data.access);
         setToken(data.access);
         return true;
@@ -155,16 +144,16 @@ export const AuthProvider = ({ children }) => {
       setToken(savedToken);
 
       const fetchProfile = async (accessToken) => {
-        return fetch('http://localhost:8000/accounts/api/auth/profile/', {
-          headers: { 'Authorization': `Bearer ${accessToken}` },
+        return api.get('/accounts/api/auth/profile/', {
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
       };
 
       try {
         let response = await fetchProfile(savedToken);
 
-        if (response.ok) {
-          const userData = await response.json();
+        if (response.status === 200) {
+          const userData = response.data;
           setUser(userData);
 
           const userRole = userData.is_staff ? 'admin' : 'usuario';
@@ -178,8 +167,8 @@ export const AuthProvider = ({ children }) => {
             const newToken = localStorage.getItem('access_token');
             response = await fetchProfile(newToken);
 
-            if (response.ok) {
-              const userData = await response.json();
+            if (response.status === 200) {
+              const userData = response.data;
               setUser(userData);
 
               const userRole = userData.is_staff ? 'admin' : 'usuario';
