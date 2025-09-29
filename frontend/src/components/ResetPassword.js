@@ -94,7 +94,7 @@ function ResetPassword() {
     setMsg('');
 
     try {
-      const url = `https://electricosandsoluciones.onrender.com/accounts/reset-password/${uidb64}/${token}/`;
+      const url = `http://localhost:8000/accounts/reset-password/${uidb64}/${token}/`;
       console.log("Enviando a:", url);
 
       const res = await fetch(url, {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import api from "../api";
+import axios from "axios";
 import "./DashboardProductos.css";
 
 const DashboardProductos = () => {
@@ -31,29 +31,17 @@ const DashboardProductos = () => {
   // --- para editar cantidad rápida ---
   const [cantidadesTemp, setCantidadesTemp] = useState({});
 
-  // 🔹 Configurar token de autorización
-  const configurarAxiosToken = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    }
-  };
-
   // --- cargar productos ---
   useEffect(() => {
-    configurarAxiosToken(); // 🔹 Configurar token
-    api
-      .get("/productos/")
-      .then((res) => {
-        const productosOrdenados = res.data.sort((a, b) => a.id - b.id);
+    axios
+      .get("http://localhost:8000/api/productos/")
+      .then((response) => {
+        const productosOrdenados = response.data.sort((a, b) => a.id - b.id);
         setProductos(productosOrdenados);
         setLoading(false);
       })
-      .catch((err) => {
-        console.error(
-          "Error al obtener productos:",
-          err.response ? err.response.data : err
-        );
+      .catch((error) => {
+        console.error("Error al obtener productos:", error);
         setError("No se pudieron cargar los productos");
         setLoading(false);
       });
@@ -61,16 +49,10 @@ const DashboardProductos = () => {
 
   // --- cargar categorías ---
   useEffect(() => {
-    configurarAxiosToken(); // 🔹 Configurar token
-    api
-      .get("/api/categorias/")
-      .then((res) => setCategorias(res.data))
-      .catch((err) =>
-        console.error(
-          "Error al cargar categorías:",
-          err.response ? err.response.data : err
-        )
-      );
+    axios
+      .get("http://localhost:8000/api/categorias/")
+      .then((response) => setCategorias(response.data))
+      .catch((err) => console.error("Error al cargar categorías:", err));
   }, []);
 
   // --- filtrar productos ---
@@ -103,22 +85,22 @@ const DashboardProductos = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith("http")) return imagePath;
-    return `${process.env.REACT_APP_BASE_URL || "https://electricosandsoluciones.onrender.com"}${imagePath}`;
+    return `http://localhost:8000${imagePath}`;
   };
 
   // --- habilitar / deshabilitar producto ---
   const toggleActivo = (id, isActive) => {
-    configurarAxiosToken(); // 🔹 Configurar token
-    api
-      .patch(`/productos/${id}/`, { is_active: !isActive }) // 🔹 URL corregida
-      .then((res) => {
-        setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
+    axios
+      .patch(`http://localhost:8000/api/productos/${id}/`, {
+        is_active: !isActive,
+      })
+      .then(() => {
+        setProductos((prev) =>
+          prev.map((p) => (p.id === id ? { ...p, is_active: !isActive } : p))
+        );
       })
       .catch((err) => {
-        console.error(
-          "Error al cambiar estado:",
-          err.response ? err.response.data : err
-        );
+        console.error("Error al cambiar estado:", err);
         alert("No se pudo cambiar el estado del producto");
       });
   };
@@ -134,11 +116,14 @@ const DashboardProductos = () => {
       alert("Cantidad inválida");
       return;
     }
-    configurarAxiosToken(); // 🔹 Configurar token
-    api
-      .patch(`/productos/${id}/`, { cantidad: nuevaCantidad }) // 🔹 URL corregida
-      .then((res) => {
-        setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
+    axios
+      .patch(`http://localhost:8000/api/productos/${id}/`, {
+        cantidad: nuevaCantidad,
+      })
+      .then(() => {
+        setProductos((prev) =>
+          prev.map((p) => (p.id === id ? { ...p, cantidad: nuevaCantidad } : p))
+        );
         setCantidadesTemp((prev) => {
           const temp = { ...prev };
           delete temp[id];
@@ -146,10 +131,7 @@ const DashboardProductos = () => {
         });
       })
       .catch((err) => {
-        console.error(
-          "Error al actualizar cantidad:",
-          err.response ? err.response.data : err
-        );
+        console.error("Error al actualizar cantidad:", err);
         alert("No se pudo actualizar la cantidad");
       });
   };
@@ -199,14 +181,15 @@ const DashboardProductos = () => {
     }
 
     const formData = prepararProducto();
-    configurarAxiosToken(); // 🔹 Configurar token
 
-    api
-      .post("/productos/", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
+    axios
+      .post("http://localhost:8000/api/productos/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       })
-      .then((res) => {
-        setProductos((prev) => [res.data, ...prev]);
+      .then((response) => {
+        setProductos((prev) => [response.data, ...prev]);
         setMostrarModal(false);
         // Limpiar formulario
         setNuevoNombre("");
@@ -218,10 +201,7 @@ const DashboardProductos = () => {
         setNuevaImagen(null);
       })
       .catch((err) => {
-        console.error(
-          "Error al crear producto:",
-          err.response ? err.response.data : err
-        );
+        console.error("Error al crear producto:", err);
         alert("No se pudo crear el producto");
       });
   };
@@ -266,24 +246,26 @@ const DashboardProductos = () => {
       formData.append("imagen", imagenEditando);
     }
 
-    configurarAxiosToken(); // 🔹 Configurar token
-    api
-      .put(`/productos/${productoEditando.id}/`, formData, { // 🔹 URL corregida
-        headers: { "Content-Type": "multipart/form-data" },
-      })
-      .then((res) => {
+    axios
+      .put(
+        `http://localhost:8000/api/productos/${productoEditando.id}/`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((response) => {
         setProductos((prev) =>
-          prev.map((p) => (p.id === productoEditando.id ? res.data : p))
+          prev.map((p) => (p.id === productoEditando.id ? response.data : p))
         );
         setMostrarModalEditar(false);
         setProductoEditando(null);
         setImagenEditando(null);
       })
       .catch((err) => {
-        console.error(
-          "Error al editar producto:",
-          err.response ? err.response.data : err
-        );
+        console.error("Error al editar producto:", err);
         alert("No se pudo editar el producto");
       });
   };
@@ -503,18 +485,6 @@ const DashboardProductos = () => {
                 onChange={(e) => setNuevaCantidad(e.target.value)}
                 min="0"
               />
-
-              {/* 🔹 Campo de imagen agregado */}
-              <div className="modal-input-group">
-                <label>Imagen del producto (opcional):</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImagenChange(e, false)}
-                  className="modal-input-file"
-                />
-                {nuevaImagen && <p>Archivo: {nuevaImagen.name}</p>}
-              </div>
             </div>
 
             <div className="modal-buttons">
@@ -622,21 +592,6 @@ const DashboardProductos = () => {
                 }
                 min="0"
               />
-
-              {/* 🔹 Campo de imagen agregado */}
-              <div className="modal-input-group">
-                <label>Cambiar imagen (opcional):</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) => handleImagenChange(e, true)}
-                  className="modal-input-file"
-                />
-                {imagenEditando && <p>Archivo: {imagenEditando.name}</p>}
-                {productoEditando.imagen && !imagenEditando && (
-                  <p>Imagen actual: {productoEditando.imagen.split('/').pop()}</p>
-                )}
-              </div>
             </div>
 
             <div className="modal-buttons">

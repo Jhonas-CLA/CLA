@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import api from "../api"; 
+import axios from "axios";
 import "./Analiticas.css";
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts";
+
+const BASE_URL = "http://localhost:8000";
 
 const COLORS = {
     en_proceso: "#facc15",  // Amarillo (En proceso)
@@ -18,7 +20,7 @@ const Analiticas = () => {
     useEffect(() => {
         const fetchAnalytics = async () => {
             try {
-                const response = await api.get("/api/pedidos/analiticas/"); 
+                const response = await axios.get(`${BASE_URL}/api/pedidos/analiticas/`);
                 const rawData = response.data;
 
                 if (rawData) {
@@ -29,6 +31,7 @@ const Analiticas = () => {
                         { estado: "cancelado", porcentaje: rawData.cancelado.porcentaje, count: rawData.cancelado.count },
                     ];
 
+                    // ✅ Filtrar estados con porcentaje mayor a 0
                     const filteredData = formattedData.filter(item => item.porcentaje > 0);
                     setData(filteredData);
                 }
@@ -62,7 +65,7 @@ const Analiticas = () => {
                                 cx="50%"
                                 cy="50%"
                                 labelLine={false}
-                                outerRadius={100}
+                                outerRadius={100}  // 🔥 Tamaño controlado del círculo
                                 dataKey="porcentaje"
                                 nameKey="estado"
                                 label={({ estado, porcentaje }) => `${estado}: ${porcentaje}%`}
