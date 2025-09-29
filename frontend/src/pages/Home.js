@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import api from "../api"; 
+import { useNavigate } from "react-router-dom";
 import "./Home.css";
 import ProductCarousel from "../components/ProductCarousel";
 
@@ -7,10 +8,11 @@ function Home() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    axios
-      .get("http://127.0.0.1:8000/api/productos/")
+    api
+      .get("/api/productos/")
       .then((res) => {
         console.log("📦 Productos recibidos:", res.data);
         setProductos(res.data);
@@ -25,7 +27,7 @@ function Home() {
   }, []);
 
   const handleSolicitarEnvio = () => {
-    window.location.href = "/carrito";
+    navigate("/carrito");
   };
 
   return (
