@@ -49,11 +49,7 @@ function AdminDashboard() {
     sidebar.classList.toggle("closed");
   };
 
-  const setActive = (target, section) => {
-    document.querySelectorAll(".menu-item").forEach((item) => {
-      item.classList.remove("active");
-    });
-    target.classList.add("active");
+  const setActiveSectionHandler = (section) => {
     setActiveSection(section);
   };
 
@@ -312,7 +308,7 @@ function AdminDashboard() {
             <Analiticas />
           </div>
         );
-        case "documentos":
+      case "documentos":
         return (
           <div className="content-section">
             <Documentos />
@@ -900,7 +896,7 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "usuarios" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "usuarios")}
+            onClick={() => setActiveSectionHandler("usuarios")}
           >
             <div className="menu-icon">👤</div>
             <span>Usuarios</span>
@@ -918,7 +914,7 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "analiticos" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "analiticos")}
+            onClick={() => setActiveSectionHandler("analiticos")}
           >
             <div className="menu-icon">📊</div>
             <span>Analíticas</span>
@@ -952,9 +948,9 @@ function AdminDashboard() {
           </button>
           <button
             className={`menu-item ${
-              activeSection === "usuarios" ? "active" : ""
+              activeSection === "configuracion" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "configuracion")}
+            onClick={() => setActiveSectionHandler("configuracion")}
           >
             <div className="menu-icon">⚙️</div>
             <span>Configuración</span>
