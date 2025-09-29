@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import axios from "axios";
+import api, { BASE_URL } from "../api";
 import FavoriteButton from "../components/FavoriteButton";
 import "./Carrito.css";
 
@@ -138,9 +138,7 @@ const CarritoCompras = () => {
   useEffect(() => {
     const cargarNumeroWhatsApp = async () => {
       try {
-        const response = await axios.get(
-          `${BASE_URL}/api/configuracion/whatsapp/`
-        );
+        const response = await api.get("/api/configuracion/whatsapp/");
         if (response.data && response.data.numero) {
           setNumeroWhatsApp(response.data.numero);
         }
@@ -159,12 +157,12 @@ const CarritoCompras = () => {
           setProductos([]);
           return;
         }
-        let url = `${BASE_URL}/api/productos/?only_active=true`;
+        let url = `/api/productos/?only_active=true`;
         const categoriaExacta = categoriasMap[categoriaFiltro];
         if (categoriaExacta) {
           url += `&categoria=${encodeURIComponent(categoriaExacta)}`;
         }
-        const response = await axios.get(url);
+        const response = await api.get(url);
         const productosBack = response.data.map((p) => ({
           id: p.id,
           codigo: p.codigo,
@@ -186,10 +184,8 @@ const CarritoCompras = () => {
   // Obtener nombre del cliente según el email
   const obtenerNombreCliente = async (emailUsuario) => {
     try {
-      const res = await fetch(
-        `http://localhost:8000/api/pedidos/cliente/?email=${emailUsuario}`
-      );
-      const data = await res.json();
+      const res = await api.get(`/api/pedidos/cliente/?email=${emailUsuario}`);
+      const data = await res.data;
       if (data.nombre) {
         setNombreCliente(data.nombre);
       }
@@ -296,7 +292,6 @@ const CarritoCompras = () => {
       return;
     }
 
-    // Si no hay email, mostrar modal
     if (!email) {
       setShowEmailModal(true);
       return;
@@ -307,7 +302,6 @@ const CarritoCompras = () => {
     setSuccess("");
 
     try {
-      // Preparar datos del pedido
       const pedidoData = {
         email: email,
         cliente: nombreCliente || "Cliente desconocido",
@@ -324,25 +318,16 @@ const CarritoCompras = () => {
         ),
       };
 
-      console.log("Enviando pedido:", pedidoData);
+      await api.post("/api/pedidos/", pedidoData);
 
-      await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
-
-      const response = await fetch(
-        "http://localhost:8000/accounts/api/whatsapp/pedido/",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(pedidoData),
-        }
+      const response = await api.post(
+        "/accounts/api/whatsapp/pedido/",
+        pedidoData
       );
 
-      const data = await response.json();
-      console.log("Respuesta del servidor:", data);
+      const data = response.data;
 
-      if (response.ok) {
+      if (response.status === 200) {
         setSuccess("✅ ¡Perfecto! Tu pedido está listo");
 
         if (data.whatsapp_url) {
@@ -353,8 +338,6 @@ const CarritoCompras = () => {
         setShowEmailModal(false);
         setTimeout(() => setSuccess(""), 5000);
       } else {
-        console.error("Error del servidor:", data);
-
         switch (data.error) {
           case "USER_NOT_REGISTERED":
             setError(
