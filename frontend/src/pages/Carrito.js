@@ -149,35 +149,33 @@ const CarritoCompras = () => {
 
   // cargar productos solo si hay categoría seleccionada
   useEffect(() => {
-    const cargarProductos = async () => {
-      try {
-        if (!categoriaFiltro) {
-          setProductos([]);
-          return;
-        }
-        let url = `/api/productos/?only_active=true`;
-        const categoriaExacta = categoriasMap[categoriaFiltro];
-        if (categoriaExacta) {
-          url += `&categoria=${encodeURIComponent(categoriaExacta)}`;
-        }
-        const response = await api.get(url);
-        const productosBack = response.data.map((p) => ({
-          id: p.id,
-          codigo: p.codigo,
-          nombre: p.nombre,
-          categoria: p.categoria?.nombre || "Otra",
-          precio: parseFloat(p.precio),
-          stock: p.cantidad,
-          imagen_url: p.imagen_url || p.imagen || "",
-          is_active: p.is_active,
-        }));
-        setProductos(productosBack);
-      } catch (err) {
-        console.error("Error cargando productos:", err);
+  const cargarProductos = async () => {
+    try {
+      if (!categoriaFiltro) {
+        setProductos([]);
+        return;
       }
-    };
-    cargarProductos();
-  }, [categoriaFiltro]);
+      let url = `/api/productos/?only_active=true`;
+      // Usa el slug directamente en la llamada
+      url += `&categoria=${encodeURIComponent(categoriaFiltro)}`;
+      const response = await api.get(url);
+      const productosBack = response.data.map((p) => ({
+        id: p.id,
+        codigo: p.codigo,
+        nombre: p.nombre,
+        categoria: p.categoria?.nombre || "Otra",
+        precio: parseFloat(p.precio),
+        stock: p.cantidad,
+        imagen_url: p.imagen_url || p.imagen || "",
+        is_active: p.is_active,
+      }));
+      setProductos(productosBack);
+    } catch (err) {
+      console.error("Error cargando productos:", err);
+    }
+  };
+  cargarProductos();
+}, [categoriaFiltro]);
 
   // Obtener nombre del cliente según el email
   const obtenerNombreCliente = async (emailUsuario) => {
