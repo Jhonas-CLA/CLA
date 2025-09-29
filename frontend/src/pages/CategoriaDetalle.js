@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from "axios";
+import api, { BASE_URL } from "../api"; // Importa la instancia de Axios y la base URL
 import FavoriteButton from '../components/FavoriteButton';
 import "./Categorias.css";
 
-// URL base para las imágenes
-const BASE_URL = 'http://localhost:8000';
+// URL base para las imágenes (usa la misma que la API)
+const IMAGE_BASE_URL = BASE_URL;
 
 const CategoriasDetalle = () => {
   const { nombre } = useParams();
@@ -59,73 +59,51 @@ const CategoriasDetalle = () => {
     if (!imagePath) {
       return null;
     }
-    
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
-    
     let fullUrl;
     if (imagePath.startsWith('/media/')) {
-      fullUrl = `${BASE_URL}${imagePath}`;
+      fullUrl = `${IMAGE_BASE_URL}${imagePath}`;
     } else if (imagePath.startsWith('media/')) {
-      fullUrl = `${BASE_URL}/${imagePath}`;
+      fullUrl = `${IMAGE_BASE_URL}/${imagePath}`;
     } else {
-      fullUrl = `${BASE_URL}/media/${imagePath}`;
+      fullUrl = `${IMAGE_BASE_URL}/media/${imagePath}`;
     }
-    
     return fullUrl;
   };
 
   // Función para manejar clic en producto
   const handleProductoClick = (producto) => {
-    // Guardar el producto seleccionado en localStorage
     localStorage.setItem('productoSeleccionado', JSON.stringify(producto));
-    // NUEVO: Guardar también la categoría seleccionada para que se mantenga en el carrito
     localStorage.setItem('categoriaSeleccionada', nombre);
-    // Navegar al carrito
     navigate('/carrito');
   };
 
   useEffect(() => {
     if (nombre) {
-      console.log('Buscando productos para categoría URL:', nombre);
       setLoading(true);
-      
-      // Obtener el nombre exacto de la categoría
       const categoriaExacta = categoriasMap[nombre];
-      console.log('Categoria exacta mapeada:', categoriaExacta);
-      
       if (categoriaExacta) {
-        // Usar el nombre exacto de categoría
-        axios
-          .get(`http://127.0.0.1:8000/api/productos/?categoria=${encodeURIComponent(categoriaExacta)}`)
+        api
+          .get(`/api/productos/?categoria=${encodeURIComponent(categoriaExacta)}`)
           .then((response) => {
-            console.log('Productos encontrados:', response.data.length);
-            if (response.data.length > 0) {
-              console.log('Primer producto:', response.data[0]);
-            }
             setProductos(response.data);
           })
-          .catch((error) => {
-            console.error('Error cargando productos:', error);
+          .catch(() => {
             setProductos([]);
           })
           .finally(() => {
             setLoading(false);
           });
       } else {
-        // Si no hay mapeo, intentar con el nombre formateado
         const nombreFormateado = formatearNombre(nombre);
-        console.log('Intentando con nombre formateado:', nombreFormateado);
-        
-        axios
-          .get(`http://127.0.0.1:8000/api/productos/?categoria=${encodeURIComponent(nombreFormateado)}`)
+        api
+          .get(`/api/productos/?categoria=${encodeURIComponent(nombreFormateado)}`)
           .then((response) => {
-            console.log('Productos encontrados con nombre formateado:', response.data.length);
             setProductos(response.data);
           })
-          .catch((error) => {
-            console.error('Error cargando productos:', error);
+          .catch(() => {
             setProductos([]);
           })
           .finally(() => {
@@ -143,7 +121,6 @@ const CategoriasDetalle = () => {
       .join(' ');
   };
 
-  // Obtener el nombre a mostrar
   const getNombreDisplay = () => {
     return categoriasMap[nombre] || formatearNombre(nombre);
   };
