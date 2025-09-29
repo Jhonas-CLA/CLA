@@ -3,8 +3,7 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from "react-router-dom";
 import FavoriteButton from '../components/FavoriteButton';
 import './UserDashboard.css';
-
-const BASE_URL = "http://localhost:8000";
+import api, { BASE_URL } from '../api'; // IMPORTANTE: Importar BASE_URL
 
 function UserDashboard() {
   const [activeSection, setActiveSection] = useState('favoritos');
@@ -48,7 +47,7 @@ function UserDashboard() {
     error: ''
   });
 
-  // NUEVO: Estado para la fortaleza de la contraseña
+  // Estado para la fortaleza de la contraseña
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     text: '',
@@ -66,7 +65,7 @@ function UserDashboard() {
   const { user, token, apiCall, logout } = useAuth();
   const navigate = useNavigate();
 
-  // NUEVO: Función para evaluar la fortaleza de la contraseña
+  // Función para evaluar la fortaleza de la contraseña
   const evaluatePasswordStrength = (password) => {
     const requirements = {
       length: password.length >= 8,
@@ -103,7 +102,7 @@ function UserDashboard() {
     return { score, text, color, requirements };
   };
 
-  // NUEVO: Manejar cambio en el campo de nueva contraseña
+  // Manejar cambio en el campo de nueva contraseña
   const handleNewPasswordChange = (e) => {
     const newPassword = e.target.value;
     setPasswordForm(prev => ({
@@ -155,6 +154,7 @@ function UserDashboard() {
     navigate('/carrito');
   };
 
+  // ACTUALIZADO: Usar path relativo
   const fetchUserProfile = async () => {
     if (!token) {
       setUserProfile(prev => ({ ...prev, loading: false, error: 'No estás autenticado' }));
@@ -164,7 +164,7 @@ function UserDashboard() {
     setUserProfile(prev => ({ ...prev, loading: true, error: null }));
 
     try {
-      const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/');
+      const response = await apiCall('/accounts/api/auth/profile/');
       if (response.ok) {
         const data = await response.json();
         setUserProfile({
@@ -193,14 +193,14 @@ function UserDashboard() {
     }
   };
 
-  // Traer pedidos del usuario
+  // ACTUALIZADO: Usar path relativo
   const fetchPedidosUsuario = async () => {
     if (!token) return;
     setLoadingPedidos(true);
     setErrorPedidos(null);
 
     try {
-      const response = await apiCall('http://localhost:8000/api/pedidos/mis-pedidos/');
+      const response = await apiCall('/api/pedidos/mis-pedidos/');
       if (response.ok) {
         const data = await response.json();
         setPedidos(data.pedidos || []);
@@ -214,14 +214,14 @@ function UserDashboard() {
     }
   };
 
-  // Traer favoritos del usuario
+  // ACTUALIZADO: Usar path relativo
   const fetchFavoritos = async () => {
     if (!token) return;
     setLoadingFavoritos(true);
     setErrorFavoritos(null);
 
     try {
-      const response = await apiCall('http://localhost:8000/api/favoritos/');
+      const response = await apiCall('/api/favoritos/');
       if (response.ok) {
         const data = await response.json();
         setFavoritos(data.favoritos || []);
@@ -244,12 +244,13 @@ function UserDashboard() {
     }
   };
 
+  // ACTUALIZADO: Usar path relativo
   const updateProfile = async (e) => {
     e.preventDefault();
     setProfileForm(prev => ({ ...prev, loading: true, error: '', success: false }));
 
     try {
-      const response = await apiCall('http://localhost:8000/accounts/api/auth/profile/update/', {
+      const response = await apiCall('/accounts/api/auth/profile/update/', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -291,7 +292,7 @@ function UserDashboard() {
     }
   };
 
-  // MODIFICADO: Validar contraseña antes de enviar
+  // ACTUALIZADO: Usar path relativo
   const changePassword = async (e) => {
     e.preventDefault();
     
@@ -315,7 +316,7 @@ function UserDashboard() {
     setPasswordForm(prev => ({ ...prev, loading: true, error: '', success: false }));
 
     try {
-      const response = await apiCall('http://localhost:8000/accounts/api/auth/change-password/', {
+      const response = await apiCall('/accounts/api/auth/change-password/', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -522,7 +523,6 @@ function UserDashboard() {
                       e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.1)';
                     }}
                   >
-                    {/* Botón de favorito en la esquina superior derecha */}
                     <div 
                       style={{ position: 'absolute', top: '12px', right: '12px' }}
                       onClick={(e) => e.stopPropagation()}
@@ -534,7 +534,6 @@ function UserDashboard() {
                       />
                     </div>
 
-                    {/* Imagen del producto */}
                     <div style={{ 
                       marginBottom: '16px',
                       display: 'flex',
@@ -560,7 +559,6 @@ function UserDashboard() {
                       />
                     </div>
 
-                    {/* Información del producto */}
                     <div>
                       <h3 style={{ 
                         color: darkMode ? '#f1f5f9' : '#1e293b',
@@ -598,7 +596,6 @@ function UserDashboard() {
                         </p>
                       )}
                       
-                      {/* Precio e icono de carrito */}
                       <div style={{ 
                         display: 'flex', 
                         alignItems: 'center', 
@@ -613,7 +610,6 @@ function UserDashboard() {
                           ${Number(favorito.producto.precio).toLocaleString('es-CO')}
                         </span>
                         
-                        {/* Icono de carrito en lugar del stock */}
                         <div style={{
                           backgroundColor: '#FFD700',
                           color: '#001152',
@@ -631,7 +627,6 @@ function UserDashboard() {
                         </div>
                       </div>
 
-                      {/* Fecha agregado */}
                       <div style={{
                         marginTop: '12px',
                         paddingTop: '12px',
@@ -708,10 +703,8 @@ function UserDashboard() {
                       }}
                     />
                     
-                    {/* NUEVO: Indicador de fortaleza de contraseña */}
                     {passwordForm.new_password.length > 0 && (
                       <div style={{ marginTop: '8px' }}>
-                        {/* Barra de fortaleza */}
                         <div style={{
                           width: '100%',
                           height: '6px',
@@ -728,7 +721,6 @@ function UserDashboard() {
                           }} />
                         </div>
                         
-                        {/* Texto de fortaleza */}
                         <div style={{
                           display: 'flex',
                           alignItems: 'center',
@@ -744,7 +736,6 @@ function UserDashboard() {
                           </span>
                         </div>
                         
-                        {/* Requisitos de la contraseña */}
                         <div style={{
                           fontSize: '0.8rem',
                           color: darkMode ? '#94a3b8' : '#64748b'
@@ -790,7 +781,6 @@ function UserDashboard() {
                       }}
                     />
                     
-                    {/* Indicador de coincidencia de contraseñas */}
                     {passwordForm.confirm_password.length > 0 && (
                       <div style={{ 
                         marginTop: '4px', 
@@ -991,13 +981,12 @@ function UserDashboard() {
         );
 
       default:
-        return renderContent();
+        return null;
     }
   };
 
   return (
     <div className={`dashboard ${darkMode ? 'dark-mode' : ''}`}>
-      {/* Sidebar */}
       <div id="sidebar" className={`sidebar ${darkMode ? 'dark-mode' : ''}`}>
         <div className="header">
           <div className="logo-section">
@@ -1039,10 +1028,8 @@ function UserDashboard() {
         </nav>
       </div>
 
-      {/* Toggle Button */}
       <button className="toggle-btn" onClick={toggleSidebar}>☰</button>
 
-      {/* Main Content */}
       <main className={`main-content ${darkMode ? 'dark-mode' : ''}`}>
         {renderContent()}
       </main>
