@@ -31,10 +31,19 @@ const DashboardProductos = () => {
   // --- para editar cantidad rápida ---
   const [cantidadesTemp, setCantidadesTemp] = useState({});
 
+  // 🔹 Configurar token de autorización
+  const configurarAxiosToken = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  };
+
   // --- cargar productos ---
   useEffect(() => {
+    configurarAxiosToken(); // 🔹 Configurar token
     api
-      .get("/productos/")
+      .get("/api/productos/")
       .then((res) => {
         const productosOrdenados = res.data.sort((a, b) => a.id - b.id);
         setProductos(productosOrdenados);
@@ -52,8 +61,9 @@ const DashboardProductos = () => {
 
   // --- cargar categorías ---
   useEffect(() => {
+    configurarAxiosToken(); // 🔹 Configurar token
     api
-      .get("/categorias/")
+      .get("/api/categorias/")
       .then((res) => setCategorias(res.data))
       .catch((err) =>
         console.error(
@@ -98,8 +108,9 @@ const DashboardProductos = () => {
 
   // --- habilitar / deshabilitar producto ---
   const toggleActivo = (id, isActive) => {
+    configurarAxiosToken(); // 🔹 Configurar token
     api
-      .patch(`/productos/${id}/`, { is_active: !isActive })
+      .patch(`/api/productos/${id}/`, { is_active: !isActive }) // 🔹 URL corregida
       .then((res) => {
         setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
       })
@@ -123,8 +134,9 @@ const DashboardProductos = () => {
       alert("Cantidad inválida");
       return;
     }
+    configurarAxiosToken(); // 🔹 Configurar token
     api
-      .patch(`/productos/${id}/`, { cantidad: nuevaCantidad })
+      .patch(`/api/productos/${id}/`, { cantidad: nuevaCantidad }) // 🔹 URL corregida
       .then((res) => {
         setProductos((prev) => prev.map((p) => (p.id === id ? res.data : p)));
         setCantidadesTemp((prev) => {
@@ -187,9 +199,10 @@ const DashboardProductos = () => {
     }
 
     const formData = prepararProducto();
+    configurarAxiosToken(); // 🔹 Configurar token
 
     api
-      .post("/productos/", formData, {
+      .post("/api/productos/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -253,8 +266,9 @@ const DashboardProductos = () => {
       formData.append("imagen", imagenEditando);
     }
 
+    configurarAxiosToken(); // 🔹 Configurar token
     api
-      .put(`/productos/${productoEditando.id}/`, formData, {
+      .put(`/api/productos/${productoEditando.id}/`, formData, { // 🔹 URL corregida
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
@@ -489,6 +503,18 @@ const DashboardProductos = () => {
                 onChange={(e) => setNuevaCantidad(e.target.value)}
                 min="0"
               />
+
+              {/* 🔹 Campo de imagen agregado */}
+              <div className="modal-input-group">
+                <label>Imagen del producto (opcional):</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImagenChange(e, false)}
+                  className="modal-input-file"
+                />
+                {nuevaImagen && <p>Archivo: {nuevaImagen.name}</p>}
+              </div>
             </div>
 
             <div className="modal-buttons">
@@ -596,6 +622,21 @@ const DashboardProductos = () => {
                 }
                 min="0"
               />
+
+              {/* 🔹 Campo de imagen agregado */}
+              <div className="modal-input-group">
+                <label>Cambiar imagen (opcional):</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => handleImagenChange(e, true)}
+                  className="modal-input-file"
+                />
+                {imagenEditando && <p>Archivo: {imagenEditando.name}</p>}
+                {productoEditando.imagen && !imagenEditando && (
+                  <p>Imagen actual: {productoEditando.imagen.split('/').pop()}</p>
+                )}
+              </div>
             </div>
 
             <div className="modal-buttons">
