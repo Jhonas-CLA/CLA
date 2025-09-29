@@ -13,7 +13,7 @@ function Home() {
   useEffect(() => {
     console.log("🔄 Iniciando carga de productos...");
     console.log("🌐 URL base:", api.defaults.baseURL);
-    console.log("🔗 URL completa:", `${api.defaults.baseURL}/api/productos/`);
+    console.log("🔗 URL completa:", `${api.defaults.baseURL}/api/products/`);
     
     api
       .get("/api/productos/")
