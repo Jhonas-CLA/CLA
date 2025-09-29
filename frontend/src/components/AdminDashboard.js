@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Analiticas from "../pages/Analiticas";
 import Documentos from "../pages/Documentos";
-import api from "../api";
+import api from "../api"; // 🔹 Importamos nuestra instancia de axios
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -16,6 +16,7 @@ function AdminDashboard() {
   const [filtro, setFiltro] = useState("");
   const [activeSection, setActiveSection] = useState("usuarios");
 
+  // Estados para el modal de edición
   const [showEditModal, setShowEditModal] = useState(false);
   const [usuarioEditando, setUsuarioEditando] = useState(null);
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ function AdminDashboard() {
   });
   const [loadingAction, setLoadingAction] = useState(false);
 
+  // Estados para configuración del admin
   const [adminData, setAdminData] = useState(null);
   const [loadingAdmin, setLoadingAdmin] = useState(false);
   const [editandoPerfil, setEditandoPerfil] = useState(false);
@@ -38,6 +40,7 @@ function AdminDashboard() {
     rol: "",
   });
 
+  // 🔹 Estados para la paginación
   const [paginaActual, setPaginaActual] = useState(1);
   const [usuariosPorPagina] = useState(5);
 
@@ -47,7 +50,9 @@ function AdminDashboard() {
   };
 
   const setActive = (target, section) => {
-    document.querySelectorAll(".menu-item").forEach((item) => item.classList.remove("active"));
+    document.querySelectorAll(".menu-item").forEach((item) => {
+      item.classList.remove("active");
+    });
     target.classList.add("active");
     setActiveSection(section);
   };
@@ -67,30 +72,36 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 API Calls usando api.js
+  // 🔹 Configurar el token de autorización para todas las peticiones
+  const configurarAxiosToken = () => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    }
+  };
+
   const fetchAdminData = async () => {
     try {
       setLoadingAdmin(true);
-      const token = localStorage.getItem("token");
-      const { data } = await api.get("/accounts/perfil-admin/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      configurarAxiosToken(); // Configurar token antes de la petición
 
-      if (data.success) {
-        setAdminData(data.admin);
+      const response = await api.get("/accounts/perfil-admin/");
+
+      if (response.data.success) {
+        setAdminData(response.data.admin);
         setPerfilFormData({
-          first_name: data.admin.first_name,
-          last_name: data.admin.last_name,
-          phone: data.admin.phone || "",
-          email: data.admin.email,
-          rol: data.admin.rol,
+          first_name: response.data.admin.first_name,
+          last_name: response.data.admin.last_name,
+          phone: response.data.admin.phone || "",
+          email: response.data.admin.email,
+          rol: response.data.admin.rol,
         });
       } else {
         setError("Error al cargar datos del administrador");
       }
     } catch (err) {
       setError("Error de conexión con el servidor");
-      console.error(err);
+      console.error("Error:", err);
     } finally {
       setLoadingAdmin(false);
     }
@@ -99,27 +110,26 @@ function AdminDashboard() {
   const guardarPerfilAdmin = async () => {
     try {
       setLoadingAction(true);
-      const token = localStorage.getItem("token");
+      configurarAxiosToken();
+
       const datosEditables = {
         first_name: perfilFormData.first_name,
         last_name: perfilFormData.last_name,
         phone: perfilFormData.phone,
       };
 
-      const { data } = await api.put("/accounts/actualizar-perfil-admin/", datosEditables, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await api.put("/accounts/actualizar-perfil-admin/", datosEditables);
 
-      if (data.success) {
-        setAdminData({ ...adminData, ...data.admin });
+      if (response.data.success) {
+        setAdminData({ ...adminData, ...response.data.admin });
         setEditandoPerfil(false);
         alert("Perfil actualizado correctamente");
       } else {
-        alert(data.error || "Error al actualizar perfil");
+        alert(response.data.error || "Error al actualizar perfil");
       }
     } catch (err) {
       alert("Error de conexión con el servidor");
-      console.error(err);
+      console.error("Error:", err);
     } finally {
       setLoadingAction(false);
     }
@@ -129,78 +139,20 @@ function AdminDashboard() {
     try {
       setLoading(true);
       setError(null);
-      const token = localStorage.getItem("token");
-      const { data } = await api.get("/accounts/usuarios/", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      configurarAxiosToken();
 
-      if (data.success) {
-        setUsuarios(data.usuarios);
+      const response = await api.get("/accounts/usuarios/");
+
+      if (response.data.success) {
+        setUsuarios(response.data.usuarios);
       } else {
-        setError(data.error || "Error al cargar usuarios");
+        setError(response.data.error || "Error al cargar usuarios");
       }
     } catch (err) {
       setError("Error de conexión con el servidor");
-      console.error(err);
+      console.error("Error:", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const guardarCambios = async () => {
-    try {
-      setLoadingAction(true);
-      const datosEditables = {
-        first_name: formData.first_name,
-        last_name: formData.last_name,
-        phone: formData.phone,
-      };
-
-      const { data } = await api.put(`/accounts/usuarios/${usuarioEditando.id}/editar/`, datosEditables);
-
-      if (data.success) {
-        setUsuarios(
-          usuarios.map((usuario) =>
-            usuario.id === usuarioEditando.id ? { ...usuario, ...data.usuario } : usuario
-          )
-        );
-        cerrarModal();
-        alert("Usuario actualizado correctamente");
-      } else {
-        alert(data.error || "Error al actualizar usuario");
-      }
-    } catch (err) {
-      alert("Error de conexión con el servidor");
-      console.error(err);
-    } finally {
-      setLoadingAction(false);
-    }
-  };
-
-  const toggleEstadoUsuario = async (usuarioId, nombreUsuario) => {
-    const usuario = usuarios.find((u) => u.id === usuarioId);
-    const accion = usuario.is_active ? "inhabilitar" : "habilitar";
-
-    if (window.confirm(`¿Estás seguro de que quieres ${accion} a ${nombreUsuario}?`)) {
-      try {
-        setLoadingAction(true);
-        const { data } = await api.patch(`/accounts/usuarios/${usuarioId}/toggle-estado/`);
-        if (data.success) {
-          setUsuarios(
-            usuarios.map((usuario) =>
-              usuario.id === usuarioId ? { ...usuario, is_active: data.is_active } : usuario
-            )
-          );
-          alert(data.message);
-        } else {
-          alert(data.error || "Error al cambiar estado del usuario");
-        }
-      } catch (err) {
-        alert("Error de conexión con el servidor");
-        console.error(err);
-      } finally {
-        setLoadingAction(false);
-      }
     }
   };
 
@@ -219,12 +171,89 @@ function AdminDashboard() {
   const cerrarModal = () => {
     setShowEditModal(false);
     setUsuarioEditando(null);
-    setFormData({ first_name: "", last_name: "", email: "", phone: "", rol: "usuario" });
+    setFormData({
+      first_name: "",
+      last_name: "",
+      email: "",
+      phone: "",
+      rol: "usuario",
+    });
+  };
+
+  const guardarCambios = async () => {
+    try {
+      setLoadingAction(true);
+
+      const datosEditables = {
+        first_name: formData.first_name,
+        last_name: formData.last_name,
+        phone: formData.phone,
+      };
+
+      const response = await api.put(`/accounts/usuarios/${usuarioEditando.id}/editar/`, datosEditables);
+
+      if (response.data.success) {
+        setUsuarios(
+          usuarios.map((usuario) =>
+            usuario.id === usuarioEditando.id
+              ? { ...usuario, ...response.data.usuario }
+              : usuario
+          )
+        );
+        cerrarModal();
+        alert("Usuario actualizado correctamente");
+      } else {
+        alert(response.data.error || "Error al actualizar usuario");
+      }
+    } catch (err) {
+      alert("Error de conexión con el servidor");
+      console.error("Error:", err);
+    } finally {
+      setLoadingAction(false);
+    }
+  };
+
+  const toggleEstadoUsuario = async (usuarioId, nombreUsuario) => {
+    const usuario = usuarios.find((u) => u.id === usuarioId);
+    const accion = usuario.is_active ? "inhabilitar" : "habilitar";
+
+    if (
+      window.confirm(
+        `¿Estás seguro de que quieres ${accion} a ${nombreUsuario}?`
+      )
+    ) {
+      try {
+        setLoadingAction(true);
+
+        const response = await api.patch(`/accounts/usuarios/${usuarioId}/toggle-estado/`);
+
+        if (response.data.success) {
+          setUsuarios(
+            usuarios.map((usuario) =>
+              usuario.id === usuarioId
+                ? { ...usuario, is_active: response.data.is_active }
+                : usuario
+            )
+          );
+          alert(response.data.message);
+        } else {
+          alert(response.data.error || "Error al cambiar estado del usuario");
+        }
+      } catch (err) {
+        alert("Error de conexión con el servidor");
+        console.error("Error:", err);
+      } finally {
+        setLoadingAction(false);
+      }
+    }
   };
 
   useEffect(() => {
-    if (activeSection === "usuarios") fetchUsuarios();
-    else if (activeSection === "configuracion") fetchAdminData();
+    if (activeSection === "usuarios") {
+      fetchUsuarios();
+    } else if (activeSection === "configuracion") {
+      fetchAdminData();
+    }
   }, [activeSection]);
 
   const usuariosFiltrados = usuarios.filter(
@@ -263,7 +292,6 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 Render completo de usuarios y perfil del admin
   const renderContent = () => {
     switch (activeSection) {
       case "usuarios":
@@ -276,7 +304,7 @@ function AdminDashboard() {
             <Analiticas />
           </div>
         );
-      case "documentos":
+        case "documentos":
         return (
           <div className="content-section">
             <Documentos />
@@ -302,15 +330,16 @@ function AdminDashboard() {
   };
 
   const renderConfiguracion = () => {
-    if (loadingAdmin)
+    if (loadingAdmin) {
       return (
         <div className="loading-container">
           <div className="spinner"></div>
           <span>Cargando configuración...</span>
         </div>
       );
+    }
 
-    if (!adminData)
+    if (!adminData) {
       return (
         <div className="error-container">
           <div className="error-content">
@@ -322,6 +351,7 @@ function AdminDashboard() {
           </div>
         </div>
       );
+    }
 
     return (
       <div className="configuracion-section">
@@ -353,7 +383,10 @@ function AdminDashboard() {
             </div>
             <div className="profile-actions">
               {!editandoPerfil ? (
-                <button className="btn-edit-profile" onClick={() => setEditandoPerfil(true)}>
+                <button
+                  className="btn-edit-profile"
+                  onClick={() => setEditandoPerfil(true)}
+                >
                   ✏️ Editar Perfil
                 </button>
               ) : (
@@ -374,7 +407,11 @@ function AdminDashboard() {
                   >
                     Cancelar
                   </button>
-                  <button className="btn-save" onClick={guardarPerfilAdmin} disabled={loadingAction}>
+                  <button
+                    className="btn-save"
+                    onClick={guardarPerfilAdmin}
+                    disabled={loadingAction}
+                  >
                     {loadingAction ? "Guardando..." : "Guardar"}
                   </button>
                 </div>
@@ -392,7 +429,13 @@ function AdminDashboard() {
                   <input
                     type="text"
                     value={perfilFormData.first_name}
-                    onChange={(e) => setPerfilFormData({ ...perfilFormData, first_name: e.target.value })}
+                    onChange={(e) =>
+                      setPerfilFormData({
+                        ...perfilFormData,
+                        first_name: e.target.value,
+                      })
+                    }
+                    placeholder="Tu nombre"
                   />
                 </div>
                 <div className="form-group">
@@ -402,7 +445,13 @@ function AdminDashboard() {
                   <input
                     type="text"
                     value={perfilFormData.last_name}
-                    onChange={(e) => setPerfilFormData({ ...perfilFormData, last_name: e.target.value })}
+                    onChange={(e) =>
+                      setPerfilFormData({
+                        ...perfilFormData,
+                        last_name: e.target.value,
+                      })
+                    }
+                    placeholder="Tu apellido"
                   />
                 </div>
               </div>
@@ -415,14 +464,30 @@ function AdminDashboard() {
                   <input
                     type="text"
                     value={perfilFormData.phone}
-                    onChange={(e) => setPerfilFormData({ ...perfilFormData, phone: e.target.value })}
+                    onChange={(e) =>
+                      setPerfilFormData({
+                        ...perfilFormData,
+                        phone: e.target.value,
+                      })
+                    }
+                    placeholder="Tu número de teléfono"
                   />
                 </div>
                 <div className="form-group">
                   <label>
                     Email <span style={{ color: "red" }}>🔒 No editable</span>
                   </label>
-                  <input type="email" value={perfilFormData.email} readOnly disabled style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed", opacity: "0.6" }} />
+                  <input
+                    type="email"
+                    value={perfilFormData.email}
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
+                    }}
+                  />
                 </div>
               </div>
 
@@ -433,10 +498,18 @@ function AdminDashboard() {
                   </label>
                   <input
                     type="text"
-                    value={perfilFormData.rol === "admin" ? "Administrador" : "Usuario"}
+                    value={
+                      perfilFormData.rol === "admin"
+                        ? "Administrador"
+                        : "Usuario"
+                    }
                     readOnly
                     disabled
-                    style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed", opacity: "0.6" }}
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
+                    }}
                   />
                 </div>
               </div>
@@ -459,7 +532,11 @@ function AdminDashboard() {
               </div>
               <div className="detail-item">
                 <strong>Estado:</strong>
-                <span className={`estado-text ${adminData.is_active ? "activo" : "inactivo"}`}>
+                <span
+                  className={`estado-text ${
+                    adminData.is_active ? "activo" : "inactivo"
+                  }`}
+                >
                   {adminData.is_active ? "Activo" : "Inactivo"}
                 </span>
               </div>
@@ -471,15 +548,16 @@ function AdminDashboard() {
   };
 
   const renderUsuarios = () => {
-    if (loading)
+    if (loading) {
       return (
         <div className="loading-container">
           <div className="spinner"></div>
           <span>Cargando usuarios...</span>
         </div>
       );
+    }
 
-    if (error)
+    if (error) {
       return (
         <div className="error-container">
           <div className="error-content">
@@ -491,10 +569,10 @@ function AdminDashboard() {
           </div>
         </div>
       );
+    }
 
     return (
       <div className="usuarios-section">
-        {/* Tabla de usuarios completa */}
         <div className="usuarios-header">
           <div>
             <h2>Lista de Usuarios</h2>
@@ -538,7 +616,13 @@ function AdminDashboard() {
                     <div className="usuario-info">
                       <div className="usuario-avatar">
                         {usuario.profile_image ? (
-                          <img src={usuario.profile_image} alt={usuario.full_name || `${usuario.first_name} ${usuario.last_name}`} />
+                          <img
+                            src={usuario.profile_image}
+                            alt={
+                              usuario.full_name ||
+                              `${usuario.first_name} ${usuario.last_name}`
+                            }
+                          />
                         ) : (
                           <div className="avatar-placeholder">
                             {usuario.first_name?.charAt(0)}
@@ -547,20 +631,33 @@ function AdminDashboard() {
                         )}
                       </div>
                       <div className="usuario-details">
-                        <div className="usuario-name">{usuario.full_name || `${usuario.first_name} ${usuario.last_name}`}</div>
+                        <div className="usuario-name">
+                          {usuario.full_name ||
+                            `${usuario.first_name} ${usuario.last_name}`}
+                        </div>
                         <div className="usuario-email">{usuario.email}</div>
                       </div>
                     </div>
                   </td>
                   <td>
-                    <span className={`rol-badge ${getRolBadgeColor(usuario.rol)}`}>
+                    <span
+                      className={`rol-badge ${getRolBadgeColor(usuario.rol)}`}
+                    >
                       {usuario.rol === "admin" ? "Administrador" : "Usuario"}
                     </span>
                   </td>
                   <td>
                     <div className="estado-info">
-                      <div className={`estado-dot ${usuario.is_active ? "activo" : "inactivo"}`}></div>
-                      <span className={`estado-text ${usuario.is_active ? "activo" : "inactivo"}`}>
+                      <div
+                        className={`estado-dot ${
+                          usuario.is_active ? "activo" : "inactivo"
+                        }`}
+                      ></div>
+                      <span
+                        className={`estado-text ${
+                          usuario.is_active ? "activo" : "inactivo"
+                        }`}
+                      >
                         {usuario.is_active ? "Activo" : "Inactivo"}
                       </span>
                     </div>
@@ -576,9 +673,9 @@ function AdminDashboard() {
                         title="Editar usuario"
                         disabled={loadingAction}
                         style={{
-                          opacity: 0,
-                          pointerEvents: "none",
-                          position: "absolute",
+                          opacity: 0, // hace invisible el botón
+                          pointerEvents: "none", // desactiva los clics
+                          position: "absolute", // para que no afecte el layout
                           width: 0,
                           height: 0,
                           overflow: "hidden",
@@ -587,11 +684,23 @@ function AdminDashboard() {
                         ✏️
                       </button>
                       <button
-                        className={`btn-toggle ${usuario.is_active ? "btn-inhabilitar" : "btn-habilitar"}`}
+                        className={`btn-toggle ${
+                          usuario.is_active
+                            ? "btn-inhabilitar"
+                            : "btn-habilitar"
+                        }`}
                         onClick={() =>
-                          toggleEstadoUsuario(usuario.id, usuario.full_name || `${usuario.first_name} ${usuario.last_name}`)
+                          toggleEstadoUsuario(
+                            usuario.id,
+                            usuario.full_name ||
+                              `${usuario.first_name} ${usuario.last_name}`
+                          )
                         }
-                        title={usuario.is_active ? "Inhabilitar usuario" : "Habilitar usuario"}
+                        title={
+                          usuario.is_active
+                            ? "Inhabilitar usuario"
+                            : "Habilitar usuario"
+                        }
                         disabled={loadingAction}
                       >
                         {usuario.is_active ? "🚫" : "✅"}
@@ -606,24 +715,38 @@ function AdminDashboard() {
           {usuariosFiltrados.length === 0 && (
             <div className="empty-state">
               <h3>No hay usuarios</h3>
-              <p>{filtro ? "No se encontraron usuarios con ese filtro." : "Comienza agregando usuarios al sistema."}</p>
+              <p>
+                {filtro
+                  ? "No se encontraron usuarios con ese filtro."
+                  : "Comienza agregando usuarios al sistema."}
+              </p>
             </div>
           )}
         </div>
 
         {totalPaginas > 1 && (
           <div className="paginacion">
-            <button onClick={() => setPaginaActual(paginaActual - 1)} disabled={paginaActual === 1}>
+            <button
+              onClick={() => setPaginaActual(paginaActual - 1)}
+              disabled={paginaActual === 1}
+            >
               ⬅️ Anterior
             </button>
 
             {[...Array(totalPaginas)].map((_, index) => (
-              <button key={index + 1} onClick={() => setPaginaActual(index + 1)} className={paginaActual === index + 1 ? "activo" : ""}>
+              <button
+                key={index + 1}
+                onClick={() => setPaginaActual(index + 1)}
+                className={paginaActual === index + 1 ? "activo" : ""}
+              >
                 {index + 1}
               </button>
             ))}
 
-            <button onClick={() => setPaginaActual(paginaActual + 1)} disabled={paginaActual === totalPaginas}>
+            <button
+              onClick={() => setPaginaActual(paginaActual + 1)}
+              disabled={paginaActual === totalPaginas}
+            >
               Siguiente ➡️
             </button>
           </div>
@@ -641,27 +764,98 @@ function AdminDashboard() {
 
               <div className="modal-body">
                 <div className="form-group">
-                  <label>Nombre: <span style={{ color: "green" }}>✓ Editable</span></label>
-                  <input type="text" value={formData.first_name} onChange={(e) => setFormData({ ...formData, first_name: e.target.value })} />
+                  <label>
+                    Nombre: <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.first_name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, first_name: e.target.value })
+                    }
+                    placeholder="Nombre del usuario"
+                  />
                 </div>
+
                 <div className="form-group">
-                  <label>Apellido: <span style={{ color: "green" }}>✓ Editable</span></label>
-                  <input type="text" value={formData.last_name} onChange={(e) => setFormData({ ...formData, last_name: e.target.value })} />
+                  <label>
+                    Apellido: <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.last_name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, last_name: e.target.value })
+                    }
+                    placeholder="Apellido del usuario"
+                  />
                 </div>
+
                 <div className="form-group">
-                  <label>Email: <span style={{ color: "red" }}>🔒 No editable</span></label>
-                  <input type="email" value={formData.email} readOnly disabled style={{ backgroundColor: "#f5f5f5", cursor: "not-allowed", opacity: "0.6" }} />
+                  <label>
+                    Teléfono: <span style={{ color: "green" }}>✓ Editable</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    placeholder="Teléfono del usuario"
+                  />
                 </div>
+
                 <div className="form-group">
-                  <label>Teléfono: <span style={{ color: "green" }}>✓ Editable</span></label>
-                  <input type="text" value={formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} />
+                  <label>
+                    Email: <span style={{ color: "red" }}>🔒 No editable</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={formData.email}
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
+                    }}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>
+                    Rol: <span style={{ color: "red" }}>🔒 No editable</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={
+                      formData.rol === "admin" ? "Administrador" : "Usuario"
+                    }
+                    readOnly
+                    disabled
+                    style={{
+                      backgroundColor: "#f5f5f5",
+                      cursor: "not-allowed",
+                      opacity: "0.6",
+                    }}
+                  />
                 </div>
               </div>
 
               <div className="modal-footer">
-                <button className="btn-cancel" onClick={cerrarModal} disabled={loadingAction}>Cancelar</button>
-                <button className="btn-save" onClick={guardarCambios} disabled={loadingAction}>
-                  {loadingAction ? "Guardando..." : "Guardar cambios"}
+                <button
+                  className="btn-cancelar"
+                  onClick={cerrarModal}
+                  disabled={loadingAction}
+                >
+                  Cancelar
+                </button>
+                <button
+                  className="btn-guardar"
+                  onClick={guardarCambios}
+                  disabled={loadingAction}
+                >
+                  {loadingAction ? "Guardando..." : "Guardar Cambios"}
                 </button>
               </div>
             </div>
@@ -672,42 +866,49 @@ function AdminDashboard() {
   };
 
   return (
-    <div className="dashboard-container">
-      <div className="sidebar" id="sidebar">
-        <div className="sidebar-header">
-          <h2>Admin Dashboard</h2>
-          <button className="toggle-btn" onClick={toggleSidebar}>
-            ☰
+    <div className="dashboard">
+      <div id="sidebar" className="sidebar">
+        <div className="header">
+          <div className="logo-section">
+            <div className="logo">
+              <img
+                src="https://i.postimg.cc/YCZg4n8g/LOGO-ELECTRICOS-removebg-preview.png"
+                alt="Logo"
+                style={{ width: "50px", height: "50px", objectFit: "contain" }}
+              />
+            </div>
+            <div className="company-name">
+              Eléctricos &<br />
+              Soluciones
+            </div>
+          </div>
+          <button className="close-btn" onClick={toggleSidebar}>
+            ✕
           </button>
         </div>
-        <ul className="menu">
-          <li className="menu-item active" onClick={(e) => setActive(e.currentTarget, "usuarios")}>
-            Usuarios
-          </li>
-          <li className="menu-item" onClick={(e) => setActive(e.currentTarget, "proveedores")}>
-            Proveedores
-          </li>
-          <li className="menu-item" onClick={(e) => setActive(e.currentTarget, "productos")}>
-            Productos
-          </li>
-          <li className="menu-item" onClick={(e) => setActive(e.currentTarget, "pedidos")}>
-            Pedidos
-          </li>
-          <li className="menu-item" onClick={(e) => setActive(e.currentTarget, "analiticos")}>
-            Analíticas
-          </li>
-          <li className="menu-item" onClick={(e) => setActive(e.currentTarget, "documentos")}>
-            Documentos
-          </li>
-          <li className="menu-item" onClick={(e) => setActive(e.currentTarget, "configuracion")}>
-            Configuración
-          </li>
-          <li className="menu-item logout" onClick={handleLogout}>
-            Cerrar sesión
-          </li>
-        </ul>
+
+        <nav className="menu">
+          <button
+            className={`menu-item ${
+              activeSection === "configuracion" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "configuracion")}
+          >
+            <div className="menu-icon">⚙️</div>
+            <span>Configuración</span>
+          </button>
+          <button className="menu-item logout-btn" onClick={handleLogout}>
+            <div className="menu-icon">🚪</div>
+            <span>Salir</span>
+          </button>
+        </nav>
       </div>
-      <div className="main-content">{renderContent()}</div>
+
+      <button className="toggle-btn" onClick={toggleSidebar}>
+        ☰
+      </button>
+
+      <main className="main-content">{renderContent()}</main>
     </div>
   );
 }
