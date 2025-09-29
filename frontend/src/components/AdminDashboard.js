@@ -76,7 +76,7 @@ function AdminDashboard() {
   const configurarAxiosToken = () => {
     const token = localStorage.getItem("token");
     if (token) {
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
     }
   };
 
@@ -118,7 +118,10 @@ function AdminDashboard() {
         phone: perfilFormData.phone,
       };
 
-      const response = await api.put("/accounts/actualizar-perfil-admin/", datosEditables);
+      const response = await api.put(
+        "/accounts/actualizar-perfil-admin/",
+        datosEditables
+      );
 
       if (response.data.success) {
         setAdminData({ ...adminData, ...response.data.admin });
@@ -190,7 +193,10 @@ function AdminDashboard() {
         phone: formData.phone,
       };
 
-      const response = await api.put(`/accounts/usuarios/${usuarioEditando.id}/editar/`, datosEditables);
+      const response = await api.put(
+        `/accounts/usuarios/${usuarioEditando.id}/editar/`,
+        datosEditables
+      );
 
       if (response.data.success) {
         setUsuarios(
@@ -225,7 +231,9 @@ function AdminDashboard() {
       try {
         setLoadingAction(true);
 
-        const response = await api.patch(`/accounts/usuarios/${usuarioId}/toggle-estado/`);
+        const response = await api.patch(
+          `/accounts/usuarios/${usuarioId}/toggle-estado/`
+        );
 
         if (response.data.success) {
           setUsuarios(
@@ -304,7 +312,7 @@ function AdminDashboard() {
             <Analiticas />
           </div>
         );
-        case "documentos":
+      case "documentos":
         return (
           <div className="content-section">
             <Documentos />
@@ -890,7 +898,61 @@ function AdminDashboard() {
         <nav className="menu">
           <button
             className={`menu-item ${
-              activeSection === "configuracion" ? "active" : ""
+              activeSection === "usuarios" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "usuarios")}
+          >
+            <div className="menu-icon">👤</div>
+            <span>Usuarios</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "proveedores" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "proveedores")}
+          >
+            <div className="menu-icon">👥</div>
+            <span>Proveedores</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "analiticos" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "analiticos")}
+          >
+            <div className="menu-icon">📊</div>
+            <span>Analíticas</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "documentos" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "documentos")}
+          >
+            <div className="menu-icon">📃</div>
+            <span>Documentos</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "productos" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "productos")}
+          >
+            <div className="menu-icon">📦</div>
+            <span>Productos</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "pedidos" ? "active" : ""
+            }`}
+            onClick={(e) => setActive(e.target, "pedidos")}
+          >
+            <div className="menu-icon">🛒</div>
+            <span>Pedidos</span>
+          </button>
+          <button
+            className={`menu-item ${
+              activeSection === "usuarios" ? "active" : ""
             }`}
             onClick={(e) => setActive(e.target, "configuracion")}
           >
