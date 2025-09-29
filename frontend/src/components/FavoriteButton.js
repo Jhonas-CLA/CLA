@@ -8,7 +8,6 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
 
   const buttonSize = size === 'small' ? '32px' : '40px';
   const iconSize = size === 'small' ? '16px' : '20px';
-  const fontSize = size === 'small' ? '14px' : '16px';
 
   // Verificar si es favorito al cargar el componente
   useEffect(() => {
@@ -16,7 +15,7 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
       if (!isAuthenticated || !producto?.id) return;
 
       try {
-        const response = await apiCall(`http://localhost:8000/api/favoritos/verificar/${producto.id}/`);
+        const response = await apiCall(`/api/favoritos/verificar/${producto.id}/`);
         if (response.ok) {
           const data = await response.json();
           setIsFavorite(data.es_favorito);
@@ -43,7 +42,7 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
     setLoading(true);
 
     try {
-      const response = await apiCall('http://localhost:8000/api/favoritos/toggle/', {
+      const response = await apiCall('/api/favoritos/toggle/', {
         method: 'POST',
         body: JSON.stringify({ producto_id: producto.id }),
       });
@@ -68,13 +67,13 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
   };
 
   if (!isAuthenticated) {
-    return null; // No mostrar el botón si no está autenticado
+    return null;
   }
 
   return (
     <button
       onClick={(e) => {
-        e.stopPropagation(); // Evitar que se active otros eventos del producto
+        e.stopPropagation();
         toggleFavorito();
       }}
       disabled={loading}
