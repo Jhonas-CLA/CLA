@@ -312,7 +312,7 @@ function AdminDashboard() {
             <Analiticas />
           </div>
         );
-      case "documentos":
+        case "documentos":
         return (
           <div className="content-section">
             <Documentos />
