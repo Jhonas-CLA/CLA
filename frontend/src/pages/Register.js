@@ -122,6 +122,7 @@ function Register() {
           first_name: "",
           last_name: "",
         });
+        setTimeout(() => navigate("/"), 2000);
         // Limpiar indicador de fortaleza
         setPasswordStrength({
           score: 0,
@@ -225,15 +226,19 @@ function Register() {
             value={form.password}
             onChange={handleChange}
             required
-            minLength="8"
-            style={{
-              borderColor:
-                form.password.length > 0 ? passwordStrength.color : "#ddd",
-              borderWidth: "2px",
-            }}
           />
 
-          {/* Botón para mostrar/ocultar contraseña */}
+          <input
+            className="register-input"
+            name="confirmPassword"
+            type={showPassword ? "text" : "password"}
+            placeholder="Confirmar Contraseña"
+            value={form.confirmPassword}
+            onChange={handleChange}
+            required
+            style={{ marginTop: "8px" }}
+          />
+
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
