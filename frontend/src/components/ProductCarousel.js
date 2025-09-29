@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
-import axios from 'axios';
+import api from '../api'; // Usar la instancia de Axios configurada
 import './ProductCarousel.css';
 
 function ProductCarousel({ limite = 20 }) {
@@ -14,8 +14,8 @@ function ProductCarousel({ limite = 20 }) {
       try {
         setLoading(true);
         
-        // Cargar TODOS los productos sin filtro de categoría
-        const response = await axios.get('http://127.0.0.1:8000/api/productos/');
+        // Llamada a la API usando la instancia configurada
+        const response = await api.get('/api/productos/');
         
         if (response.data && response.data.length > 0) {
           // Mezclar productos aleatoriamente (shuffle)
@@ -107,17 +107,11 @@ function ProductCarousel({ limite = 20 }) {
 
   // Función para manejar clic en agregar al carrito
   const handleAddToCart = (producto) => {
-    // Guardar el producto seleccionado en localStorage
     localStorage.setItem('productoSeleccionado', JSON.stringify(producto));
-    
-    // Guardar la categoría del producto si existe
     if (producto.categoria) {
-      // Obtener el nombre de la categoría (puede ser objeto o string)
       const categoriaNombre = typeof producto.categoria === 'object' 
         ? producto.categoria.name 
         : producto.categoria;
-      
-      // Mapeo inverso para obtener la URL de la categoría
       const categoriasMapInverso = {
         'Automáticos / Breakers': 'automaticos-breakers',
         'Alambres y Cables': 'alambres-cables',
@@ -157,16 +151,11 @@ function ProductCarousel({ limite = 20 }) {
         'Tomas y Enchufes': 'tomas-enchufes',
         'Tuberia': 'tuberia'
       };
-      
-      // Obtener la URL de la categoría
       const categoriaUrl = categoriasMapInverso[categoriaNombre];
-      
       if (categoriaUrl) {
         localStorage.setItem('categoriaSeleccionada', categoriaUrl);
       }
     }
-    
-    // Navegar al carrito
     navigate('/carrito');
   };
 
@@ -199,10 +188,7 @@ function ProductCarousel({ limite = 20 }) {
                     e.target.style.display = 'none';
                   }}
                 />
-                
-
               </div>
-              
               <div className="product-info">
                 <h5
                   className="product-name"
@@ -210,11 +196,9 @@ function ProductCarousel({ limite = 20 }) {
                 >
                   {truncateText(producto.nombre, 50)}
                 </h5>
-               
                 <p className="product-price">
                   {formatPrice(producto.precio)}
                 </p>
-               
                 <button
                   className="add-to-cart-btn"
                   onClick={() => handleAddToCart(producto)}
