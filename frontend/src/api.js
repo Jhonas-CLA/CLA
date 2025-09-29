@@ -1,10 +1,12 @@
-// src/api.js
 import axios from "axios";
 
-// URL base de tu backend en Render
-export const BASE_URL = "https://electricosandsoluciones.onrender.com/api";
+// Usa variable de entorno si existe, si no, elige según el hostname
+export const BASE_URL =
+  process.env.REACT_APP_API_URL ||
+  (window.location.hostname === "localhost"
+    ? "http://localhost:8000"
+    : "https://electricosandsoluciones.onrender.com");
 
-// Instancia de axios para usar en toda la app
 const api = axios.create({
   baseURL: BASE_URL,
   headers: {

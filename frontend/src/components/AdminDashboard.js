@@ -7,7 +7,6 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Analiticas from "../pages/Analiticas";
 import Documentos from "../pages/Documentos";
-import api from "../api"; // 🔹 Importamos nuestra instancia de axios
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -49,7 +48,11 @@ function AdminDashboard() {
     sidebar.classList.toggle("closed");
   };
 
-  const setActiveSectionHandler = (section) => {
+  const setActive = (target, section) => {
+    document.querySelectorAll(".menu-item").forEach((item) => {
+      item.classList.remove("active");
+    });
+    target.classList.add("active");
     setActiveSection(section);
   };
 
@@ -68,29 +71,32 @@ function AdminDashboard() {
     }
   };
 
-  // 🔹 Configurar el token de autorización para todas las peticiones
-  const configurarAxiosToken = () => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-  };
-
   const fetchAdminData = async () => {
     try {
       setLoadingAdmin(true);
-      configurarAxiosToken(); // Configurar token antes de la petición
+      const token = localStorage.getItem("token");
 
-      const response = await api.get("/accounts/perfil-admin/");
+      const response = await fetch(
+        "http://localhost:8000/accounts/perfil-admin/",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-      if (response.data.success) {
-        setAdminData(response.data.admin);
+      const data = await response.json();
+
+      if (data.success) {
+        setAdminData(data.admin);
         setPerfilFormData({
-          first_name: response.data.admin.first_name,
-          last_name: response.data.admin.last_name,
-          phone: response.data.admin.phone || "",
-          email: response.data.admin.email,
-          rol: response.data.admin.rol,
+          first_name: data.admin.first_name,
+          last_name: data.admin.last_name,
+          phone: data.admin.phone || "",
+          email: data.admin.email,
+          rol: data.admin.rol,
         });
       } else {
         setError("Error al cargar datos del administrador");
@@ -106,7 +112,7 @@ function AdminDashboard() {
   const guardarPerfilAdmin = async () => {
     try {
       setLoadingAction(true);
-      configurarAxiosToken();
+      const token = localStorage.getItem("token");
 
       const datosEditables = {
         first_name: perfilFormData.first_name,
@@ -114,17 +120,26 @@ function AdminDashboard() {
         phone: perfilFormData.phone,
       };
 
-      const response = await api.put(
-        "/accounts/actualizar-perfil-admin/",
-        datosEditables
+      const response = await fetch(
+        "http://localhost:8000/accounts/actualizar-perfil-admin/",
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(datosEditables),
+        }
       );
 
-      if (response.data.success) {
-        setAdminData({ ...adminData, ...response.data.admin });
+      const data = await response.json();
+
+      if (data.success) {
+        setAdminData({ ...adminData, ...data.admin });
         setEditandoPerfil(false);
         alert("Perfil actualizado correctamente");
       } else {
-        alert(response.data.error || "Error al actualizar perfil");
+        alert(data.error || "Error al actualizar perfil");
       }
     } catch (err) {
       alert("Error de conexión con el servidor");
@@ -138,14 +153,22 @@ function AdminDashboard() {
     try {
       setLoading(true);
       setError(null);
-      configurarAxiosToken();
 
-      const response = await api.get("/accounts/usuarios/");
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:8000/accounts/usuarios/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      if (response.data.success) {
-        setUsuarios(response.data.usuarios);
+      const data = await response.json();
+
+      if (data.success) {
+        setUsuarios(data.usuarios);
       } else {
-        setError(response.data.error || "Error al cargar usuarios");
+        setError(data.error || "Error al cargar usuarios");
       }
     } catch (err) {
       setError("Error de conexión con el servidor");
@@ -189,23 +212,31 @@ function AdminDashboard() {
         phone: formData.phone,
       };
 
-      const response = await api.put(
-        `/accounts/usuarios/${usuarioEditando.id}/editar/`,
-        datosEditables
+      const response = await fetch(
+        `http://localhost:8000/accounts/usuarios/${usuarioEditando.id}/editar/`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(datosEditables),
+        }
       );
 
-      if (response.data.success) {
+      const data = await response.json();
+
+      if (data.success) {
         setUsuarios(
           usuarios.map((usuario) =>
             usuario.id === usuarioEditando.id
-              ? { ...usuario, ...response.data.usuario }
+              ? { ...usuario, ...data.usuario }
               : usuario
           )
         );
         cerrarModal();
         alert("Usuario actualizado correctamente");
       } else {
-        alert(response.data.error || "Error al actualizar usuario");
+        alert(data.error || "Error al actualizar usuario");
       }
     } catch (err) {
       alert("Error de conexión con el servidor");
@@ -227,21 +258,29 @@ function AdminDashboard() {
       try {
         setLoadingAction(true);
 
-        const response = await api.patch(
-          `/accounts/usuarios/${usuarioId}/toggle-estado/`
+        const response = await fetch(
+          `http://localhost:8000/accounts/usuarios/${usuarioId}/toggle-estado/`,
+          {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
 
-        if (response.data.success) {
+        const data = await response.json();
+
+        if (data.success) {
           setUsuarios(
             usuarios.map((usuario) =>
               usuario.id === usuarioId
-                ? { ...usuario, is_active: response.data.is_active }
+                ? { ...usuario, is_active: data.is_active }
                 : usuario
             )
           );
-          alert(response.data.message);
+          alert(data.message);
         } else {
-          alert(response.data.error || "Error al cambiar estado del usuario");
+          alert(data.error || "Error al cambiar estado del usuario");
         }
       } catch (err) {
         alert("Error de conexión con el servidor");
@@ -308,7 +347,7 @@ function AdminDashboard() {
             <Analiticas />
           </div>
         );
-      case "documentos":
+        case "documentos":
         return (
           <div className="content-section">
             <Documentos />
@@ -896,72 +935,65 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "usuarios" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("usuarios")}
+            onClick={(e) => setActive(e.target, "usuarios")}
           >
             <div className="menu-icon">👤</div>
             <span>Usuarios</span>
           </button>
-
           <button
             className={`menu-item ${
               activeSection === "proveedores" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("proveedores")}
+            onClick={(e) => setActive(e.target, "proveedores")}
           >
             <div className="menu-icon">👥</div>
             <span>Proveedores</span>
           </button>
-
           <button
             className={`menu-item ${
               activeSection === "analiticos" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("analiticos")}
+            onClick={(e) => setActive(e.target, "analiticos")}
           >
             <div className="menu-icon">📊</div>
             <span>Analíticas</span>
           </button>
-
           <button
             className={`menu-item ${
               activeSection === "documentos" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("documentos")}
+            onClick={(e) => setActive(e.target, "documentos")}
           >
             <div className="menu-icon">📃</div>
             <span>Documentos</span>
           </button>
-
           <button
             className={`menu-item ${
               activeSection === "productos" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("productos")}
+            onClick={(e) => setActive(e.target, "productos")}
           >
             <div className="menu-icon">📦</div>
             <span>Productos</span>
           </button>
-
           <button
             className={`menu-item ${
               activeSection === "pedidos" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("pedidos")}
+            onClick={(e) => setActive(e.target, "pedidos")}
           >
             <div className="menu-icon">🛒</div>
             <span>Pedidos</span>
           </button>
-
           <button
             className={`menu-item ${
               activeSection === "configuracion" ? "active" : ""
             }`}
-            onClick={() => setActiveSection("configuracion")}
+            onClick={(e) => setActive(e.target, "configuracion")}
           >
             <div className="menu-icon">⚙️</div>
             <span>Configuración</span>
           </button>
-
           <button className="menu-item logout-btn" onClick={handleLogout}>
             <div className="menu-icon">🚪</div>
             <span>Salir</span>

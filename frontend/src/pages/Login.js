@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import api from '../api';
 import './Login.css';
 
 function Login() {
@@ -20,16 +19,11 @@ function Login() {
     rol: 'usuario',
   });
 
-  // Estados para mostrar/ocultar contraseñas
   const [showPassword, setShowPassword] = useState(false);
-  const [showRegisterPassword, setShowRegisterPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState(''); // Nuevo estado para mensajes de éxito
 
-  // Estado para la fortaleza de la contraseña en registro
+  // NUEVO: Estado para la fortaleza de la contraseña en registro
   const [passwordStrength, setPasswordStrength] = useState({
     score: 0,
     text: '',
@@ -43,7 +37,7 @@ function Login() {
     }
   });
 
-  // Función para evaluar la fortaleza de la contraseña
+  // NUEVO: Función para evaluar la fortaleza de la contraseña
   const evaluatePasswordStrength = (password) => {
     const requirements = {
       length: password.length >= 8,
@@ -80,11 +74,10 @@ function Login() {
     return { score, text, color, requirements };
   };
 
-  // Función para cambiar pestañas
+  // CORREGIDO: Función para cambiar pestañas (no debe ser submit)
   const switchTab = (tab) => {
     setActiveTab(tab);
     setError('');
-    setSuccessMessage(''); // Limpiar mensaje de éxito
     // Limpiar formularios cuando cambie de pestaña
     setLoginData({ email: '', password: '' });
     setRegisterData({
@@ -95,10 +88,6 @@ function Login() {
       confirmPassword: '',
       rol: 'usuario',
     });
-    // Resetear estados de contraseñas
-    setShowPassword(false);
-    setShowRegisterPassword(false);
-    setShowConfirmPassword(false);
     // Limpiar indicador de fortaleza
     setPasswordStrength({
       score: 0,
@@ -117,7 +106,6 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccessMessage('');
     setIsLoading(true);
 
     try {
@@ -137,10 +125,16 @@ function Login() {
         }
       } else {
         // Fallback: hacer la petición directamente
-        const { data } = await api.post('/accounts/login/', loginData);
+        const response = await fetch('http://localhost:8000/accounts/login/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(loginData),
+        });
 
-        if (data.access) {
-          // Guardar el token y datos del usuario
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // IMPORTANTE: Guardar el token y datos del usuario
           localStorage.setItem('token', data.token);
           localStorage.setItem('userRole', data.role);
           localStorage.setItem('userEmail', loginData.email);
@@ -166,9 +160,8 @@ function Login() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError('');
-    setSuccessMessage('');
 
-    // Validación de contraseña mínima
+    // NUEVO: Validación de contraseña mínima
     if (registerData.password.length < 8) {
       return setError('La contraseña debe tener al menos 8 caracteres');
     }
@@ -180,19 +173,17 @@ function Login() {
     setIsLoading(true);
 
     try {
-      const { data } = await api.post('/accounts/register/', registerData);
+      const response = await fetch('http://localhost:8000/accounts/register/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(registerData),
+      });
 
-      if (data.access) {
-        // Mostrar mensaje de éxito
-        setSuccessMessage('🎉 ¡Registro exitoso! Ya puedes iniciar sesión con tu nueva cuenta.');
-        
-        // Cambiar a la pestaña de login después de un breve delay
-        setTimeout(() => {
-          setActiveTab('login');
-          setSuccessMessage(''); // Limpiar mensaje después del cambio
-        }, 3000);
-        
-        // Limpiar formulario de registro
+      const data = await response.json();
+
+      if (response.ok) {
+        alert('Registro exitoso. Ahora inicia sesión.');
+        setActiveTab('login');
         setRegisterData({
           first_name: '',
           last_name: '',
@@ -201,11 +192,6 @@ function Login() {
           confirmPassword: '',
           rol: 'usuario',
         });
-        
-        // Resetear estados de contraseñas
-        setShowRegisterPassword(false);
-        setShowConfirmPassword(false);
-        
         // Limpiar indicador de fortaleza
         setPasswordStrength({
           score: 0,
@@ -230,7 +216,7 @@ function Login() {
     }
   };
 
-  // Manejar cambio en contraseña de registro
+  // NUEVO: Manejar cambio en contraseña de registro
   const handleRegisterPasswordChange = (e) => {
     const newPassword = e.target.value;
     setRegisterData({ ...registerData, password: newPassword });
@@ -246,20 +232,18 @@ function Login() {
         {activeTab === 'login' ? 'Iniciar Sesión' : 'Registrarse'}
       </h2>
       
-      {/* Mensaje de error */}
       {error && (
         <div style={{
-          backgroundColor: '#dcfce7',
-          border: '1px solid #10b981',
+          backgroundColor: '#fee2e2',
+          border: '1px solid #ef4444',
           borderRadius: '8px',
           padding: '12px',
           marginBottom: '20px',
-          color: '#059669',
+          color: '#dc2626',
           fontSize: '0.9rem',
-          textAlign: 'center',
-          animation: 'fadeIn 0.5s ease-in'
+          textAlign: 'center'
         }}>
-          ✅ {error}
+          ⚠️ {error}
         </div>
       )}
 
@@ -279,21 +263,17 @@ function Login() {
 
           <div className="form-group">
             <label>Contraseña</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={loginData.password}
-                onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
-                placeholder="Ingresa tu contraseña"
-                required
-                disabled={isLoading}
-                style={{ paddingRight: '45px' }}
-              />
-            </div>
-            <div className="checkbox-container" style={{ marginTop: '8px' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              value={loginData.password}
+              onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+              placeholder="Ingresa tu contraseña"
+              required
+              disabled={isLoading}
+            />
+            <div className="checkbox-container">
               <input
                 type="checkbox"
-                checked={showPassword}
                 onChange={() => setShowPassword(!showPassword)}
                 disabled={isLoading}
               /> Mostrar contraseña
@@ -314,6 +294,7 @@ function Login() {
           </button>
           
           <div className="text-center mt-3">
+            {/* CORREGIDO: Cambiar de type="submit" a type="button" */}
             <button
               type="button"
               className="btn btn-secondary btn-block"
@@ -364,32 +345,21 @@ function Login() {
 
           <div className="form-group">
             <label>Contraseña (mínimo 8 caracteres)</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showRegisterPassword ? 'text' : 'password'}
-                value={registerData.password}
-                onChange={handleRegisterPasswordChange}
-                placeholder="Ingresa tu contraseña"
-                required
-                minLength="8"
-                disabled={isLoading}
-                style={{
-                  borderColor: registerData.password.length > 0 ? passwordStrength.color : '#ddd',
-                  borderWidth: '2px',
-                  paddingRight: '45px'
-                }}
-              />
-            </div>
-            <div className="checkbox-container" style={{ marginTop: '8px' }}>
-              <input
-                type="checkbox"
-                checked={showRegisterPassword}
-                onChange={() => setShowRegisterPassword(!showRegisterPassword)}
-                disabled={isLoading}
-              /> Mostrar contraseña
-            </div>
+            <input
+              type="password"
+              value={registerData.password}
+              onChange={handleRegisterPasswordChange}
+              placeholder="Ingresa tu contraseña"
+              required
+              minLength="8"
+              disabled={isLoading}
+              style={{
+                borderColor: registerData.password.length > 0 ? passwordStrength.color : '#ddd',
+                borderWidth: '2px'
+              }}
+            />
 
-            {/* Indicador de fortaleza de contraseña */}
+            {/* NUEVO: Indicador de fortaleza de contraseña */}
             {registerData.password.length > 0 && (
               <div style={{ 
                 marginTop: '8px',
@@ -465,36 +435,25 @@ function Login() {
 
           <div className="form-group">
             <label>Confirmar Contraseña</label>
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showConfirmPassword ? 'text' : 'password'}
-                value={registerData.confirmPassword}
-                onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
-                placeholder="Confirma tu contraseña"
-                required
-                disabled={isLoading}
-                style={{
-                  borderColor: registerData.confirmPassword.length > 0 
-                    ? (registerData.password === registerData.confirmPassword ? '#10b981' : '#ef4444')
-                    : '#ddd',
-                  borderWidth: '2px',
-                  paddingRight: '45px'
-                }}
-              />
-            </div>
-            <div className="checkbox-container" style={{ marginTop: '8px' }}>
-              <input
-                type="checkbox"
-                checked={showConfirmPassword}
-                onChange={() => setShowConfirmPassword(!showConfirmPassword)}
-                disabled={isLoading}
-              /> Mostrar contraseña
-            </div>
+            <input
+              type="password"
+              value={registerData.confirmPassword}
+              onChange={(e) => setRegisterData({ ...registerData, confirmPassword: e.target.value })}
+              placeholder="Confirma tu contraseña"
+              required
+              disabled={isLoading}
+              style={{
+                borderColor: registerData.confirmPassword.length > 0 
+                  ? (registerData.password === registerData.confirmPassword ? '#10b981' : '#ef4444')
+                  : '#ddd',
+                borderWidth: '2px'
+              }}
+            />
 
             {/* Indicador de coincidencia de contraseñas */}
             {registerData.confirmPassword.length > 0 && (
               <div style={{ 
-                marginTop: '8px',
+                marginTop: '4px',
                 fontSize: '0.8rem',
                 color: registerData.password === registerData.confirmPassword ? '#10b981' : '#ef4444'
               }}>
@@ -540,6 +499,7 @@ function Login() {
           </button>
           
           <div className="text-center mt-3">
+            {/* CORREGIDO: Cambiar de type="submit" a type="button" */}
             <button
               type="button"
               className="btn btn-secondary btn-block"

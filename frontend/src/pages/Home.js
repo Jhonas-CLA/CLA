@@ -1,59 +1,31 @@
 import React, { useEffect, useState } from "react";
-import api from "../api";
+import axios from "axios";
 import "./Home.css";
-import { useNavigate } from 'react-router-dom';
 import ProductCarousel from "../components/ProductCarousel";
 
 function Home() {
-  const navigate = useNavigate(); 
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log("🔄 Iniciando carga de productos...");
-    console.log("🌐 URL base:", api.defaults.baseURL);
-    console.log("🔗 URL completa:", `${api.defaults.baseURL}/api/products/`);
-    
-    api
-      .get("/api/products/")
+    axios
+      .get("http://127.0.0.1:8000/api/productos/")
       .then((res) => {
-        console.log("✅ Response status:", res.status);
-        console.log("🔍 Response headers:", res.headers);
-        console.log("📦 Productos recibidos (raw):", res.data);
-        console.log("📦 Productos recibidos (tipo):", typeof res.data);
-        console.log("📦 Productos recibidos (es array):", Array.isArray(res.data));
-        console.log("📊 Cantidad de productos:", res.data?.length || 0);
-        
-        // Verificar si la respuesta es un string que necesita parsing
-        let productos = res.data;
-        if (typeof res.data === 'string') {
-          console.log("🔄 Parseando string como JSON...");
-          try {
-            productos = JSON.parse(res.data);
-            console.log("✅ JSON parseado:", productos);
-          } catch (e) {
-            console.error("❌ Error parseando JSON:", e);
-          }
-        }
-        
-        setProductos(productos);
+        console.log("📦 Productos recibidos:", res.data);
+        setProductos(res.data);
       })
       .catch((err) => {
         console.error("❌ Error cargando productos:", err);
-        console.error("❌ Error response:", err.response);
-        console.error("❌ Error status:", err.response?.status);
-        console.error("❌ Error data:", err.response?.data);
         setError(err.message);
       })
       .finally(() => {
-        console.log("🏁 Carga finalizada");
         setLoading(false);
       });
   }, []);
 
   const handleSolicitarEnvio = () => {
-    navigate('/carrito');
+    window.location.href = "/carrito";
   };
 
   return (
@@ -104,11 +76,7 @@ function Home() {
           <p className="text-center">⚠️ No hay productos disponibles.</p>
         )}
         {!loading && productos.length > 0 && (
-          <ProductCarousel 
-            productos={productos} 
-            limite={20} 
-            useProp={true} 
-          />
+          <ProductCarousel productos={productos} />
         )}
       </div>
 

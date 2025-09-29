@@ -1,52 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
-import api from '../api';
+import axios from 'axios';
 import './ProductCarousel.css';
 
-function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
+function ProductCarousel({ limite = 20 }) {
   const navigate = useNavigate();
-  const [productosState, setProductosState] = useState([]);
-  const [loading, setLoading] = useState(!useProp); // Si useProp es true, no hay loading inicial
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
  
   useEffect(() => {
-    if (useProp && productos) {
-      // Si se pasan productos como prop, usarlos directamente
-      const productosMezclados = [...productos].sort(() => Math.random() - 0.5);
-      const productosLimitados = productosMezclados.slice(0, limite);
-      setProductosState(productosLimitados);
-      setLoading(false);
-    } else if (!useProp) {
-      // Si no se usan props, cargar desde la API (comportamiento original)
-      cargarProductosMezclados();
-    }
-  }, [limite, productos, useProp]);
-
-  const cargarProductosMezclados = async () => {
-    try {
-      setLoading(true);
-      
-      // Cargar TODOS los productos usando la instancia de api configurada
-      const response = await api.get('/api/products/');
-      
-      if (response.data && response.data.length > 0) {
-        // Mezclar productos aleatoriamente (shuffle)
-        const productosMezclados = [...response.data].sort(() => Math.random() - 0.5);
+    const cargarProductosMezclados = async () => {
+      try {
+        setLoading(true);
         
-        // Limitar a la cantidad especificada
-        const productosLimitados = productosMezclados.slice(0, limite);
+        // Cargar TODOS los productos sin filtro de categoría
+        const response = await axios.get('http://127.0.0.1:8000/api/productos/');
         
-        setProductosState(productosLimitados);
-      } else {
-        setProductosState([]);
+        if (response.data && response.data.length > 0) {
+          // Mezclar productos aleatoriamente (shuffle)
+          const productosMezclados = [...response.data].sort(() => Math.random() - 0.5);
+          
+          // Limitar a la cantidad especificada
+          const productosLimitados = productosMezclados.slice(0, limite);
+          
+          setProductos(productosLimitados);
+        } else {
+          setProductos([]);
+        }
+      } catch (error) {
+        console.error('Error cargando productos:', error);
+        setProductos([]);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error('Error cargando productos:', error);
-      setProductosState([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
+
+    cargarProductosMezclados();
+  }, [limite]);
 
   if (loading) {
     return (
@@ -63,7 +54,7 @@ function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
     );
   }
 
-  if (!productosState || productosState.length === 0) {
+  if (!productos || productos.length === 0) {
     return (
       <div className="carousel-container">
         <p style={{
@@ -80,9 +71,9 @@ function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
 
   const settings = {
     dots: true,
-    infinite: productosState.length > 1,
+    infinite: productos.length > 1,
     speed: 500,
-    slidesToShow: Math.min(productosState.length, 4), // máximo 4 visibles
+    slidesToShow: Math.min(productos.length, 4), // máximo 4 visibles
     slidesToScroll: 1,
     autoplay: true, // ✅ AUTOPLAY ACTIVADO
     autoplaySpeed: 3000, // Cambia cada 3 segundos
@@ -93,14 +84,14 @@ function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
       {
         breakpoint: 1200,
         settings: {
-          slidesToShow: Math.min(productosState.length, 3),
+          slidesToShow: Math.min(productos.length, 3),
           slidesToScroll: 1
         }
       },
       {
         breakpoint: 768,
         settings: {
-          slidesToShow: Math.min(productosState.length, 2),
+          slidesToShow: Math.min(productos.length, 2),
           slidesToScroll: 1
         }
       },
@@ -196,7 +187,7 @@ function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
   return (
     <div className="carousel-container">
       <Slider {...settings}>
-        {productosState.map((producto) => (
+        {productos.map((producto) => (
           <div key={producto.id}>
             <div className="product-card">
               <div className="product-image-container">
@@ -208,6 +199,8 @@ function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
                     e.target.style.display = 'none';
                   }}
                 />
+                
+
               </div>
               
               <div className="product-info">
