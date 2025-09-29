@@ -16,8 +16,16 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
 
       try {
         const response = await apiCall(`/api/favoritos/verificar/${producto.id}/`);
-        if (response.ok) {
-          const data = await response.json();
+        
+        // Verificar si response ya es el objeto JSON o necesita parsearse
+        let data;
+        if (typeof response.json === 'function') {
+          data = await response.json();
+        } else {
+          data = response;
+        }
+        
+        if (data.es_favorito !== undefined) {
           setIsFavorite(data.es_favorito);
         }
       } catch (error) {
@@ -47,7 +55,13 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
         body: JSON.stringify({ producto_id: producto.id }),
       });
 
-      const data = await response.json();
+      // Verificar si response ya es el objeto JSON o necesita parsearse
+      let data;
+      if (typeof response.json === 'function') {
+        data = await response.json();
+      } else {
+        data = response;
+      }
 
       if (data.success) {
         setIsFavorite(data.es_favorito);
