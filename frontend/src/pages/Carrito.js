@@ -397,113 +397,98 @@ const CarritoCompras = () => {
 
   // Componente Modal para solicitar email
   const EmailModal = () => {
-    const [localEmail, setLocalEmail] = useState(email);
-    const [localError, setLocalError] = useState("");
+  const [localEmail, setLocalEmail] = useState(email);
+  const [localError, setLocalError] = useState("");
 
-    const handleLocalEmailChange = (e) => {
-      setLocalEmail(e.target.value);
-      if (localError) {
-        setLocalError("");
-      }
-      if (error) {
-        setError("");
-      }
-    };
+  const handleLocalEmailChange = (e) => {
+    setLocalEmail(e.target.value);
+    if (localError) setLocalError("");
+    if (error) setError("");
+  };
 
-    const handleContinuar = async () => {
-      if (!localEmail.trim()) {
-        setLocalError("📧 Por favor ingresa tu correo electrónico.");
-        return;
-      }
+  const handleContinuar = async () => {
+    if (!localEmail.trim()) {
+      setLocalError("📧 Por favor ingresa tu correo electrónico.");
+      return;
+    }
 
-      setEmail(localEmail);
+    setEmail(localEmail);
 
-      setLoading(true);
-      setError("");
-      setSuccess("");
+    setLoading(true);
+    setError("");
+    setSuccess("");
 
-      try {
-        const pedidoData = {
-          email: localEmail,
-          cliente: nombreCliente || "Cliente desconocido",
-          productos: Object.values(carrito).map((item) => ({
-            nombre: item.nombre,
-            codigo: item.codigo,
-            cantidad: Number(item.cantidad),
-            precio: Number(item.precio),
-          })),
-          total: Number(totalCarrito),
-          total_productos: Object.values(carrito).reduce(
-            (acc, item) => acc + item.cantidad,
-            0
-          ),
-        };
+    try {
+      const pedidoData = {
+        email: localEmail,
+        cliente: nombreCliente || "Cliente desconocido",
+        productos: Object.values(carrito).map((item) => ({
+          nombre: item.nombre,
+          codigo: item.codigo,
+          cantidad: Number(item.cantidad),
+          precio: Number(item.precio),
+        })),
+        total: Number(totalCarrito),
+        total_productos: Object.values(carrito).reduce(
+          (acc, item) => acc + item.cantidad,
+          0
+        ),
+      };
 
-        await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
+      // Cambia axios y fetch por api
+      await api.post("/api/pedidos/", pedidoData);
 
-        const response = await fetch(
-          "http://localhost:8000/accounts/api/whatsapp/pedido/",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(pedidoData),
-          }
-        );
+      const response = await api.post("/accounts/api/whatsapp/pedido/", pedidoData);
+      const data = response.data;
 
-        const data = await response.json();
-
-        if (response.ok) {
-          setSuccess("✅ ¡Perfecto! Tu pedido está listo");
-          if (data.whatsapp_url) {
-            window.open(data.whatsapp_url, "_blank");
-          }
-          limpiarCarrito();
-          setShowEmailModal(false);
-          setTimeout(() => setSuccess(""), 5000);
-        } else {
-          switch (data.error) {
-            case "USER_NOT_REGISTERED":
-              setError(
-                "❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
-              );
-              break;
-            case "USER_INACTIVE":
-              setError(
-                "⚠️ Tu cuenta está inactiva. Contacta al administrador."
-              );
-              break;
-            case "EMAIL_REQUIRED":
-              setError("📧 Por favor ingresa tu correo electrónico.");
-              break;
-            case "PRODUCTS_REQUIRED":
-              setError("🛒 Debe incluir al menos un producto en el pedido.");
-              break;
-            case "ADMIN_NOT_FOUND":
-              setError(
-                "⚠️ No hay administrador disponible. Contacta al soporte."
-              );
-              break;
-            case "INVALID_JSON":
-              setError("❌ Error en el formato de datos. Intenta nuevamente.");
-              break;
-            case "SERVER_ERROR":
-              setError(`❌ Error del servidor: ${data.message}`);
-              break;
-            default:
-              setError(data.message || "❌ Ocurrió un error inesperado");
-          }
+      if (response.status === 200) {
+        setSuccess("✅ ¡Perfecto! Tu pedido está listo");
+        if (data.whatsapp_url) {
+          window.open(data.whatsapp_url, "_blank");
         }
-      } catch (err) {
-        console.error("Error de conexión:", err);
-        setError(
-          "❌ Error de conexión. Verifica tu internet e intenta nuevamente"
-        );
-      } finally {
-        setLoading(false);
+        limpiarCarrito();
+        setShowEmailModal(false);
+        setTimeout(() => setSuccess(""), 5000);
+      } else {
+        switch (data.error) {
+          case "USER_NOT_REGISTERED":
+            setError(
+              "❌ Este correo no está registrado en nuestro sistema. Por favor regístrate primero."
+            );
+            break;
+          case "USER_INACTIVE":
+            setError("⚠️ Tu cuenta está inactiva. Contacta al administrador.");
+            break;
+          case "EMAIL_REQUIRED":
+            setError("📧 Por favor ingresa tu correo electrónico.");
+            break;
+          case "PRODUCTS_REQUIRED":
+            setError("🛒 Debe incluir al menos un producto en el pedido.");
+            break;
+          case "ADMIN_NOT_FOUND":
+            setError(
+              "⚠️ No hay administrador disponible. Contacta al soporte."
+            );
+            break;
+          case "INVALID_JSON":
+            setError("❌ Error en el formato de datos. Intenta nuevamente.");
+            break;
+          case "SERVER_ERROR":
+            setError(`❌ Error del servidor: ${data.message}`);
+            break;
+          default:
+            setError(data.message || "❌ Ocurrió un error inesperado");
+        }
       }
-    };
+    } catch (err) {
+      console.error("Error de conexión:", err);
+      setError(
+        "❌ Error de conexión. Verifica tu internet e intenta nuevamente"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
     const handleCerrar = () => {
       setShowEmailModal(false);
