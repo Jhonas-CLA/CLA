@@ -169,25 +169,6 @@ function Register() {
             ✅ {success}
           </div>
         )}
-
-        {/* Mensaje de error */}
-        {error && (
-          <div
-            style={{
-              backgroundColor: "#fee2e2",
-              border: "1px solid #ef4444",
-              borderRadius: "8px",
-              padding: "12px",
-              marginBottom: "20px",
-              color: "#dc2626",
-              fontSize: "0.9rem",
-              textAlign: "center",
-            }}
-          >
-            ⚠️ {error}
-          </div>
-        )}
-
         <input
           className="register-input"
           name="first_name"
