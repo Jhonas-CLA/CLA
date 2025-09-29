@@ -27,7 +27,7 @@ function ProductCarousel({ limite = 20, productos = null, useProp = false }) {
       setLoading(true);
       
       // Cargar TODOS los productos usando la instancia de api configurada
-      const response = await api.get('/api/productos/');
+      const response = await api.get('/api/products/');
       
       if (response.data && response.data.length > 0) {
         // Mezclar productos aleatoriamente (shuffle)
