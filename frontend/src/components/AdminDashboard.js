@@ -905,7 +905,7 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "proveedores" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "proveedores")}
+            onClick={(e) => setActiveSectionHandler(e.target, "proveedores")}
           >
             <div className="menu-icon">👥</div>
             <span>Proveedores</span>
@@ -923,7 +923,7 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "documentos" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "documentos")}
+            onClick={(e) => setActiveSectionHandler(e.target, "documentos")}
           >
             <div className="menu-icon">📃</div>
             <span>Documentos</span>
@@ -932,7 +932,7 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "productos" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "productos")}
+            onClick={(e) => setActiveSectionHandler(e.target, "productos")}
           >
             <div className="menu-icon">📦</div>
             <span>Productos</span>
@@ -941,7 +941,7 @@ function AdminDashboard() {
             className={`menu-item ${
               activeSection === "pedidos" ? "active" : ""
             }`}
-            onClick={(e) => setActive(e.target, "pedidos")}
+            onClick={(e) => setActiveSectionHandler(e.target, "pedidos")}
           >
             <div className="menu-icon">🛒</div>
             <span>Pedidos</span>
