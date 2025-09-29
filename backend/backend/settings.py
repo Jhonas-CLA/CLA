@@ -114,7 +114,7 @@ EMAIL_HOST_PASSWORD = 'ycax ybjy xoog jvqb'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CORS y CSRF
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOWED_ORIGINS = [
     "https://electricosandsolucionesfrontend.onrender.com",
 ]
