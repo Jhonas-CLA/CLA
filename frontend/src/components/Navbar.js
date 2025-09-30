@@ -298,38 +298,88 @@ function Navbar() {
           </Link>
 
           {/* Sección de usuario - Cambia según si está autenticado */}
-          {isAuthenticated ? (
-            <div
-              className="user-section"
-              style={{ display: "flex", alignItems: "center", gap: "10px" }}
-            >
-              {/* Usuario logueado */}
-              <Link
-                to="/analiticas"
-                className={`action-icon profile-icon ${
-                  isActiveLink("/analiticas") ? "active" : ""
-                }`}
-                onClick={closeMenu}
-                title={`Dashboard - ${user ? `${user.first_name} ${user.last_name}` : "Invitado"}`}
-              >
-                <div
-                  className="user-greeting"
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "8px 12px",
-                    backgroundColor: "#FFD700",
-                    borderRadius: "20px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#001152",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  <span>Hola, {user.first_name}</span>
-                </div>
-              </Link>
+          {isAuthenticated && user ? (
+  <div
+    className="user-section"
+    style={{ display: "flex", alignItems: "center", gap: "10px" }}
+  >
+    {/* Usuario logueado */}
+    <Link
+      to="/analiticas"
+      className={`action-icon profile-icon ${
+        isActiveLink("/analiticas") ? "active" : ""
+      }`}
+      onClick={closeMenu}
+      title={`Dashboard - ${user?.first_name || "Usuario"}`}
+    >
+      <div
+        className="user-greeting"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          padding: "8px 12px",
+          backgroundColor: "#FFD700",
+          borderRadius: "20px",
+          fontSize: "14px",
+          fontWeight: "500",
+          color: "#001152",
+          whiteSpace: "nowrap",
+        }}
+      >
+        <span>Hola, {user?.first_name || "Usuario"}</span>
+      </div>
+    </Link>
 
+    {/* Botón de logout */}
+    <button 
+      onClick={handleLogout}
+      className="logout-btn"
+      style={{
+        padding: '6px 12px',
+        backgroundColor: '#dc3545',
+        color: 'white',
+        border: 'none',
+        borderRadius: '4px',
+        cursor: 'pointer',
+        fontSize: '12px',
+        fontWeight: 'bold'
+      }}
+      title="Cerrar sesión"
+    >
+      Salir
+    </button>
+  </div>
+) : (
+  /* Usuario no logueado */
+  <Link
+    to="/Login"
+    className={`action-icon profile-icon ${
+      isActiveLink("/Login") ? "active" : ""
+    }`}
+    onClick={closeMenu}
+    title="Login"
+  >
+    <div
+      className="profile-circle"
+      style={{
+        width: "60px",
+        height: "60px",
+        overflow: "hidden",
+        borderRadius: "50%",
+      }}
+    >
+      <img
+        src="https://static.vecteezy.com/ti/vetor-gratis/p3/7407996-user-icon-person-icon-client-symbol-login-head-sign-icon-design-vetor.jpg"
+        alt="Usuario"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "cover",
+        }}
+      />
+    </div>
+  </Link>
+)}
               {/* Botón de logout */}
               <button 
   onClick={handleLogout}
@@ -379,8 +429,7 @@ function Navbar() {
                 />
               </div>
             </Link>
-          )}
-
+          )
           <button
             className="mode-toggle-btn"
             onClick={toggleTheme}
@@ -392,7 +441,6 @@ function Navbar() {
             </span>
           </button>
         </div>
-      </div>
     </nav>
   );
 }
