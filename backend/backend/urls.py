@@ -19,6 +19,7 @@ from django.urls import path, include
 from .views import enviar_email_reset, resetear_password
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 # Importar las vistas desde products
 from products.views import obtener_productos
