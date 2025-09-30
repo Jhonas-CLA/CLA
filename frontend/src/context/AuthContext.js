@@ -61,39 +61,33 @@ export const AuthProvider = ({ children }) => {
 
   // -------- LOGIN --------
   const login = async (email, password) => {
-    try {
-      const response = await api.post("/accounts/api/auth/login/", {
-        email,
-        password,
-      });
-      const data = response.data;
+  try {
+    const response = await api.post('/accounts/api/auth/login/', { email, password });
+    const data = response.data;
 
-      if (response.status === 200 && data.access) {
-        // Guardar tokens
-        localStorage.setItem("access_token", data.access);
-        localStorage.setItem("refresh_token", data.refresh);
+    if (response.status === 200 && data.access) {
+      // Guardar tokens
+      localStorage.setItem('access_token', data.access);
+      localStorage.setItem('refresh_token', data.refresh);
 
-        // Guardar usuario
-        setToken(data.access);
-        setUser(data.user);
+      // Guardar usuario
+      setToken(data.access);
+      setUser(data.user);
 
-        // Guardar datos en localStorage
-        localStorage.setItem("userData", JSON.stringify(data.user));
+      // Guardar datos en localStorage
+      localStorage.setItem('userData', JSON.stringify(data.user));
 
-        return { success: true, user: data.user };
-      } else {
-        return {
-          success: false,
-          error: data.error || "Credenciales inválidas",
-        };
-      }
-    } catch (error) {
-      // 🔹 Mostrar el error REAL que devuelve el backend
-      const backendError = error.response?.data || error.message;
-      console.error("Error en login:", backendError);
-      return { success: false, error: backendError };
+      return { success: true, user: data.user };
+    } else {
+      return { success: false, error: data.error || 'Credenciales inválidas' };
     }
-  };
+  } catch (error) {
+    // 🔹 Mostrar el error REAL que devuelve el backend
+    const backendError = error.response?.data || error.message;
+    console.error('Error en login:', backendError);
+    return { success: false, error: backendError };
+  }
+};
 
   // -------- LOGOUT --------
   const logout = async () => {
@@ -209,15 +203,15 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const value = {
-    user,
-    token,
-    loading,
-    login,
-    logout,
-    apiCall,
-    isAuthenticated: !!token,
-    userRole: user?.is_staff ? "admin" : "usuario",
-  };
+  user,
+  token,
+  loading,
+  login,
+  logout,
+  apiCall,
+  isAuthenticated: !!token,
+  userRole: user?.is_staff ? 'admin' : 'usuario',
+};
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
