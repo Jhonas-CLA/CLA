@@ -35,7 +35,7 @@ export const AuthProvider = ({ children }) => {
         data: options.body ? JSON.parse(options.body) : undefined,
       });
 
-      // Si el token expiró, intentar refrescar
+      // 🔹 Verificación: si el token expiró, intentar refrescar
       if (response.status === 401 && token) {
         const refreshed = await refreshToken();
         if (refreshed) {
@@ -61,52 +61,54 @@ export const AuthProvider = ({ children }) => {
 
   // -------- LOGIN --------
   const login = async (email, password) => {
-  try {
-    const response = await api.post('/accounts/api/auth/login/', { email, password });
-    const data = response.data;
+    try {
+      const response = await api.post("/accounts/api/auth/login/", {
+        email,
+        password,
+      });
+      const data = response.data;
 
-    if (response.status === 200 && data.access) {
-      // Guardar tokens
-      localStorage.setItem('access_token', data.access);
-      localStorage.setItem('refresh_token', data.refresh);
+      if (response.status === 200 && data.access) {
+        // Guardar tokens
+        localStorage.setItem("access_token", data.access);
+        localStorage.setItem("refresh_token", data.refresh);
 
-      // Guardar usuario
-      setToken(data.access);
-      setUser(data.user);
+        // Guardar usuario
+        setToken(data.access);
+        setUser(data.user);
 
-      // Guardar datos en localStorage
-      localStorage.setItem('userData', JSON.stringify(data.user));
+        // Guardar datos en localStorage
+        localStorage.setItem("userData", JSON.stringify(data.user));
 
-      return { success: true, user: data.user };
-    } else {
-      return { success: false, error: data.error || 'Credenciales inválidas' };
+        return { success: true, user: data.user };
+      } else {
+        return {
+          success: false,
+          error: data.error || "Credenciales inválidas",
+        };
+      }
+    } catch (error) {
+      // 🔹 Mostrar el error REAL que devuelve el backend
+      const backendError = error.response?.data || error.message;
+      console.error("Error en login:", backendError);
+      return { success: false, error: backendError };
     }
-  } catch (error) {
-    // 🔹 Mostrar el error REAL que devuelve el backend
-    const backendError = error.response?.data || error.message;
-    console.error('Error en login:', backendError);
-    return { success: false, error: backendError };
-  }
-};
+  };
 
   // -------- LOGOUT --------
   const logout = async () => {
     const refreshTokenValue = localStorage.getItem("refresh_token");
     if (refreshTokenValue) {
       try {
-        const res = await api.post("/accounts/api/auth/logout/", {
+        await api.post("/accounts/api/auth/logout/", {
           refresh: refreshTokenValue,
         });
-        const data = res.data;
-        console.log("Logout response:", data);
       } catch (error) {
         console.error("Error en logout:", error);
       }
-    } else {
-      console.warn("No hay refresh token, solo limpiando localStorage");
     }
 
-    // Limpiar localStorage siempre
+    // 🔹 Limpiar localStorage siempre
     [
       "access_token",
       "refresh_token",
@@ -114,6 +116,7 @@ export const AuthProvider = ({ children }) => {
       "userEmail",
       "userData",
     ].forEach((item) => localStorage.removeItem(item));
+
     setToken(null);
     setUser(null);
   };
@@ -166,12 +169,13 @@ export const AuthProvider = ({ children }) => {
           const userData = response.data;
           setUser(userData);
 
+          // Guardar en localStorage
           const userRole = userData.is_staff ? "admin" : "usuario";
           localStorage.setItem("userRole", userRole);
           localStorage.setItem("userEmail", userData.email);
           localStorage.setItem("userData", JSON.stringify(userData));
         } else if (response.status === 401 || response.status === 403) {
-          // Token inválido, intentar refrescar
+          // Token inválido → intentar refrescar
           const refreshed = await refreshToken();
           if (refreshed) {
             const newToken = localStorage.getItem("access_token");
@@ -203,15 +207,18 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const value = {
-  user,
-  token,
-  loading,
-  login,
-  logout,
-  apiCall,
-  isAuthenticated: !!token,
-  userRole: user?.is_staff ? 'admin' : 'usuario',
-};
+    user,
+    token,
+    loading,
+    login,
+    logout,
+    apiCall,
+    // 🔹 Verificación correcta: autenticado solo si hay token y user
+    isAuthenticated: !!token && !!user,
+    userRole: user?.is_staff ? "admin" : "usuario",
+  };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  );
 };
