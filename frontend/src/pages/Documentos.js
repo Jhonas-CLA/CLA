@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import api, { BASE_URL } from "../api";  // 👈 reutilizamos api.js
 import "./Documentos.css";
+import { BASE_URL } from '../api';
 
 const ITEMS_PER_PAGE = 10;
 
