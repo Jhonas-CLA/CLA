@@ -19,7 +19,6 @@ from django.urls import path, include
 from .views import enviar_email_reset, resetear_password
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
 
 # Importar las vistas desde products
 from products.views import obtener_productos
@@ -33,8 +32,7 @@ urlpatterns = [
     path('api/favoritos/', include('favoritos.urls')),
     path('api/', include('documentos.urls')),
 
-    path('forgot-password/', views.enviar_email_reset, name='forgot_password'),
-    path('reset-password/<uidb64>/<token>/', views.resetear_password, name='reset_password'),
+    
 ]
 
 if settings.DEBUG:
