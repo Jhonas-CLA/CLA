@@ -1,3 +1,4 @@
+// context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../api";
 
@@ -35,7 +36,7 @@ export const AuthProvider = ({ children }) => {
         data: options.body ? JSON.parse(options.body) : undefined,
       });
 
-      // 🔹 Verificación: si el token expiró, intentar refrescar
+      // Si el token expiró, intentar refrescar
       if (response.status === 401 && token) {
         const refreshed = await refreshToken();
         if (refreshed) {
@@ -98,17 +99,22 @@ export const AuthProvider = ({ children }) => {
   // -------- LOGOUT --------
   const logout = async () => {
     const refreshTokenValue = localStorage.getItem("refresh_token");
+
     if (refreshTokenValue) {
       try {
-        await api.post("/accounts/api/auth/logout/", {
+        const res = await api.post("/accounts/api/auth/logout/", {
           refresh: refreshTokenValue,
         });
+        const data = res.data;
+        console.log("Logout response:", data);
       } catch (error) {
         console.error("Error en logout:", error);
       }
+    } else {
+      console.warn("No hay refresh token, solo limpiando localStorage");
     }
 
-    // 🔹 Limpiar localStorage siempre
+    // Limpiar localStorage siempre
     [
       "access_token",
       "refresh_token",
@@ -169,13 +175,12 @@ export const AuthProvider = ({ children }) => {
           const userData = response.data;
           setUser(userData);
 
-          // Guardar en localStorage
           const userRole = userData.is_staff ? "admin" : "usuario";
           localStorage.setItem("userRole", userRole);
           localStorage.setItem("userEmail", userData.email);
           localStorage.setItem("userData", JSON.stringify(userData));
         } else if (response.status === 401 || response.status === 403) {
-          // Token inválido → intentar refrescar
+          // Token inválido, intentar refrescar
           const refreshed = await refreshToken();
           if (refreshed) {
             const newToken = localStorage.getItem("access_token");
@@ -213,12 +218,9 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     apiCall,
-    // 🔹 Verificación correcta: autenticado solo si hay token y user
-    isAuthenticated: !!token && !!user,
+    isAuthenticated: !!token,
     userRole: user?.is_staff ? "admin" : "usuario",
   };
 
-  return (
-    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
