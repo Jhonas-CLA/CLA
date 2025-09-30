@@ -16,8 +16,7 @@ urlpatterns = [
     # Rutas de autenticación
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
-    path('forgot-password/', views.enviar_email_reset, name='forgot_password'),
-    path('reset-password/<uidb64>/<token>/', views.resetear_password, name='reset_password'),
+    
 
     # CRUD usuarios
     path('usuarios/', views.lista_usuarios, name='lista_usuarios'),
