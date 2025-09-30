@@ -359,48 +359,9 @@ function Navbar() {
     onClick={closeMenu}
     title="Login"
   >
-    <div
-      className="profile-circle"
-      style={{
-        width: "60px",
-        height: "60px",
-        overflow: "hidden",
-        borderRadius: "50%",
-      }}
-    >
-      <img
-        src="https://static.vecteezy.com/ti/vetor-gratis/p3/7407996-user-icon-person-icon-client-symbol-login-head-sign-icon-design-vetor.jpg"
-        alt="Usuario"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-    </div>
   </Link>
 )}
-              {/* Botón de logout */}
-              <button 
-  onClick={handleLogout}
-  className="logout-btn"
-  style={{
-    padding: '6px 12px',
-    backgroundColor: '#dc3545',
-    color: 'white',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer',
-    fontSize: '12px',
-    fontWeight: 'bold'
-  }}
-  title="Cerrar sesión"
->
-  Salir
-</button>
             </div>
-          ) : (
-            /* Usuario no logueado */
             <Link
               to="/Login"
               className={`action-icon profile-icon ${
