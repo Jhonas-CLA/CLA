@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }) => {
         data: options.body ? JSON.parse(options.body) : undefined,
       });
 
-      // Si el token expiró, intentar refrescar
+      // 🔹 Verificación: si el token expiró, intentar refrescar
       if (response.status === 401 && token) {
         const refreshed = await refreshToken();
         if (refreshed) {
@@ -102,19 +102,15 @@ export const AuthProvider = ({ children }) => {
 
     if (refreshTokenValue) {
       try {
-        const res = await api.post("/accounts/api/auth/logout/", {
+        await api.post("/accounts/api/auth/logout/", {
           refresh: refreshTokenValue,
         });
-        const data = res.data;
-        console.log("Logout response:", data);
       } catch (error) {
         console.error("Error en logout:", error);
       }
-    } else {
-      console.warn("No hay refresh token, solo limpiando localStorage");
     }
 
-    // Limpiar localStorage siempre
+    // 🔹 Limpiar localStorage siempre
     [
       "access_token",
       "refresh_token",
@@ -175,12 +171,13 @@ export const AuthProvider = ({ children }) => {
           const userData = response.data;
           setUser(userData);
 
+          // Guardar en localStorage
           const userRole = userData.is_staff ? "admin" : "usuario";
           localStorage.setItem("userRole", userRole);
           localStorage.setItem("userEmail", userData.email);
           localStorage.setItem("userData", JSON.stringify(userData));
         } else if (response.status === 401 || response.status === 403) {
-          // Token inválido, intentar refrescar
+          // Token inválido → intentar refrescar
           const refreshed = await refreshToken();
           if (refreshed) {
             const newToken = localStorage.getItem("access_token");
@@ -222,5 +219,7 @@ export const AuthProvider = ({ children }) => {
     userRole: user?.is_staff ? "admin" : "usuario",
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  );
 };
