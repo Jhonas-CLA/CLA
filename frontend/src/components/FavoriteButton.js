@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { user, apiCall, isAuthenticated } = useAuth();
+  const { apiCall, isAuthenticated } = useAuth();
 
   const buttonSize = size === 'small' ? '32px' : '40px';
   const iconSize = size === 'small' ? '16px' : '20px';
@@ -16,10 +16,8 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
 
       try {
         const response = await apiCall(`/api/favoritos/verificar/${producto.id}/`);
-        
-        // Con axios, response.data contiene los datos
         const data = response.data || response;
-        
+
         if (data.es_favorito !== undefined) {
           setIsFavorite(data.es_favorito);
         }
@@ -32,15 +30,7 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
   }, [producto?.id, isAuthenticated, apiCall]);
 
   const toggleFavorito = async () => {
-    if (!isAuthenticated) {
-      alert('Debes iniciar sesión para agregar favoritos');
-      return;
-    }
-
-    if (!producto?.id) {
-      console.error('ID del producto no válido');
-      return;
-    }
+    if (!isAuthenticated || !producto?.id) return;
 
     setLoading(true);
 
@@ -50,7 +40,6 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
         body: JSON.stringify({ producto_id: producto.id }),
       });
 
-      // Verificar si response ya es el objeto JSON o necesita parsearse
       let data;
       if (typeof response.json === 'function') {
         data = await response.json();
@@ -63,13 +52,9 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
         if (onToggle) {
           onToggle(producto.id, data.es_favorito, data.action);
         }
-      } else {
-        console.error('Error:', data.error);
-        alert(data.error || 'Error al actualizar favorito');
       }
     } catch (error) {
       console.error('Error en toggle favorito:', error);
-      alert('Error de conexión al actualizar favorito');
     } finally {
       setLoading(false);
     }
