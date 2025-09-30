@@ -310,7 +310,7 @@ function Navbar() {
                   isActiveLink("/analiticas") ? "active" : ""
                 }`}
                 onClick={closeMenu}
-                title={`Dashboard - ${user.first_name}`}
+                title={`Dashboard - ${user ? `${user.first_name} ${user.last_name}` : "Invitado"}`}
               >
                 <div
                   className="user-greeting"
