@@ -7,6 +7,7 @@ import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Analiticas from "../pages/Analiticas";
 import Documentos from "../pages/Documentos";
+import { BASE_URL } from '../api';
 
 function AdminDashboard() {
   const [usuarios, setUsuarios] = useState([]);
@@ -77,7 +78,7 @@ function AdminDashboard() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        "http://localhost:8000/accounts/perfil-admin/",
+        `${BASE_URL}/accounts/perfil-admin/`,
         {
           method: "GET",
           headers: {
@@ -121,7 +122,7 @@ function AdminDashboard() {
       };
 
       const response = await fetch(
-        "http://localhost:8000/accounts/actualizar-perfil-admin/",
+        `${BASE_URL}/accounts/actualizar-perfil-admin/`,
         {
           method: "PUT",
           headers: {
@@ -155,7 +156,7 @@ function AdminDashboard() {
       setError(null);
 
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:8000/accounts/usuarios/", {
+      const response = await fetch(`${BASE_URL}/accounts/usuarios/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -213,7 +214,7 @@ function AdminDashboard() {
       };
 
       const response = await fetch(
-        `http://localhost:8000/accounts/usuarios/${usuarioEditando.id}/editar/`,
+        `${BASE_URL}/accounts/usuarios/${usuarioEditando.id}/editar/`,
         {
           method: "PUT",
           headers: {
@@ -259,7 +260,7 @@ function AdminDashboard() {
         setLoadingAction(true);
 
         const response = await fetch(
-          `http://localhost:8000/accounts/usuarios/${usuarioId}/toggle-estado/`,
+          `${BASE_URL}/accounts/usuarios/${usuarioId}/toggle-estado/`,
           {
             method: "PATCH",
             headers: {
@@ -716,9 +717,9 @@ function AdminDashboard() {
                         title="Editar usuario"
                         disabled={loadingAction}
                         style={{
-                          opacity: 0, // hace invisible el botón
-                          pointerEvents: "none", // desactiva los clics
-                          position: "absolute", // para que no afecte el layout
+                          opacity: 0,
+                          pointerEvents: "none",
+                          position: "absolute",
                           width: 0,
                           height: 0,
                           overflow: "hidden",
