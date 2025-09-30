@@ -35,7 +35,12 @@ const DashboardProductos = () => {
   // --- cargar productos ---
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/api/productos/`)
+      .get(`${BASE_URL}/api/productos/`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json; charset=utf-8'
+        }
+      })
       .then((response) => {
         const productosOrdenados = response.data.sort((a, b) => a.id - b.id);
         setProductos(productosOrdenados);
