@@ -1,6 +1,8 @@
+// ForgotPassword.js
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import './ForgotPassword.css';
-import api from "../api"; // Asegúrate de que apunte a la instancia de axios con la URL de Render
+import api from "../api"; // ✅ instancia de Axios con BASE_URL
 
 function ForgotPassword() {
   const [email, setEmail] = useState('');
@@ -9,11 +11,11 @@ function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await api.post('/accounts/forgot-password/', { email });
-      setMsg(data.message || data.error);
+      const response = await api.post("/accounts/forgot-password/", { email });
+      setMsg(response.data.message || "Se envió el enlace correctamente");
     } catch (error) {
-      console.error(error);
-      setMsg(error.response?.data?.error || 'Error al enviar el correo');
+      console.error("Error enviando el enlace:", error);
+      setMsg(error.response?.data?.error || "No se pudo enviar el enlace");
     }
   };
 
@@ -32,6 +34,9 @@ function ForgotPassword() {
           <button type="submit">Enviar enlace</button>
         </form>
         {msg && <p className="forgot-password-message">{msg}</p>}
+        <p className="back-to-login">
+          <Link to="/login">Volver al inicio de sesión</Link>
+        </p>
       </div>
     </div>
   );
