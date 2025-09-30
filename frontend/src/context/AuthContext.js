@@ -1,3 +1,4 @@
+// context/AuthContext.js
 import React, { createContext, useContext, useState, useEffect } from "react";
 import api from "../api";
 
@@ -98,6 +99,7 @@ export const AuthProvider = ({ children }) => {
   // -------- LOGOUT --------
   const logout = async () => {
     const refreshTokenValue = localStorage.getItem("refresh_token");
+
     if (refreshTokenValue) {
       try {
         await api.post("/accounts/api/auth/logout/", {
@@ -213,8 +215,7 @@ export const AuthProvider = ({ children }) => {
     login,
     logout,
     apiCall,
-    // 🔹 Verificación correcta: autenticado solo si hay token y user
-    isAuthenticated: !!token && !!user,
+    isAuthenticated: !!token,
     userRole: user?.is_staff ? "admin" : "usuario",
   };
 
