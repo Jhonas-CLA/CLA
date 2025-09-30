@@ -33,8 +33,7 @@ urlpatterns = [
     path('api/favoritos/', include('favoritos.urls')),
     path('api/', include('documentos.urls')),
 
-    path('forgot-password/', views.enviar_email_reset, name='forgot_password'),
-    path('reset-password/<uidb64>/<token>/', views.resetear_password, name='reset_password'),
+    
 ]
 
 if settings.DEBUG:
