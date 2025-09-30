@@ -19,7 +19,6 @@ from django.urls import path, include
 from .views import enviar_email_reset, resetear_password
 from django.conf import settings
 from django.conf.urls.static import static
-from . import views
 
 # Importar las vistas desde products
 from products.views import obtener_productos
@@ -32,10 +31,7 @@ urlpatterns = [
     path('api/pedidos/', include('pedidos.urls')),
     path('api/favoritos/', include('favoritos.urls')),
     path('api/', include('documentos.urls')),
-
-    
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
