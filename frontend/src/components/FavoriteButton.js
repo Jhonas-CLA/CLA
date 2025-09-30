@@ -32,6 +32,9 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
   const toggleFavorito = async () => {
     if (!isAuthenticated || !producto?.id) return;
 
+    // ✅ Cambio optimista
+    const previousState = isFavorite;
+    setIsFavorite(!isFavorite);
     setLoading(true);
 
     try {
@@ -40,21 +43,20 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
         body: JSON.stringify({ producto_id: producto.id }),
       });
 
-      let data;
-      if (typeof response.json === 'function') {
-        data = await response.json();
-      } else {
-        data = response;
-      }
+      const data = response.data || response;
 
       if (data.success) {
-        setIsFavorite(data.es_favorito);
         if (onToggle) {
           onToggle(producto.id, data.es_favorito, data.action);
         }
+      } else {
+        // ❌ Si falla, revertir
+        setIsFavorite(previousState);
       }
     } catch (error) {
       console.error('Error en toggle favorito:', error);
+      // ❌ Si falla, revertir
+      setIsFavorite(previousState);
     } finally {
       setLoading(false);
     }
@@ -87,18 +89,6 @@ const FavoriteButton = ({ producto, onToggle = null, size = 'normal' }) => {
         opacity: loading ? 0.6 : 1,
         boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
         position: 'relative',
-      }}
-      onMouseOver={(e) => {
-        if (!loading) {
-          e.currentTarget.style.transform = 'scale(1.1)';
-          e.currentTarget.style.backgroundColor = isFavorite ? '#dc2626' : '#e5e7eb';
-        }
-      }}
-      onMouseOut={(e) => {
-        if (!loading) {
-          e.currentTarget.style.transform = 'scale(1)';
-          e.currentTarget.style.backgroundColor = isFavorite ? '#ef4444' : '#f3f4f6';
-        }
       }}
       title={loading ? 'Cargando...' : isFavorite ? 'Quitar de favoritos' : 'Agregar a favoritos'}
     >
