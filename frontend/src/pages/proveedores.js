@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import './proveedores.css';
+import React, { useState, useEffect } from "react";
+import api from "../api";
+import "./proveedores.css";
 
 export default function Proveedores() {
   const [proveedores, setProveedores] = useState([]);
@@ -9,33 +10,30 @@ export default function Proveedores() {
   // estado para formulario
   const [formData, setFormData] = useState({
     id: null,
-    nombre: '',
-    email: '',
-    telefono: '',
-    representante: '' // ✅ Nuevo campo
+    nombre: "",
+    email: "",
+    telefono: "",
+    representante: "",
   });
   const [isEditing, setIsEditing] = useState(false);
   const [showForm, setShowForm] = useState(false);
 
   // búsqueda
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
 
   // 🔹 Paginación
   const [paginaActual, setPaginaActual] = useState(1);
-  const [proveedoresPorPagina] = useState(1);
+  const [proveedoresPorPagina] = useState(5); // puedes ajustar cantidad por página
 
   const fetchProveedores = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const response = await fetch('http://localhost:8000/api/proveedores/');
-      if (!response.ok) throw new Error('Error al obtener proveedores');
-
-      const data = await response.json();
+      const { data } = await api.get("/api/proveedores/"); // ✅ Usamos api.js
       setProveedores(data);
     } catch (err) {
-      setError('Error al cargar proveedores');
+      setError("Error al cargar proveedores");
       console.error(err);
     } finally {
       setLoading(false);
@@ -49,38 +47,37 @@ export default function Proveedores() {
   const handleChange = (e) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const url = isEditing
-        ? `http://localhost:8000/api/proveedores/${formData.id}/`
-        : 'http://localhost:8000/api/proveedores/';
-      const method = isEditing ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData) // ✅ Ahora incluye representante
-      });
-
-      if (!response.ok) throw new Error('Error al guardar proveedor');
+      if (isEditing) {
+        await api.put(`/api/proveedores/${formData.id}/`, formData); // ✅ PUT con api.js
+      } else {
+        await api.post("/api/proveedores/", formData); // ✅ POST con api.js
+      }
 
       await fetchProveedores();
-      setFormData({ id: null, nombre: '', email: '', telefono: '', representante: '' });
+      setFormData({
+        id: null,
+        nombre: "",
+        email: "",
+        telefono: "",
+        representante: "",
+      });
       setIsEditing(false);
       setShowForm(false);
     } catch (err) {
       console.error(err);
-      alert('Hubo un error al guardar');
+      alert("Hubo un error al guardar");
     }
   };
 
   const handleEdit = (proveedor) => {
-    setFormData(proveedor); // ✅ Ya trae representante del backend
+    setFormData(proveedor);
     setIsEditing(true);
     setShowForm(true);
   };
@@ -88,7 +85,7 @@ export default function Proveedores() {
   // 🔹 filtrar proveedores por búsqueda
   const proveedoresFiltrados = proveedores.filter((p) =>
     [p.nombre, p.email, p.telefono, p.representante]
-      .join(' ')
+      .join(" ")
       .toLowerCase()
       .includes(search.toLowerCase())
   );
@@ -96,9 +93,14 @@ export default function Proveedores() {
   // 🔹 Calcular paginación
   const indiceUltimo = paginaActual * proveedoresPorPagina;
   const indicePrimero = indiceUltimo - proveedoresPorPagina;
-  const proveedoresActuales = proveedoresFiltrados.slice(indicePrimero, indiceUltimo);
+  const proveedoresActuales = proveedoresFiltrados.slice(
+    indicePrimero,
+    indiceUltimo
+  );
 
-  const totalPaginas = Math.ceil(proveedoresFiltrados.length / proveedoresPorPagina);
+  const totalPaginas = Math.ceil(
+    proveedoresFiltrados.length / proveedoresPorPagina
+  );
 
   const cambiarPagina = (numeroPagina) => setPaginaActual(numeroPagina);
 
@@ -115,7 +117,9 @@ export default function Proveedores() {
     return (
       <div className="proveedores-error">
         <p>{error}</p>
-        <button onClick={fetchProveedores} className="retry-btn">Reintentar</button>
+        <button onClick={fetchProveedores} className="retry-btn">
+          Reintentar
+        </button>
       </div>
     );
   }
@@ -142,7 +146,7 @@ export default function Proveedores() {
       {showForm && (
         <div className="overlay">
           <div className="overlay-content">
-            <h2>{isEditing ? 'Editar Proveedor' : 'Agregar Proveedor'}</h2>
+            <h2>{isEditing ? "Editar Proveedor" : "Agregar Proveedor"}</h2>
             <form onSubmit={handleSubmit}>
               <input
                 type="text"
@@ -164,22 +168,30 @@ export default function Proveedores() {
                 type="text"
                 name="telefono"
                 placeholder="Teléfono"
-                value={formData.telefono || ''}
+                value={formData.telefono || ""}
                 onChange={handleChange}
               />
               <input
                 type="text"
                 name="representante"
                 placeholder="Nombre del Representante"
-                value={formData.representante || ''}
+                value={formData.representante || ""}
                 onChange={handleChange}
               />
               <div className="form-buttons">
-                <button type="submit">{isEditing ? 'Actualizar' : 'Guardar'}</button>
+                <button type="submit">
+                  {isEditing ? "Actualizar" : "Guardar"}
+                </button>
                 <button
                   type="button"
                   onClick={() => {
-                    setFormData({ id: null, nombre: '', email: '', telefono: '', representante: '' });
+                    setFormData({
+                      id: null,
+                      nombre: "",
+                      email: "",
+                      telefono: "",
+                      representante: "",
+                    });
                     setIsEditing(false);
                     setShowForm(false);
                   }}
@@ -200,7 +212,7 @@ export default function Proveedores() {
               <th>Nombre</th>
               <th>Email</th>
               <th>Teléfono</th>
-              <th>Representante</th> {/* ✅ Nueva columna */}
+              <th>Representante</th>
               <th>Registro</th>
               <th>Acciones</th>
             </tr>
@@ -210,9 +222,9 @@ export default function Proveedores() {
               <tr key={p.id}>
                 <td>{p.nombre}</td>
                 <td>{p.email}</td>
-                <td>{p.telefono || 'No especificado'}</td>
-                <td>{p.representante || 'No asignado'}</td> {/* ✅ Mostrar en tabla */}
-                <td>{new Date(p.creado_en).toLocaleDateString('es-ES')}</td>
+                <td>{p.telefono || "No especificado"}</td>
+                <td>{p.representante || "No asignado"}</td>
+                <td>{new Date(p.creado_en).toLocaleDateString("es-ES")}</td>
                 <td>
                   <button onClick={() => handleEdit(p)}>Editar</button>
                 </td>
@@ -242,7 +254,7 @@ export default function Proveedores() {
               <button
                 key={index + 1}
                 onClick={() => cambiarPagina(index + 1)}
-                className={paginaActual === index + 1 ? 'activo' : ''}
+                className={paginaActual === index + 1 ? "activo" : ""}
               >
                 {index + 1}
               </button>
