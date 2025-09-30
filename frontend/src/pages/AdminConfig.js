@@ -1,25 +1,29 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import "./AdminConfig.css"; // Importar el archivo CSS
+import api from "../api"; 
+import "./AdminConfig.css";
 
 export default function AdminConfig() {
   const [adminData, setAdminData] = useState(null);
   const [error, setError] = useState(null);
 
   const fetchAdminData = () => {
-    const token = localStorage.getItem("token"); // JWT guardado al hacer login
+    const token = localStorage.getItem("token");
     console.log("Token actual:", token);
-    axios.get("http://localhost:8000/accounts/admin-profile/", {
-      headers: { Authorization: `Bearer ${token}` }
+
+    api.get("/accounts/admin-profile/", {
+      headers: { Authorization: `Bearer ${token}` },
     })
-    .then(res => {
-      setAdminData(res.data);
-      setError(null);
-    })
-    .catch(err => {
-      console.error('Error completo:', err.response ? err.response.data : err);
-      setError('Error al cargar los datos del administrador');
-    });
+      .then((res) => {
+        setAdminData(res.data);
+        setError(null);
+      })
+      .catch((err) => {
+        console.error(
+          "Error completo:",
+          err.response ? err.response.data : err
+        );
+        setError("Error al cargar los datos del administrador");
+      });
   };
 
   useEffect(() => {
@@ -32,10 +36,7 @@ export default function AdminConfig() {
         <div className="error-content">
           <h2 className="error-title">Error</h2>
           <p className="error-message">{error}</p>
-          <button 
-            onClick={fetchAdminData}
-            className="retry-button"
-          >
+          <button onClick={fetchAdminData} className="retry-button">
             Reintentar
           </button>
         </div>
@@ -43,13 +44,14 @@ export default function AdminConfig() {
     );
   }
 
-  if (!adminData) return <p className="loading-text">Cargando datos del administrador...</p>;
+  if (!adminData)
+    return <p className="loading-text">Cargando datos del administrador...</p>;
 
   return (
     <div className="admin-config-container">
       <div className="admin-profile">
-        <img 
-          src="https://via.placeholder.com/100" 
+        <img
+          src="https://via.placeholder.com/100"
           alt="Avatar"
           className="avatar"
         />
