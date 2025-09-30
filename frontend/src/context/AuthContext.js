@@ -64,38 +64,51 @@ try {
 
 // -------- LOGIN --------
 const login = async (email, password) => {
-try {
-const response = await api.post("/accounts/api/auth/login/", { email, password });
-const data = response.data;
+  try {
+    const response = await api.post("/accounts/api/auth/login/", { email, password });
+    const data = response.data;
 
+    if (response.status === 200 && data.access) {
+      if (!data.user) {
+        return { success: false, error: "El servidor no devolvió los datos del usuario." };
+      }
 
-  if (response.status === 200 && data.access) {
-    if (!data.user) {
-      return { success: false, error: "El servidor no devolvió los datos del usuario." };
+      // Guardar tokens
+      localStorage.setItem("access_token", data.access);
+      localStorage.setItem("refresh_token", data.refresh);
+
+      // Guardar usuario
+      setToken(data.access);
+      setUser(data.user);
+
+      // Guardar datos en localStorage
+      localStorage.setItem("userData", JSON.stringify(data.user));
+
+      return { success: true, user: data.user };
+    } else {
+      return {
+        success: false,
+        error: data.error || data.detail || "Credenciales inválidas",
+      };
+    }
+  } catch (error) {
+    console.error("Error en login:", error);
+
+    let message = "Error en el servidor. Intenta de nuevo.";
+    if (error.response?.data) {
+      if (typeof error.response.data === "string") {
+        message = error.response.data;
+      } else if (error.response.data.detail) {
+        message = error.response.data.detail;
+      } else if (error.response.data.error) {
+        message = error.response.data.error;
+      } else {
+        message = JSON.stringify(error.response.data);
+      }
     }
 
-    // Guardar tokens
-    localStorage.setItem("access_token", data.access);
-    localStorage.setItem("refresh_token", data.refresh);
-
-    // Guardar usuario
-    setToken(data.access);
-    setUser(data.user);
-
-    // Guardar datos en localStorage
-    localStorage.setItem("userData", JSON.stringify(data.user));
-
-    return { success: true, user: data.user };
-  } else {
-    return { success: false, error: data.error || "Credenciales inválidas" };
+    return { success: false, error: message };
   }
-} catch (error) {
-  const backendError = error.response?.data || error.message;
-  console.error("Error en login:", backendError);
-  return { success: false, error: backendError };
-}
-
-
 };
 
 // -------- LOGOUT --------
