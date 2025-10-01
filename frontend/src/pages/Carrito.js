@@ -921,19 +921,23 @@ const CarritoCompras = () => {
         </div>
 
         {/* carrito lateral */}
-        <div
-          style={{
-            width: "400px",
-            backgroundColor: "white",
-            borderRadius: "20px",
-            padding: "30px",
-            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-            position: "sticky",
-            top: "20px",
-            maxHeight: "80vh",
-            overflowY: "auto",
-          }}
-        >
+        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }} className="layout-principal">
+          <div
+            className="carrito-lateral"
+            style={{
+              width: "400px",
+              backgroundColor: "white",
+              borderRadius: "20px",
+              padding: "30px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+              position: "sticky",
+              top: "20px",
+              maxHeight: "80vh",
+              overflowY: "auto",
+              order: 2,
+            }}
+          ></div>
+
           <h2
             style={{
               color: "#1e3a8a",
