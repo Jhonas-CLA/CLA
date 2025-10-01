@@ -2,6 +2,8 @@
   background-color: #001152 !important;
   padding: 15px 0;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 1000;
 }
 
 .navbar-container {
@@ -17,6 +19,7 @@
 .navbar-logo {
   text-decoration: none;
   transition: transform 0.3s ease;
+  z-index: 1001;
 }
 
 .navbar-logo:hover {
@@ -37,6 +40,7 @@
   border: none;
   cursor: pointer;
   padding: 5px;
+  z-index: 1001;
 }
 
 .mobile-toggle span {
@@ -45,6 +49,18 @@
   background-color: white;
   margin: 3px 0;
   transition: 0.3s;
+}
+
+.mobile-toggle.active span:nth-child(1) {
+  transform: rotate(-45deg) translate(-5px, 6px);
+}
+
+.mobile-toggle.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.mobile-toggle.active span:nth-child(3) {
+  transform: rotate(45deg) translate(-5px, -6px);
 }
 
 /* Enlaces */
@@ -100,35 +116,7 @@
   transform: rotate(180deg);
 }
 
-/* Dropdown original - mantener para compatibilidad */
-.dropdown-content {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #001152;
-  min-width: 200px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
-  border-radius: 5px;
-  padding: 10px 0;
-  margin-top: 5px;
-}
-
-.dropdown-content a {
-  color: white;
-  padding: 12px 20px;
-  text-decoration: none;
-  display: block;
-  transition: all 0.3s ease;
-}
-
-.dropdown-content a:hover {
-  background-color: rgba(0, 188, 212, 0.1);
-  color: #00bcd4;
-}
-
-/* NUEVOS ESTILOS PARA MEGA DROPDOWN */
-/* Mega dropdown específico */
+/* Mega dropdown desktop */
 .mega-dropdown {
   position: absolute;
   top: 100%;
@@ -143,9 +131,9 @@
   overflow-y: auto;
   padding: 25px;
   margin-top: 5px;
+  animation: dropdownFadeIn 0.3s ease-out;
 }
 
-/* Columnas del dropdown */
 .dropdown-columns {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -157,7 +145,6 @@
   flex-direction: column;
 }
 
-/* Títulos de grupo */
 .dropdown-group-title {
   font-size: 14px;
   font-weight: 700;
@@ -180,14 +167,12 @@
   background: white;
 }
 
-/* Items del grupo */
 .dropdown-group-items {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-/* Items individuales */
 .dropdown-item {
   display: flex;
   align-items: center;
@@ -224,7 +209,6 @@
   left: 100%;
 }
 
-/* Iconos de items */
 .item-icon {
   margin-right: 12px;
   font-size: 16px;
@@ -247,7 +231,7 @@
   transform: translateX(2px);
 }
 
-/* Scroll personalizado para el dropdown */
+/* Scroll personalizado */
 .mega-dropdown::-webkit-scrollbar {
   width: 8px;
 }
@@ -266,7 +250,6 @@
   background: rgba(0, 188, 212, 0.8);
 }
 
-/* Animación de entrada */
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
@@ -278,15 +261,20 @@
   }
 }
 
-.mega-dropdown {
-  animation: dropdownFadeIn 0.3s ease-out;
-}
-
-/* Acciones derecha - Íconos limpios sin círculos */
+/* Acciones */
 .nav-actions {
   display: flex;
   align-items: center;
   gap: 18px;
+  z-index: 1001;
+}
+
+.action-icon {
+  transition: transform 0.3s ease;
+}
+
+.action-icon:hover {
+  transform: scale(1.1);
 }
 
 .action-icon img {
@@ -302,7 +290,6 @@
   border-radius: 50%;
 }
 
-/* Botón modo oscuro */
 .mode-toggle-btn {
   background-color: transparent;
   color: white;
@@ -330,7 +317,32 @@
   font-size: 0.85rem;
 }
 
-/* Responsive */
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.logout-btn {
+  padding: 6px 12px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.logout-btn:hover {
+  background-color: #c82333;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
 @media (max-width: 1024px) {
   .mega-dropdown {
     min-width: 800px;
@@ -353,57 +365,109 @@
     position: fixed;
     top: 0;
     left: -100%;
-    width: 100%;
+    width: 85%;
+    max-width: 400px;
     height: 100vh;
     background-color: #001152;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 0;
     transition: left 0.3s ease;
     z-index: 999;
+    overflow-y: auto;
+    padding: 80px 0 20px 0;
   }
 
   .nav-menu.active {
     left: 0;
   }
 
-  /* Mega dropdown responsive para móvil */
+  .nav-link,
+  .dropdown-btn {
+    padding: 18px 25px;
+    font-size: 1.1rem;
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .nav-dropdown {
+    width: 100%;
+  }
+
+  .dropdown-btn {
+    justify-content: space-between;
+  }
+
+  /* Mega dropdown móvil */
   .mega-dropdown {
     position: static;
     min-width: 100%;
+    width: 100%;
     left: 0;
-    max-height: 60vh;
-    padding: 15px;
-    margin: 10px 0;
-    background-color: rgba(0, 188, 212, 0.1);
-    border: 1px solid rgba(0, 188, 212, 0.2);
+    max-height: none;
+    padding: 0;
+    margin: 0;
+    background-color: rgba(0, 188, 212, 0.05);
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    animation: none;
   }
   
   .dropdown-columns {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .dropdown-column {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
   
   .dropdown-group-title {
-    font-size: 12px;
-    margin-bottom: 10px;
+    font-size: 11px;
+    margin: 0;
+    padding: 12px 25px 8px 25px;
+    border-bottom: 1px solid rgba(0, 188, 212, 0.3);
+    background: rgba(0, 188, 212, 0.1);
+  }
+  
+  .dropdown-group-items {
+    gap: 0;
   }
   
   .dropdown-item {
-    font-size: 12px;
-    padding: 8px 12px;
+    font-size: 13px;
+    padding: 12px 25px 12px 45px;
+    border-radius: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   }
 
-  .dropdown-content {
-    position: static;
-    box-shadow: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    margin: 10px 0;
+  .dropdown-item:hover {
+    transform: translateX(0);
+    background: rgba(0, 188, 212, 0.15);
+  }
+
+  .item-icon {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+
+  /* Overlay cuando el menú está abierto */
+  .nav-menu.active::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: -1;
   }
 
   .nav-actions {
-    gap: 15px;
+    gap: 12px;
   }
 
   .mode-toggle-btn {
@@ -411,18 +475,46 @@
     padding: 6px 12px;
   }
 
-  .mode-icon {
-    font-size: 0.9rem;
+  .user-section {
+    flex-wrap: wrap;
+    gap: 8px;
   }
 
-  .mode-text {
-    font-size: 0.8rem;
+  .user-greeting {
+    font-size: 12px !important;
+    padding: 6px 10px !important;
   }
 }
 
 @media (max-width: 768px) {
   .navbar-container {
     padding: 0 15px;
+  }
+
+  .navbar-logo img {
+    width: 60px;
+    height: 50px;
+  }
+
+  .nav-menu {
+    width: 90%;
+    max-width: 350px;
+  }
+
+  .nav-link,
+  .dropdown-btn {
+    padding: 15px 20px;
+    font-size: 1rem;
+  }
+
+  .dropdown-group-title {
+    font-size: 10px;
+    padding: 10px 20px 6px 20px;
+  }
+
+  .dropdown-item {
+    font-size: 12px;
+    padding: 10px 20px 10px 40px;
   }
 
   .action-icon img {
@@ -436,7 +528,7 @@
   }
 
   .nav-actions {
-    gap: 12px;
+    gap: 10px;
   }
 
   .mode-toggle-btn {
@@ -447,28 +539,70 @@
     display: none;
   }
 
-  /* Mega dropdown móvil pequeño */
-  .dropdown-columns {
-    grid-template-columns: 1fr;
-    gap: 15px;
+  .mode-icon {
+    font-size: 1.2rem;
   }
-  
-  .mega-dropdown {
-    padding: 12px;
+
+  .logout-btn {
+    font-size: 11px;
+    padding: 5px 10px;
   }
-  
-  .dropdown-item {
-    padding: 6px 10px;
+
+  .user-greeting {
+    font-size: 11px !important;
+    padding: 5px 8px !important;
   }
 }
 
 @media (max-width: 480px) {
-  .dropdown-columns {
-    grid-template-columns: 1fr;
+  .navbar-container {
+    padding: 0 10px;
   }
-  
-  .mega-dropdown {
-    padding: 10px;
+
+  .navbar-logo img {
+    width: 50px;
+    height: 45px;
+  }
+
+  .nav-menu {
+    width: 100%;
+    max-width: none;
+  }
+
+  .nav-link,
+  .dropdown-btn {
+    padding: 14px 15px;
+    font-size: 0.95rem;
+  }
+
+  .dropdown-group-title {
+    padding: 8px 15px 5px 15px;
+  }
+
+  .dropdown-item {
+    padding: 8px 15px 8px 35px;
+  }
+
+  .action-icon img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .profile-circle img {
+    width: 35px;
+    height: 35px;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .mobile-toggle span {
+    width: 22px;
+  }
+
+  .user-section {
+    gap: 6px;
   }
 }
 
@@ -479,6 +613,7 @@
     font-weight: 600;
   }
 }
+
 body {
   background-color: var(--bg);
   color: var(--text);

@@ -42,7 +42,7 @@ svg {
   overflow: visible;
 }
 
-/* ✅ Contenedor principal mejorado */
+/* Contenedor principal */
 .carrito-container {
   position: relative;
   overflow: hidden;
@@ -51,7 +51,7 @@ svg {
   margin: 0 auto;
 }
 
-/* ✅ Inputs y selects modernos */
+/* Inputs y selects */
 input,
 select {
   border: 2px solid #e2e8f0;
@@ -88,7 +88,7 @@ input::placeholder {
   font-weight: 400;
 }
 
-/* ✅ Botones con diseño premium */
+/* Botones */
 button {
   font-family: inherit;
   border: none;
@@ -109,7 +109,7 @@ button:active {
   transform: translateY(1px);
 }
 
-/* ✅ Tarjetas de producto premium */
+/* Grid de productos */
 .contenedor-productos {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -117,6 +117,7 @@ button:active {
   margin-top: 2rem;
 }
 
+/* Tarjetas de producto */
 .producto-card {
   background: linear-gradient(145deg, #001152 0%, #001a73 100%) !important;
   border-radius: 24px;
@@ -177,7 +178,6 @@ button:active {
   font-weight: 600;
 }
 
-/* ✅ Botón "Agregar" mejorado */
 .producto-card button {
   background: linear-gradient(135deg, #FFD700 0%, #ffed4e 100%);
   color: #001152;
@@ -217,7 +217,7 @@ button:active {
   left: 100%;
 }
 
-/* ✅ Cantidad botones cuadrados */
+/* Botones de cantidad */
 .cantidad-btn.amarilla {
   background: linear-gradient(135deg, #FFD700 0%, #ffed4e 100%);
   color: #001152;
@@ -241,35 +241,70 @@ button:active {
   box-shadow: 0 4px 12px rgba(255, 215, 0, 0.35);
 }
 
-/* ✅ Botón eliminar rojo */
-.eliminar-btn {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  border-radius: 12px;
-  padding: 12px 24px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.25);
-  min-height: 44px;
+/* Botones de acción */
+.btn-accion {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin: 0 5px;
   display: flex;
   align-items: center;
   justify-content: center;
-  letter-spacing: 0.025em;
-  gap: 8px;
+  color: white;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 }
 
-.eliminar-btn:hover {
+.btn-accion:hover {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #1e40af, #172554);
+}
+
+.btn-x {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.btn-x:hover {
+  background: linear-gradient(135deg, #dc2626, #7f1d1d);
+}
+
+/* Botón eliminar */
+.eliminar-btn,
+.btn-eliminar {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+  color: white !important;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-bottom: 10px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+}
+
+.eliminar-btn:hover,
+.btn-eliminar:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c) !important;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
 }
 
-/* ✅ Botón WhatsApp premium */
-.whatsapp-btn {
-  background: linear-gradient(135deg, #25D366 0%, #20c25a 100%);
-  color: white;
-  font-weight: 600;
+/* Botón WhatsApp/Enviar */
+.whatsapp-btn,
+.btn-enviar {
+  width: 100%;
+  background: linear-gradient(135deg, #25D366 0%, #20c25a 100%) !important;
+  color: white !important;
   padding: 16px 32px;
   border-radius: 16px;
+  font-weight: 600;
   font-size: 1rem;
   display: flex;
   align-items: center;
@@ -281,9 +316,12 @@ button:active {
   overflow: hidden;
   min-height: 50px;
   letter-spacing: 0.025em;
+  border: none;
+  cursor: pointer;
 }
 
-.whatsapp-btn::before {
+.whatsapp-btn::before,
+.btn-enviar::before {
   content: '';
   position: absolute;
   top: 0;
@@ -294,16 +332,26 @@ button:active {
   transition: left 0.6s ease;
 }
 
-.whatsapp-btn:hover {
+.whatsapp-btn:hover,
+.btn-enviar:hover {
+  background: linear-gradient(135deg, #20c25a, #1ba84c) !important;
   transform: translateY(-3px);
   box-shadow: 0 10px 30px rgba(37, 211, 102, 0.4);
 }
 
-.whatsapp-btn:hover::before {
+.whatsapp-btn:hover::before,
+.btn-enviar:hover::before {
   left: 100%;
 }
 
-/* ✅ Título mejorado */
+.btn-enviar:disabled {
+  background: linear-gradient(135deg, #9ca3af, #6b7280) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Títulos */
 h1 {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: clamp(2rem, 5vw, 3.5rem);
@@ -324,29 +372,7 @@ p {
   line-height: 1.6;
 }
 
-/* ✅ Filtros modernos */
-.filtros-bar {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 32px;
-  align-items: center;
-  flex-wrap: wrap;
-  padding: 24px;
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-.filtros-bar select,
-.filtros-bar input[type="text"] {
-  flex: 1;
-  min-width: 250px;
-  margin: 0;
-}
-
-/* ✅ Carrito mejorado */
+/* Items del carrito */
 .carrito-item {
   padding: 20px 0;
   border-bottom: 2px solid #f1f5f9;
@@ -369,7 +395,7 @@ p {
   font-weight: 500;
 }
 
-/* ✅ Texto vacío mejorado */
+/* Texto vacío */
 .texto-vacio {
   font-style: italic;
   color: #94a3b8;
@@ -382,7 +408,7 @@ p {
   border: 2px dashed #cbd5e1;
 }
 
-/* ✅ Animaciones mejoradas */
+/* Animaciones */
 .fade-in {
   animation: fadeInUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -403,7 +429,7 @@ p {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
-/* ✅ Efectos adicionales */
+/* Efectos glass */
 .glass-effect {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -431,97 +457,234 @@ p {
   100% { left: 100%; }
 }
 
-/* ✅ Responsividad mejorada */
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablets y pantallas medianas (768px - 1024px) */
+@media (max-width: 1024px) {
+  .carrito-container {
+    padding: 20px;
+  }
+  
+  .contenedor-productos {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+  }
+  
+  h1 {
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
+  }
+}
+
+/* Móviles y tablets pequeñas (hasta 768px) */
 @media (max-width: 768px) {
   .carrito-container {
     padding: 16px;
   }
   
-  .filtros-bar {
-    flex-direction: column;
-    gap: 12px;
+  /* Banner del producto seleccionado responsive */
+  .producto-seleccionado-banner {
+    flex-direction: column !important;
+    text-align: center;
   }
   
-  .filtros-bar select,
-  .filtros-bar input[type="text"] {
-    min-width: 100%;
+  .producto-seleccionado-banner > div:first-child {
+    width: 100px !important;
+    height: 100px !important;
+    margin: 0 auto 15px !important;
+  }
+  
+  .producto-seleccionado-banner h3 {
+    font-size: 1.1rem !important;
+  }
+  
+  .producto-seleccionado-banner h4 {
+    font-size: 1rem !important;
+  }
+  
+  .producto-seleccionado-banner button {
+    width: 100%;
+  }
+  
+  /* Filtros responsivos */
+  .filtros-container {
+    flex-direction: column !important;
+    gap: 12px !important;
+  }
+  
+  .filtros-container > * {
+    width: 100% !important;
+    flex: none !important;
+  }
+  
+  /* Layout principal: productos arriba, carrito abajo */
+  .layout-principal {
+    flex-direction: column !important;
+    gap: 20px !important;
   }
   
   .contenedor-productos {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    width: 100% !important;
+    flex: none !important;
   }
   
+  .carrito-lateral {
+    width: 100% !important;
+    position: static !important;
+    max-height: none !important;
+    margin-top: 20px;
+  }
+  
+  /* Grid de productos en 1 columna */
+  .contenedor-productos {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  
+  /* Tarjetas de producto más compactas */
   .producto-card {
     padding: 20px;
   }
-}
-.btn-eliminar {
-  width: 100%;
-  background-color: #ef4444 !important; /* rojo */
-  color: white !important;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  margin-bottom: 10px;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.btn-eliminar:hover {
-  background-color: #dc2626 !important; /* rojo más oscuro */
-}
-
-.btn-enviar {
-  width: 100%;
-  background-color: #22c55e !important; /* verde WhatsApp */
-  color: white !important;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-}
-
-.btn-enviar:hover {
-  background-color: #16a34a !important; /* verde más oscuro */
-}
-
-.btn-enviar:disabled {
-  background-color: #9ca3af !important; /* gris cuando loading */
-  cursor: not-allowed !important;
-}
-.btn-accion {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  font-size: 1.2rem;
-  font-weight: bold;
-  border: none;
-  cursor: pointer;
-  margin: 0 5px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  background: linear-gradient(135deg, #2563eb, #1e40af); /* degradado azul */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
-}
-
-.btn-accion:hover {
-  transform: scale(1.1);
-  background: linear-gradient(135deg, #1e40af, #172554);
+  
+  .producto-card img {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  
+  .producto-card h3 {
+    font-size: 1.2rem;
+  }
+  
+  .producto-card button {
+    padding: 14px 24px;
+    font-size: 0.95rem;
+  }
+  
+  /* Título más pequeño */
+  h1 {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    margin-bottom: 1rem;
+  }
+  
+  p {
+    font-size: 1rem;
+  }
+  
+  /* Inputs y selects más compactos */
+  input,
+  select {
+    padding: 12px 16px;
+    font-size: 0.95rem;
+  }
+  
+  /* Items del carrito más compactos */
+  .carrito-item-mobile {
+    padding: 12px !important;
+  }
+  
+  .carrito-item-mobile > div {
+    font-size: 0.9rem !important;
+  }
+  
+  /* Botones de cantidad más pequeños en móvil */
+  .cantidad-btn.amarilla,
+  .btn-accion {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 1rem;
+  }
+  
+  /* Badge de items en carrito */
+  .badge-carrito {
+    font-size: 0.9rem !important;
+    padding: 10px 20px !important;
+  }
 }
 
-.btn-x {
-  background: linear-gradient(135deg, #ef4444, #b91c1c); /* degradado rojo */
-}
-
-.btn-x:hover {
-  background: linear-gradient(135deg, #dc2626, #7f1d1d);
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+  .carrito-container {
+    padding: 12px;
+  }
+  
+  /* Banner producto aún más compacto */
+  .producto-seleccionado-banner {
+    padding: 15px !important;
+  }
+  
+  .producto-seleccionado-banner > div:first-child {
+    width: 80px !important;
+    height: 80px !important;
+  }
+  
+  .producto-seleccionado-banner h3 {
+    font-size: 1rem !important;
+  }
+  
+  .producto-seleccionado-banner h4 {
+    font-size: 0.95rem !important;
+  }
+  
+  .producto-seleccionado-banner p {
+    font-size: 0.85rem !important;
+  }
+  
+  .producto-card {
+    padding: 16px;
+    border-radius: 16px;
+  }
+  
+  .producto-card img {
+    width: 120px !important;
+    height: 120px !important;
+  }
+  
+  .producto-card h3 {
+    font-size: 1.1rem;
+  }
+  
+  .producto-card p {
+    font-size: 0.85rem;
+  }
+  
+  .producto-card button {
+    padding: 12px 20px;
+    font-size: 0.9rem;
+    min-height: 44px;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  /* Botones de acción más compactos */
+  .btn-eliminar,
+  .btn-enviar {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
+  
+  /* Inputs más compactos */
+  input,
+  select {
+    padding: 10px 14px;
+    font-size: 0.9rem;
+    border-radius: 12px;
+  }
+  
+  /* Badge más pequeño */
+  .badge-carrito {
+    font-size: 0.85rem !important;
+    padding: 8px 16px !important;
+  }
+  
+  /* Cerrar modal más grande para touch */
+  .modal-close-btn {
+    width: 40px !important;
+    height: 40px !important;
+    font-size: 1.5rem !important;
+  }
 }
