@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo, useCallback } from "react";
-import api, { BASE_URL } from "../api";
+import axios from "axios";
 import FavoriteButton from "../components/FavoriteButton";
 import "./Carrito.css";
+
+const BASE_URL = "http://localhost:8000";
 
 // Mapeo slug → nombre exacto
 const categoriasMap = {
@@ -136,7 +138,9 @@ const CarritoCompras = () => {
   useEffect(() => {
     const cargarNumeroWhatsApp = async () => {
       try {
-        const response = await api.get("/api/configuracion/whatsapp/");
+        const response = await axios.get(
+          `${BASE_URL}/api/configuracion/whatsapp/`
+        );
         if (response.data && response.data.numero) {
           setNumeroWhatsApp(response.data.numero);
         }
@@ -155,10 +159,12 @@ const CarritoCompras = () => {
           setProductos([]);
           return;
         }
-        let url = `/api/productos/?only_active=true`;
-        // Usa el slug directamente en la llamada
-        url += `&categoria=${encodeURIComponent(categoriaFiltro)}`;
-        const response = await api.get(url);
+        let url = `${BASE_URL}/api/productos/?only_active=true`;
+        const categoriaExacta = categoriasMap[categoriaFiltro];
+        if (categoriaExacta) {
+          url += `&categoria=${encodeURIComponent(categoriaExacta)}`;
+        }
+        const response = await axios.get(url);
         const productosBack = response.data.map((p) => ({
           id: p.id,
           codigo: p.codigo,
@@ -180,8 +186,10 @@ const CarritoCompras = () => {
   // Obtener nombre del cliente según el email
   const obtenerNombreCliente = async (emailUsuario) => {
     try {
-      const res = await api.get(`/api/pedidos/cliente/?email=${emailUsuario}`);
-      const data = await res.data;
+      const res = await fetch(
+        `http://localhost:8000/api/pedidos/cliente/?email=${emailUsuario}`
+      );
+      const data = await res.json();
       if (data.nombre) {
         setNombreCliente(data.nombre);
       }
@@ -288,6 +296,7 @@ const CarritoCompras = () => {
       return;
     }
 
+    // Si no hay email, mostrar modal
     if (!email) {
       setShowEmailModal(true);
       return;
@@ -298,6 +307,7 @@ const CarritoCompras = () => {
     setSuccess("");
 
     try {
+      // Preparar datos del pedido
       const pedidoData = {
         email: email,
         cliente: nombreCliente || "Cliente desconocido",
@@ -314,16 +324,25 @@ const CarritoCompras = () => {
         ),
       };
 
-      await api.post("/api/pedidos/", pedidoData);
+      console.log("Enviando pedido:", pedidoData);
 
-      const response = await api.post(
-        "/accounts/api/whatsapp/pedido/",
-        pedidoData
+      await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
+
+      const response = await fetch(
+        "http://localhost:8000/accounts/api/whatsapp/pedido/",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(pedidoData),
+        }
       );
 
-      const data = response.data;
+      const data = await response.json();
+      console.log("Respuesta del servidor:", data);
 
-      if (response.status === 200) {
+      if (response.ok) {
         setSuccess("✅ ¡Perfecto! Tu pedido está listo");
 
         if (data.whatsapp_url) {
@@ -334,6 +353,8 @@ const CarritoCompras = () => {
         setShowEmailModal(false);
         setTimeout(() => setSuccess(""), 5000);
       } else {
+        console.error("Error del servidor:", data);
+
         switch (data.error) {
           case "USER_NOT_REGISTERED":
             setError(
@@ -400,8 +421,12 @@ const CarritoCompras = () => {
 
     const handleLocalEmailChange = (e) => {
       setLocalEmail(e.target.value);
-      if (localError) setLocalError("");
-      if (error) setError("");
+      if (localError) {
+        setLocalError("");
+      }
+      if (error) {
+        setError("");
+      }
     };
 
     const handleContinuar = async () => {
@@ -433,13 +458,22 @@ const CarritoCompras = () => {
           ),
         };
 
-        // Cambia axios y fetch por api
-        await api.post("/api/pedidos/", pedidoData);
+        await axios.post("http://localhost:8000/api/pedidos/", pedidoData);
 
-        const response = await api.post("/accounts/api/whatsapp/pedido/", pedidoData);
-        const data = response.data;
+        const response = await fetch(
+          "http://localhost:8000/accounts/api/whatsapp/pedido/",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(pedidoData),
+          }
+        );
 
-        if (response.status === 200) {
+        const data = await response.json();
+
+        if (response.ok) {
           setSuccess("✅ ¡Perfecto! Tu pedido está listo");
           if (data.whatsapp_url) {
             window.open(data.whatsapp_url, "_blank");
@@ -455,7 +489,9 @@ const CarritoCompras = () => {
               );
               break;
             case "USER_INACTIVE":
-              setError("⚠️ Tu cuenta está inactiva. Contacta al administrador.");
+              setError(
+                "⚠️ Tu cuenta está inactiva. Contacta al administrador."
+              );
               break;
             case "EMAIL_REQUIRED":
               setError("📧 Por favor ingresa tu correo electrónico.");
@@ -687,7 +723,7 @@ const CarritoCompras = () => {
               }}
             >
               {productoSeleccionado.imagen ||
-                productoSeleccionado.imagen_url ? (
+              productoSeleccionado.imagen_url ? (
                 <ProductImage
                   src={
                     productoSeleccionado.imagen ||
@@ -921,23 +957,19 @@ const CarritoCompras = () => {
         </div>
 
         {/* carrito lateral */}
-        <div style={{ display: "flex", gap: "20px", alignItems: "flex-start" }} className="layout-principal">
-          <div
-            className="carrito-lateral"
-            style={{
-              width: "400px",
-              backgroundColor: "white",
-              borderRadius: "20px",
-              padding: "30px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-              position: "sticky",
-              top: "20px",
-              maxHeight: "80vh",
-              overflowY: "auto",
-              order: 2,
-            }}
-          ></div>
-
+        <div
+          style={{
+            width: "400px",
+            backgroundColor: "white",
+            borderRadius: "20px",
+            padding: "30px",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
+            position: "sticky",
+            top: "20px",
+            maxHeight: "80vh",
+            overflowY: "auto",
+          }}
+        >
           <h2
             style={{
               color: "#1e3a8a",
