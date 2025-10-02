@@ -238,9 +238,11 @@ const CarritoCompras = () => {
   const agregarAlCarrito = (producto) => {
     setCarrito((prev) => {
       const cantidadActual = prev[producto.codigo]?.cantidad || 0;
+      // Descontar stock al agregar
+      const nuevoStock = producto.stock > 0 ? producto.stock - 1 : 0;
       return {
         ...prev,
-        [producto.codigo]: { ...producto, cantidad: cantidadActual + 1 },
+        [producto.codigo]: { ...producto, cantidad: cantidadActual + 1, stock: nuevoStock },
       };
     });
   };
@@ -889,7 +891,9 @@ const CarritoCompras = () => {
                 <p style={{ color: "#666" }}>
                   {producto.codigo} • {producto.categoria}
                 </p>
-                {/* REMOVIDO: La sección del stock ya no se muestra */}
+                <div style={{ margin: "6px 0", fontSize: "0.95rem", color: "#fff", fontWeight: "bold" }}>
+                  Stock: {producto.stock}
+                </div>
                 <span
                   style={{
                     fontWeight: "bold",
@@ -904,14 +908,15 @@ const CarritoCompras = () => {
                   onClick={() => agregarAlCarrito(producto)}
                   style={{
                     marginTop: "10px",
-                    backgroundColor: "#FFD700",
-                    color: "#001152",
+                    backgroundColor: producto.stock === 0 ? "#ccc" : "#FFD700",
+                    color: producto.stock === 0 ? "#888" : "#001152",
                     padding: "8px 16px",
                     borderRadius: "8px",
                     fontWeight: "bold",
-                    cursor: "pointer",
+                    cursor: producto.stock === 0 ? "not-allowed" : "pointer",
                     border: "none",
                   }}
+                  disabled={producto.stock === 0}
                 >
                   + Agregar
                 </button>

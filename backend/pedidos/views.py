@@ -26,6 +26,20 @@ class PedidoListCreateView(generics.ListCreateAPIView):
         except User.DoesNotExist:
             raise ValidationError({"email": "El usuario con este email no existe."})
 
+        # Descontar stock de productos al confirmar pedido
+        productos_pedido = self.request.data.get("productos", [])
+        from products.models import Product
+        for prod in productos_pedido:
+            try:
+                producto_obj = Product.objects.get(codigo=prod.get("codigo"))
+                cantidad_pedida = int(prod.get("cantidad", 1))
+                if producto_obj.cantidad < cantidad_pedida:
+                    raise ValidationError({"stock": f"No hay suficiente stock de {producto_obj.nombre}"})
+                producto_obj.cantidad -= cantidad_pedida
+                producto_obj.save()
+            except Product.DoesNotExist:
+                raise ValidationError({"producto": f"No existe el producto con código {prod.get('codigo')}"})
+
         serializer.save(cliente=cliente_nombre, email=email)
 # ✅ Actualizar estado del pedido
 @api_view(['PATCH'])

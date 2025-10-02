@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework import generics, status
 
 from .models import Product, Category, Cart, CartItem
-from backend.serializers import ProductSerializer, CategorySerializer
+from .serializers import ProductSerializer2, CategorySerializer2
 from .serializers import (
     ProductSerializer2,
     CategorySerializer2,
@@ -19,7 +19,7 @@ from .serializers import (
 
 class ProductListView(generics.ListCreateAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductSerializer2
 
     def get_queryset(self):
         queryset = Product.objects.all().order_by("-id")
@@ -88,12 +88,12 @@ class ProductListView(generics.ListCreateAPIView):
 
 class ProductDetailView(generics.RetrieveUpdateAPIView):
     queryset = Product.objects.all()
-    serializer_class = ProductSerializer
+    serializer_class = ProductSerializer2
 
 
 class CategoryListView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CategorySerializer2
 
 
 @api_view(["GET"])
@@ -183,7 +183,7 @@ def obtener_productos(request):
 def obtener_categorias(request):
     try:
         categorias = Category.objects.all().order_by("name")
-        serializer = CategorySerializer(
+        serializer = CategorySerializer2(
             categorias, many=True, context={"request": request}
         )
         return Response(serializer.data)
