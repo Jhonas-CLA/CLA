@@ -5,31 +5,37 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-d!3y1vgzp)ax)ist7+^ez^)z6wkjtf#l2on#h+75q9_hvt!87^'
+
 DEBUG = True
-ALLOWED_HOSTS = ["electricosandsoluciones.onrender.com"]
+
+# ALLOWED_HOSTS configurado para Render y Local
+ALLOWED_HOSTS = [
+    "electricosandsoluciones.onrender.com",  # dominio en Render
+    "localhost",
+    "127.0.0.1",
+]
 
 # Aplicaciones instaladas
 INSTALLED_APPS = [
+    'accounts',
+    'products',
+    'proveedores',
+    'pedidos',
+    'media',
+    'favoritos',
+    'documentos',
+
+    'corsheaders',
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
-    # Apps propias
-    'accounts',
-    'products',
-    'proveedores',
-    'pedidos',
-    'favoritos',
-    'documentos',
-
-    # Terceros
-    'corsheaders',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
 ]
 
 # Middleware
@@ -46,6 +52,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'backend.urls'
 
+# Templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -64,7 +71,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'backend.wsgi.application'
 
-# Base de datos
+# Base de datos (usa Render si no defines otras variables)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -75,8 +82,6 @@ DATABASES = {
         'PORT': os.environ.get('DB_PORT', '5432'),
     }
 }
-
-
 
 # Archivos subidos (media)
 MEDIA_URL = '/media/'
@@ -110,18 +115,26 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'codigolatino123@gmail.com'
-EMAIL_HOST_PASSWORD = 'ycax ybjy xoog jvqb'
+EMAIL_HOST_PASSWORD = 'ycax ybjy xog jvqb'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 # CORS y CSRF
 CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = True
+
+
 CORS_ALLOWED_ORIGINS = [
     "https://electricosandsolucionesfrontend.onrender.com",
 ]
 
+if DEBUG:
+    CORS_ALLOWED_ORIGINS += [
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+    ]
+
 CSRF_TRUSTED_ORIGINS = [
     "https://electricosandsolucionesfrontend.onrender.com",
-
 ]
 
 if DEBUG:
@@ -137,6 +150,9 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.AllowAny',
+    ),
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
     ),
 }
 

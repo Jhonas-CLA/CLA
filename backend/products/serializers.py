@@ -43,13 +43,16 @@ class ProductSerializer2(serializers.ModelSerializer):
 
 # Este lo dejo porque lo pedías en otra vista (más simple)
 class ProductoSerializer(serializers.ModelSerializer):
-    categoria = serializers.CharField(source="categoria.name", read_only=True)
+    categoria = serializers.PrimaryKeyRelatedField(read_only=True)
     imagen_url = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Product
-        fields = ['id', 'nombre', 'precio', 'cantidad', 'imagen', 'imagen_url', 'categoria', 'descripcion']
-    
+        fields = [
+            'id', 'nombre', 'codigo', 'precio', 'cantidad', 'imagen', 'imagen_url',
+            'categoria', 'descripcion', 'is_active', 'is_in_stock', 'stock_status'
+        ]
+
     def get_imagen_url(self, obj):
         """Obtener URL completa de la imagen"""
         if obj.imagen:
